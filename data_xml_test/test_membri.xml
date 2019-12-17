@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<membri type="array">
+    <membro type="Membro">
+    <me-ds-tp-equip>AUTISTA</me-ds-tp-equip>
+    <me-ds-nome>DONALD</me-ds-nome>
+    <me-ds-cognome>DUCK</me-ds-cognome>
+    </membro>
+    <membro type="Membro">
+    <me-ds-tp-equip>SOCCORRITORE</me-ds-tp-equip>
+    <me-ds-nome>MICKEY</me-ds-nome>
+    <me-ds-cognome>MOUSE</me-ds-cognome>
+    </membro>
+    <membro type="Membro">
+    <me-ds-tp-equip>CAPO SERVIZIO</me-ds-tp-equip>
+    <me-ds-nome>GOOFY</me-ds-nome>
+    <me-ds-cognome>GOOF</me-ds-cognome>
+    </membro>
+    <membro type="Membro">
+    <me-ds-tp-equip>SOCCORRITORE</me-ds-tp-equip>
+    <me-ds-nome>SCRUDGE</me-ds-nome>
+    <me-ds-cognome>MCDUCK</me-ds-cognome>
+    </membro>
+</membri>

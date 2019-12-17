@@ -1,0 +1,25 @@
+$ cat .gitignore
+
+# Ignore every *.class file
+*.class
+
+# For every project, ignore the target folder
+DataModel/target/
+emmaREST/target
+
+# Ignore the logs
+logs/*
+
+# Ignore the folder for full xml downloads (since it may contains sensible patient information)
+data_xml_download/
+
+# Ignore the following conf files with sensible data (public ips, users and psswd even masked)
+conf/emma_psswd.conf
+
+# Ignore eclipse files
+.settings
+.classpath
+.project
+
+# Ignore Jars file
+jars
