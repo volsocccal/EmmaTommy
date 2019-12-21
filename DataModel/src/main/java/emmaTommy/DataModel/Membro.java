@@ -4,59 +4,135 @@ import java.util.ArrayList;
 
 import javax.xml.bind.annotation.*;
 
+import org.apache.logging.log4j.LogManager;
+
 @XmlRootElement(name = "membro")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Membro extends toDataFormatClass {
-	
-	static String AUTISTA = "AUTISTA";
-	static String DAE = "OPERATORE D.A.E.";
-	static String SOCCORRITORE = "SOCCORRITORE";
-	static String CAPOSERVIZIO = "CAPO SERVIZIO";
-	
-	@XmlTransient
-	private ArrayList<String> acceptedQualifiche = new ArrayList<String>() { 
-		private static final long serialVersionUID = 1L;
-		{ 
-            add(AUTISTA); 
-            add(DAE); 
-            add(CAPOSERVIZIO); 
-        } 
-    }; 
-    
-    @XmlTransient
-    protected Boolean OkStatus;
-    public void setOkStatus(Boolean status) {
-    	this.OkStatus = status;
-    }
-    protected Boolean getOkStatus() {
-    	return this.OkStatus;
-    }
-    
-    @XmlTransient
-    protected ArrayList<String> errorList;
-    public ArrayList<String> getErrorList() {
-    	return this.getErrorList();
-    }    
-	
+public class Membro extends DataFormatClass {
+    	
 	public Membro() {
-		super(); 
-		this.OkStatus = true; 
-		this.errorList = new ArrayList<String>(); 
+		super();
 	}
 	public Membro(String nome, String cognome, String qualifica) {
 		super();
-		this.OkStatus = true;
-		this.errorList = new ArrayList<String>();
 		this.setCognome(cognome);
 		this.setNome(nome);
 		this.setQualifica(qualifica);
+		this.validateObject();
+	}
+	
+	/** validateObject
+	 * type: not null, not empty, not blanck, equals to the simple class name
+	 * nome: not null, not empty, not blanck
+	 * cognome: not null, not empty, not blanck
+	 * qualifica: not null, not empty, not blanck, part of the Qualifiche.accepted_qualifiche List
+	 * 
+	 * @return true if the object is valid, false otherwise
+	 */
+	public Boolean validateObject() {
+		String errorMsg = this.getClass().getSimpleName() + ": ";
+		
+		// Check Type
+		if (this.type == null) {
+			this.validState = false;
+			errorMsg += "type was NULL";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		else if (this.type.isBlank()) {
+			this.validState = false;
+			errorMsg += "type was Empty";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		else if (this.type.isBlank()) {
+			this.validState = false;
+			errorMsg += "type was Blanck";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		else if (this.type.compareTo(this.getClass().getSimpleName()) != 0) {
+			this.validState = false;
+			errorMsg += "type was diffent from ClassName";
+			this.errorList.add(errorMsg);
+			logger.error(errorMsg);
+		}
+		
+		// Name Type
+		if (this.nome == null) {
+			this.validState = false;
+			errorMsg += "nome was NULL";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		else if (this.nome.isEmpty()) {
+			this.validState = false;
+			errorMsg += "nome was Empty";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		else if (this.nome.isBlank()) {
+			this.validState = false;
+			errorMsg += "nome was Blanck";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		
+		// Cognome Type
+		if (this.cognome == null) {
+			this.validState = false;
+			errorMsg += "cognome was NULL";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		else if (this.cognome.isEmpty()) {
+			this.validState = false;
+			errorMsg += "cognome was Empty";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		else if (this.cognome.isBlank()) {
+			this.validState = false;
+			errorMsg += "cognome was Blanck";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		
+		// Qualifica
+		if (this.qualifica == null) {
+			this.validState = false;
+			errorMsg += "qualifica was NULL";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		else if (this.qualifica.isEmpty()) {
+			this.validState = false;
+			errorMsg += "qualifica was Empty";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		else if (this.qualifica.isBlank()) {
+			this.validState = false;
+			errorMsg += "qualifica was Blanck";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		else if (!DataModelEnums.acceptedQualifiche.contains(qualifica)) {
+			this.validState = false;
+			errorMsg += qualifica + "isn't in the accepted list of qualifiche (New One?)";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		
+		// Return validState
+		return this.validState;
 	}
 	
 	/** type Attribute */
 	@XmlAttribute(name = "type")
-	protected String type = this.getClass().getSimpleName();
+	protected String type = this.getClass().getSimpleName();	
 	public void setType(String type) {
-		this.type = type;
+		this.type = type;	
 	}
 	public String getType() {
 		return this.type;
@@ -65,7 +141,7 @@ public class Membro extends toDataFormatClass {
 	
 	/** Cognome del Membro dell'Equipaggio */
 	@XmlElement(name = "me-ds-cognome", required = true, nillable = false)	
-	protected String cognome;
+	protected String cognome;	
 	public void setCognome(String cognome) {
 		this.cognome = cognome;
 	}
@@ -75,17 +151,17 @@ public class Membro extends toDataFormatClass {
 	
 	/** Nome del Membro dell'Equipaggio */
 	@XmlElement(name = "me-ds-nome", required = true, nillable = false)	
-	protected String nome;
+	protected String nome;	
 	public void setNome(String nome) {
-		this.nome = nome;
+		this.nome = nome;	
 	}
 	public String getNome() {
 		return this.nome;
 	}
 	
-	/** Qualifica del Membro dell'Equipaggio */
+	/** Qualifica del Membro dell'Equipaggio */	
 	@XmlElement(name = "me-ds-tp-equip", required = true, nillable = false)	
-	protected String qualifica;
+	protected String qualifica;	
 	public void setQualifica(String qualifica) {
 		this.qualifica = qualifica;
 	}

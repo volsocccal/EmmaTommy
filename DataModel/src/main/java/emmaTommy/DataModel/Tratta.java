@@ -4,30 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement(name = "tratta")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Tratta extends toDataFormatClass {
+public class Tratta extends DataFormatClass {
 	
-	@XmlTransient
-    protected Boolean OkStatus;
-    public void setOkStatus(Boolean status) {
-    	this.OkStatus = status;
-    }
-    protected Boolean getOkStatus() {
-    	return this.OkStatus;
-    }
-    
-    @XmlTransient
-    protected ArrayList<String> errorList;
-    public ArrayList<String> getErrorList() {
-    	return this.getErrorList();
-    }    
-
 	public Tratta() {
 		super();
-		this.OkStatus = true; 
-		this.errorList = new ArrayList<String>(); 
 	}
 	
 	public Tratta(int id, Date dataPartenza) {
@@ -44,17 +28,67 @@ public class Tratta extends toDataFormatClass {
 	
 	public Tratta(int id, Date dataPartenza, Date dataArrivo, String destinazione) {
 		super();
-		this.OkStatus = true; 
-		this.errorList = new ArrayList<String>(); 
 		this.setId(id);
 		this.setDataPartenza(dataPartenza);
 		this.setDataPartenza(dataPartenza);
 		this.setDestinazione(destinazione);
 	}
 	
-	/** Codice ID Della Tratta */
-	@XmlElement(name = "tr-id-tratta", required = true)	
-	protected int id;
+	/** validateObject
+	 * type: not null, not empty, not blanck, equals to the simple class name
+	 * nome: not null, not empty, not blanck
+	 * cognome: not null, not empty, not blanck
+	 * qualifica: not null, not empty, not blanck, part of the Qualifiche.accepted_qualifiche List
+	 * 
+	 * @return true if the object is valid, false otherwise
+	 */
+	public Boolean validateObject() {
+		String errorMsg = this.getClass().getSimpleName() + ": ";
+		
+		// Check Type
+		if (this.type == null) {
+			this.validState = false;
+			errorMsg += "type was NULL";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		else if (this.type.isEmpty()) {
+			this.validState = false;
+			errorMsg += "type was Empty";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		else if (this.type.isBlank()) {
+			this.validState = false;
+			errorMsg += "type was Blanck";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		else if (this.type.compareTo(this.getClass().getSimpleName()) != 0) {
+			this.validState = false;
+			errorMsg += "type was diffent from ClassName";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		
+		// Return validState
+		return this.validState;
+	}
+	
+	/** type Attribute */
+	@XmlAttribute(name = "type")
+	protected String type = this.getClass().getSimpleName();	
+	public void setType(String type) {
+		this.type = type;
+		logger.trace("::setType(): " + type);	
+	}
+	public String getType() {
+		return this.type;
+	}
+	
+	/** Codice ID Della Tratta */	
+	@XmlElement(name = "tr-id-tratta", required = true, nillable=false)	
+	protected int id;	
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -64,7 +98,8 @@ public class Tratta extends toDataFormatClass {
 	
 	/** Data di Partenza */
 	@XmlElement(name = "tr-dt-partenza", required = true)	
-	protected Date dataPartenza;
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
+	protected Date dataPartenza;	
 	public void setDataPartenza(Date dataPartenza) {
 		this.dataPartenza = dataPartenza;
 	}
@@ -72,9 +107,10 @@ public class Tratta extends toDataFormatClass {
 		return this.dataPartenza; 
 	}
 	
-	/** Data di Arrivo */
+	/** Data di Arrivo */	
 	@XmlElement(name = "tr-dt-arrivo", required = true)	
-	protected Date dataArrivo;
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
+	protected Date dataArrivo;	
 	public void setDataArrivo(Date dataArrivo) {
 		this.dataArrivo = dataArrivo;
 	}
@@ -84,7 +120,7 @@ public class Tratta extends toDataFormatClass {
 	
 	/** Luogo di Destinazione */
 	@XmlElement(name = "tr-ds-lg-dest", required = false)	
-	protected String destinazione;
+	protected String destinazione;	
 	public void setDestinazione(String destinazione) {
 		this.destinazione = destinazione;
 	}

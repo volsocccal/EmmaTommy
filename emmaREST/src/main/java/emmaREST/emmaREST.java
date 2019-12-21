@@ -13,7 +13,11 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Properties;
 
+import org.apache.logging.log4j.LogManager;
+
 public class emmaREST {
+	
+	static org.apache.logging.log4j.Logger logger = LogManager.getLogger();
 	
 	String PROTOCOL;
 	String MISSIONI_URL;
@@ -32,20 +36,21 @@ public class emmaREST {
 
 	public emmaREST() throws IOException, InterruptedException {
 		
-		
 		// Define and Load Configuration File
 		Properties prop = new Properties();
 		String fileName = "../conf/emma.conf";
+		logger.trace("Loading Properties FileName: " + fileName);
 		FileInputStream fileStream = null;
 		try {
 			fileStream = new FileInputStream(fileName);
 		} catch (FileNotFoundException e) {
-		    System.out.println(e.getMessage());
+			logger.fatal(e.getMessage());
 		}
 		try {
 		    prop.load(fileStream);
+		    logger.trace(prop.toString());
 		} catch (IOException e) {
-			System.out.println(e.getMessage());
+			logger.fatal(e.getMessage());
 		}
 		
 		// Load Configuration Data
@@ -65,18 +70,23 @@ public class emmaREST {
 		this.requestTimeSecs = Integer.parseInt(prop.getProperty("requestTimeSecs"));
 		
 		// Load Associazione's Data (Username, Psswd, Name)
-		try {
-			Properties propPsswd = new Properties();
-			String fileNamePsswd = "../conf/emma_psswd.conf";
+		String fileNamePsswd = "../conf/emma_psswd.conf";
+		try {			
+			Properties propPsswd = new Properties();			
+			logger.info("Loading Emma Psswd FileName: " + fileNamePsswd);
 			FileInputStream fileStreamPsswd = new FileInputStream(fileNamePsswd);
 			propPsswd.load(fileStreamPsswd);
 			this.ASSOCIAZIONE_NAME = propPsswd.getProperty("ASSOCIAZIONE_NAME");
 			this.username = propPsswd.getProperty("username");
 			this.psswd = propPsswd.getProperty("psswd");
 		} catch (FileNotFoundException e) {
-		    System.out.println(e.getMessage());   
+			logger.warn(e.getMessage());
+			logger.warn("Did you set username, psswd and association name in " + fileNamePsswd + "?");
+			logger.warn("Will Proceed with default values [This will propably fail]");
 		} catch (IOException e) {
-			System.out.println(e.getMessage());
+			logger.warn(e.getMessage());
+			logger.warn("Did you set username, psswd and association name in " + fileNamePsswd + "?");
+			logger.warn("Will Proceed with default values [This will propably fail]");
 		}
 		
 		String xml = this.getEmmaXML(this.soreu_COMO_NAME, "190000001");
@@ -88,6 +98,8 @@ public class emmaREST {
 	}
 	
 	public String getEmmaXML(String SOREU, String idMissione) throws IOException, InterruptedException {
+		logger.info("Downloading from missione " + idMissione);
+		logger.info("Associazione: " + this.ASSOCIAZIONE_NAME);
 		HttpClient httpClient = HttpClient.newBuilder()
 										  .authenticator(new Authenticator() {
 											  @Override
@@ -98,8 +110,6 @@ public class emmaREST {
 									      .version(HttpClient.Version.HTTP_2)
 									      .build();
 		String url = this.urlBuilder(SOREU, idMissione);
-		System.out.println("Associazione: " + this.ASSOCIAZIONE_NAME);
-		System.out.println("idMssione: " + idMissione);
 		HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create(url))
@@ -110,17 +120,16 @@ public class emmaREST {
 
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        // print response headers
-        HttpHeaders headers = response.headers();
         
+        HttpHeaders headers = response.headers();        
         //headers.map().forEach((k, v) -> System.out.println(k + ":" + v));
 
         // print status code
         if (response.statusCode() == 200) {
-        	System.out.println("Download was executed correctly (Status Code 200))");
-        	System.out.println("Downloaded " + response.body().getBytes("UTF-8").length + " bytes");
+        	logger.info("Download was executed correctly (Status Code 200))");
+        	logger.info("Downloaded " + response.body().getBytes("UTF-8").length + " bytes");
         } else {
-        	System.out.println("Error Status Code: " + response.statusCode() + " :(");
+        	logger.fatal("Error Status Code: " + response.statusCode() + " :(");
         }
 
         // print response body

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<paziente type="Paziente">
+    <pz-ds-cognome>Mouse</pz-ds-cognome>
+    <pz-ds-nome>Minnie</pz-ds-nome>
+    <pz-ac-sesso>F</pz-ac-sesso>
+    <pz-dt-nascita type="date">1950-06-3</pz-dt-nascita>
+    <pz-vl-eta>69</pz-vl-eta>
+    <pz-fl-pz-pediatrico>N</pz-fl-pz-pediatrico>
+    <pz-ds-esito>RIFIUTA TRASPORTO</pz-ds-esito>
+    <pz-id-codice-r></pz-id-codice-r>
+    <pz-cd-coscienza>V</pz-cd-coscienza>
+    <pz-id-polso>100</pz-id-polso>
+    <pz-id-respiro>2</pz-id-respiro>
+    <pz-ds-loc-res>Topolinia</pz-ds-loc-res>
+</paziente>

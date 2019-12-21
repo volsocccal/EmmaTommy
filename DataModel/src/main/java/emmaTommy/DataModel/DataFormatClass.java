@@ -3,17 +3,59 @@ package emmaTommy.DataModel;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 
+import org.apache.logging.log4j.LogManager;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.eclipse.persistence.oxm.MediaType;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlTransient;
 
-public class toDataFormatClass {
+public abstract class DataFormatClass {
 	
-	public toDataFormatClass() {}
+	static org.apache.logging.log4j.Logger logger = LogManager.getLogger("dataModel");
+	
+	public DataFormatClass() {
+		validState = true;
+		this.errorList = new ArrayList<String>();		
+	}
+	
+	/** True if the object is valid */
+	@XmlTransient
+	protected Boolean validState;
+	public void setValidState(Boolean validState) {
+		this.validState = validState;  
+	}
+	public Boolean getValidState() {
+		return this.validState;
+	}
+	
+	/** List of all the errors */
+	@XmlTransient
+	protected ArrayList<String> errorList;
+	public ArrayList<String> getErrorList() {
+		return this.errorList;
+	}
+	public void addError (String error) {
+		if (this.errorList != null) {
+			errorList.add(error);
+		} else {
+			this.errorList = new ArrayList<String>();
+			this.errorList.add("errorList was NULL");
+			errorList.add(error);
+		}
+	}
+	public void removeErrorString(String error) {
+		errorList.remove(error);
+	}
+	public void removeErrorIndex(int errorIndex) {
+		errorList.remove(errorIndex);
+	}
+	abstract public Boolean validateObject();
+	
 	
 	/** Marshal Class to JSON */
 	public String toJSON() throws JAXBException {

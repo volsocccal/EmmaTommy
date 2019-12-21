@@ -8,20 +8,100 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import emmaTommy.DataModel.Membro;
  
 @XmlRootElement(name = "membri")
 @XmlAccessorType (XmlAccessType.FIELD)
-public class Membri extends toDataFormatClass
+public class Membri extends DataFormatClass
 {
 	
 	/** Empty Constructor */
-	public Membri() {super(); this.membri = new ArrayList<Membro>();}
+	public Membri() {
+		super(); 
+		this.membri = new ArrayList<Membro>();
+	}
+	
+	public Membri(ArrayList<Membro> membri) {
+		super();
+		this.setMembri(membri);
+		this.validateObject();
+	}
+	
+	/** validateObject
+	 * type: not null, not empty, not blanck, equals "array"
+	 * membri list: not null, not empty, every element is not in errorStatus
+	 * 
+	 * @return true if the object is valid, false otherwise
+	 */
+	public Boolean validateObject() {
+		String errorMsg = this.getClass().getSimpleName() + ": ";
+		
+		// Check Type
+		if (this.type == null) {
+			this.validState = false;
+			errorMsg += "type was NULL";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		if (this.type.isBlank()) {
+			this.validState = false;
+			errorMsg += "type was Empty";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		if (this.type.isBlank()) {
+			this.validState = false;
+			errorMsg += "type was Blanck";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		if (this.type.compareTo("array") != 0) {
+			this.validState = false;
+			errorMsg += "type wasnt array";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+				
+		// Check Membri List
+		if (this.membri == null) {
+			this.validState = false;
+			errorMsg += "Membri list was NULL";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		if (this.membri.size() == 0) {
+			this.validState = false;
+			errorMsg += "Membri list was EMPTY";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		} else {
+			for (Membro m : this.membri) {
+				if (m == null) {
+					this.validState = false;
+					errorMsg += "Membri list has a NULL element";
+					this.errorList.add(errorMsg);
+					logger.warn(errorMsg);
+				} else {
+					Boolean elValidState = m.validateObject();
+					if (!elValidState) {
+						this.validState = false;
+						this.errorList.addAll(m.getErrorList());
+					}
+				}
+			}
+		}
+		
+		// Return validState
+		return this.validState;
+	}
+		
+	
 	
 	/** type Attribute */
 	@XmlAttribute(name = "type")
-	protected String type = "array";
+	protected String type = "array";	
 	public void setType(String type) {
 		this.type = type;
 	}
@@ -29,14 +109,15 @@ public class Membri extends toDataFormatClass
 		return this.type;
 	}
 	
-	/** Membri Annotated List */
-    @XmlElement(name = "membro")
-    protected List<Membro> membri = null; 
+	/** Membri Annotated List */  
+	@XmlElement(name = "membro")
+    protected List<Membro> membri = null;     
     public List<Membro> getMembri() {
         return this.membri;
     } 
     public void setMembri(List<Membro> membri) {
-        this.membri = membri;
+    	this.membri = membri;
+        logger.trace("::setMembri(): " + "added membri list of size " + membri.size());        
     }
     
     @Override

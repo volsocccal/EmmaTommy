@@ -9,10 +9,59 @@ import emmaTommy.DataModel.Tratte;
 
 @XmlRootElement(name = "missione")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Missione extends toDataFormatClass {
+public class Missione extends DataFormatClass {
 
 	/** Empty Constructor */
 	public Missione () {super();}
+	
+	/** validateObject
+	 * type: not null, not empty, not blanck, equals to the simple class name
+	 * 
+	 * @return true if the object is valid, false otherwise
+	 */
+	public Boolean validateObject() {
+		String errorMsg = this.getClass().getSimpleName() + ": ";
+		
+		// Check Type
+		if (this.type == null) {
+			this.validState = false;
+			errorMsg += "type was NULL";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		else if (this.type.isEmpty()) {
+			this.validState = false;
+			errorMsg += "type was Empty";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		else if (this.type.isBlank()) {
+			this.validState = false;
+			errorMsg += "type was Blanck";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		else if (this.type.compareTo(this.getClass().getSimpleName()) != 0) {
+			this.validState = false;
+			errorMsg += "type was diffent from ClassName";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		
+		// Return validState
+		return this.validState;
+	}
+	
+	/** type Attribute */
+	@XmlAttribute(name = "type")
+	protected String type = this.getClass().getSimpleName();	
+	public void setType(String type) {
+		this.type = type;
+		logger.trace("::setType(): " + type);	
+	}
+	public String getType() {
+		return this.type;
+	}
 	
 	/** Elenco Delle Tratte della Missione */
 	protected Tratte tratte = null;

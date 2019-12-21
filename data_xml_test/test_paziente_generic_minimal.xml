@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<paziente type="Paziente">
+    <pz-ds-cognome nil="true"/>
+    <pz-ds-nome nil="true"/>
+    <pz-ac-sesso nil="true"/>
+    <pz-dt-nascita type="date" nil="true"/>
+    <pz-vl-eta nil="true"/>
+    <pz-fl-pz-pediatrico nil="true"/>
+    <pz-ds-esito>REGOLARE</pz-ds-esito>
+    <pz-id-codice-r nil="true"/>
+    <pz-cd-coscienza nil="true"/>
+    <pz-id-polso nil="true"/>
+    <pz-id-respiro nil="true"/>
+    <pz-ds-loc-res nil="true"/>
+</paziente>
