@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pazienti type="array">
+    <paziente type="Paziente">
+        <pz-ds-cognome>Duck</pz-ds-cognome>
+        <pz-ds-nome>Donald</pz-ds-nome>
+        <pz-ac-sesso>M</pz-ac-sesso>
+        <pz-dt-nascita type="date">1980-02-11</pz-dt-nascita>
+        <pz-vl-eta>39</pz-vl-eta>
+        <pz-fl-pz-pediatrico>N</pz-fl-pz-pediatrico>
+        <pz-ds-esito>REGOLARE</pz-ds-esito>
+        <pz-id-codice-r>V</pz-id-codice-r>
+        <pz-cd-coscienza>A</pz-cd-coscienza>
+        <pz-id-polso>60</pz-id-polso>
+        <pz-id-respiro>1</pz-id-respiro>
+        <pz-ds-loc-res>Paperopoli</pz-ds-loc-res>
+    </paziente>
+</pazienti>
