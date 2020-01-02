@@ -1,9 +1,9 @@
-package emmaTommy.DataModel;
+package emmaTommy.EmmaDataModel;
 
 import java.util.ArrayList;
 
 
-public class DataModelEnums {
+public class EmmaDataModelEnums {
 	
 	// SI / YES / NO
 	public static final String PEDIATRIC_SI = "S";

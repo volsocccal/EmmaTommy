@@ -1,13 +1,15 @@
-package emmaTommy.DataModel;
+package emmaTommy.EmmaDataModel;
 
 import java.util.Date;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import emmaTommy.DataModel.DateAdapter;
+
 @XmlRootElement(name = "paziente")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Paziente extends DataFormatClass {
+public class Paziente extends EmmaDataModel {
 	
 	public Paziente() {
 		super();
@@ -166,8 +168,8 @@ public class Paziente extends DataFormatClass {
 		if (this.sesso != null) {
 			if (!this.sesso.isEmpty()) {
 				if (!this.sesso.isBlank()) {
-					if (sesso.compareToIgnoreCase(DataModelEnums.MALE_GENDER) != 0 
-						&& sesso.compareToIgnoreCase(DataModelEnums.FEMALE_GENDER) != 0) {
+					if (sesso.compareToIgnoreCase(EmmaDataModelEnums.MALE_GENDER) != 0 
+						&& sesso.compareToIgnoreCase(EmmaDataModelEnums.FEMALE_GENDER) != 0) {
 						this.validState = false;
 						errorMsg += "sesso wasn't an accepted value (" + sesso + ")";
 						this.errorList.add(errorMsg);
@@ -189,8 +191,8 @@ public class Paziente extends DataFormatClass {
 		if (this.pediatrico != null) {
 			if (!this.pediatrico.isEmpty()) {
 				if (!this.pediatrico.isBlank()) {
-					if (pediatrico.compareToIgnoreCase(DataModelEnums.PEDIATRIC_SI) != 0 
-						&& pediatrico.compareToIgnoreCase(DataModelEnums.PEDIATRIC_NO) != 0) {
+					if (pediatrico.compareToIgnoreCase(EmmaDataModelEnums.PEDIATRIC_SI) != 0 
+						&& pediatrico.compareToIgnoreCase(EmmaDataModelEnums.PEDIATRIC_NO) != 0) {
 						this.validState = false;
 						errorMsg += "pediatrico wasn't an accepted value (" + pediatrico + ")";
 						this.errorList.add(errorMsg);
@@ -219,7 +221,7 @@ public class Paziente extends DataFormatClass {
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
 		}
-		else if (!DataModelEnums.acceptedTransportOutcome.contains(this.esitoTrasporto)) {
+		else if (!EmmaDataModelEnums.acceptedTransportOutcome.contains(this.esitoTrasporto)) {
 			this.validState = false;
 			errorMsg += esitoTrasporto + "isn't in the accepted list of esiti trasporto (New One?)";
 			this.errorList.add(errorMsg);
@@ -230,9 +232,9 @@ public class Paziente extends DataFormatClass {
 		if (this.codicePazienteArrivo != null) {
 			if (!this.codicePazienteArrivo.isEmpty()) {
 				if (!this.codicePazienteArrivo.isBlank()) {
-					if (codicePazienteArrivo.compareToIgnoreCase(DataModelEnums.CODES_ROSSO) != 0 
-						&& codicePazienteArrivo.compareToIgnoreCase(DataModelEnums.CODES_GIALLO) != 0
-						&& codicePazienteArrivo.compareToIgnoreCase(DataModelEnums.CODES_VERDE) != 0) {
+					if (codicePazienteArrivo.compareToIgnoreCase(EmmaDataModelEnums.CODES_ROSSO) != 0 
+						&& codicePazienteArrivo.compareToIgnoreCase(EmmaDataModelEnums.CODES_GIALLO) != 0
+						&& codicePazienteArrivo.compareToIgnoreCase(EmmaDataModelEnums.CODES_VERDE) != 0) {
 						this.validState = false;
 						errorMsg += codicePazienteArrivo + " wasn't an accepted codice paziente (New One?) - ";
 						this.errorList.add(errorMsg);
@@ -243,7 +245,7 @@ public class Paziente extends DataFormatClass {
 		}
 		
 		// Check FR
-		if (!DataModelEnums.acceptedFR.contains(this.FR)) {
+		if (!EmmaDataModelEnums.acceptedFR.contains(this.FR)) {
 			this.validState = false;
 			errorMsg += FR + " wasn't an accepted FR (New One?) - ";
 			this.errorList.add(errorMsg);
@@ -254,7 +256,7 @@ public class Paziente extends DataFormatClass {
 		if (this.coscienza != null) {
 			if (!this.coscienza.isEmpty()) {
 				if (!this.coscienza.isBlank()) {
-					if (!DataModelEnums.acceptedCosciences.contains(this.coscienza)) {
+					if (!EmmaDataModelEnums.acceptedCosciences.contains(this.coscienza)) {
 						this.validState = false;
 						errorMsg += coscienza + " wasn't an accepted coscienza (New One?) - ";
 						this.errorList.add(errorMsg);
@@ -438,61 +440,61 @@ public class Paziente extends DataFormatClass {
 		if (!(obj instanceof Paziente))
 			return false;
 		Paziente other = (Paziente) obj;
-		if (FC != other.FC)
+		if (FC != other.getFC())
 			return false;
-		if (FR != other.FR)
+		if (FR != other.getFR())
 			return false;
 		if (codicePazienteArrivo == null) {
-			if (other.codicePazienteArrivo != null)
+			if (other.getCodicePazienteArrivo() != null)
 				return false;
-		} else if (!codicePazienteArrivo.equals(other.codicePazienteArrivo))
+		} else if (!codicePazienteArrivo.equals(other.getCodicePazienteArrivo()))
 			return false;
 		if (cognome == null) {
-			if (other.cognome != null)
+			if (other.getCognome() != null)
 				return false;
-		} else if (!cognome.equals(other.cognome))
+		} else if (!cognome.equals(other.getCognome()))
 			return false;
 		if (comuneResidenza == null) {
 			if (other.comuneResidenza != null)
 				return false;
-		} else if (!comuneResidenza.equals(other.comuneResidenza))
+		} else if (!comuneResidenza.equals(other.getComuneResidenza()))
 			return false;
 		if (coscienza == null) {
-			if (other.coscienza != null)
+			if (other.getCoscienza() != null)
 				return false;
-		} else if (!coscienza.equals(other.coscienza))
+		} else if (!coscienza.equals(other.getCoscienza()))
 			return false;
 		if (dataNascita == null) {
-			if (other.dataNascita != null)
+			if (other.getDataNascita() != null)
 				return false;
-		} else if (!dataNascita.equals(other.dataNascita))
+		} else if (!dataNascita.equals(other.getDataNascita()))
 			return false;
 		if (esitoTrasporto == null) {
-			if (other.esitoTrasporto != null)
+			if (other.getEsitoTrasporto() != null)
 				return false;
-		} else if (!esitoTrasporto.equals(other.esitoTrasporto))
+		} else if (!esitoTrasporto.equals(other.getEsitoTrasporto()))
 			return false;
-		if (eta != other.eta)
+		if (eta != other.getEta())
 			return false;
 		if (nome == null) {
-			if (other.nome != null)
+			if (other.getNome() != null)
 				return false;
-		} else if (!nome.equals(other.nome))
+		} else if (!nome.equals(other.getNome()))
 			return false;
 		if (pediatrico == null) {
-			if (other.pediatrico != null)
+			if (other.getPediatrico() != null)
 				return false;
-		} else if (!pediatrico.equals(other.pediatrico))
+		} else if (!pediatrico.equals(other.getPediatrico()))
 			return false;
 		if (sesso == null) {
-			if (other.sesso != null)
+			if (other.getSesso() != null)
 				return false;
-		} else if (!sesso.equals(other.sesso))
+		} else if (!sesso.equals(other.getSesso()))
 			return false;
 		if (type == null) {
-			if (other.type != null)
+			if (other.getType() != null)
 				return false;
-		} else if (!type.equals(other.type))
+		} else if (!type.equals(other.getType()))
 			return false;
 		return true;
 	}

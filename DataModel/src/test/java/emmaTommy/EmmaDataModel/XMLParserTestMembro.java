@@ -1,4 +1,4 @@
-package emmaTommy.DataModel;
+package emmaTommy.EmmaDataModel;
 
 import java.io.File;
 
@@ -6,8 +6,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import emmaTommy.DataModel.Membri;
-import emmaTommy.DataModel.Membro;
+import emmaTommy.EmmaDataModel.EmmaDataModelEnums;
+import emmaTommy.EmmaDataModel.Membri;
+import emmaTommy.EmmaDataModel.Membro;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -39,7 +40,7 @@ public class XMLParserTestMembro extends XMLParserTest {
     {
     	logger.trace(this.getName());
     	
-    	Membro paperino = new Membro("Donald", "Duck", DataModelEnums.AUTISTA);
+    	Membro paperino = new Membro("Donald", "Duck", EmmaDataModelEnums.AUTISTA);
     	
     	String test_file = "test_membro_autista.xml";
     	JAXBContext jaxbContext = JAXBContext.newInstance(Membro.class);
@@ -58,7 +59,7 @@ public class XMLParserTestMembro extends XMLParserTest {
     {
     	logger.trace(this.getName());
     	
-    	Membro paperino = new Membro("Donald", "Duck", DataModelEnums.CAPOSERVIZIO);
+    	Membro paperino = new Membro("Donald", "Duck", EmmaDataModelEnums.CAPOSERVIZIO);
     	
     	String test_file = "test_membro_caposervizio.xml";
     	JAXBContext jaxbContext = JAXBContext.newInstance(Membro.class);
@@ -77,7 +78,7 @@ public class XMLParserTestMembro extends XMLParserTest {
     {
     	logger.trace(this.getName());
     	
-    	Membro paperino = new Membro("Donald", "Duck", DataModelEnums.SOCCORRITORE);    	
+    	Membro paperino = new Membro("Donald", "Duck", EmmaDataModelEnums.SOCCORRITORE);    	
     	String test_file = "test_membro_socc.xml";
     	JAXBContext jaxbContext = JAXBContext.newInstance(Membro.class);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -95,7 +96,7 @@ public class XMLParserTestMembro extends XMLParserTest {
     {
     	logger.trace(this.getName());
     	
-    	Membro paperino = new Membro("Donald", "Duck", DataModelEnums.SOCCORRITORE_ADD);    	
+    	Membro paperino = new Membro("Donald", "Duck", EmmaDataModelEnums.SOCCORRITORE_ADD);    	
     	String test_file = "test_membro_socc_add.xml";
     	JAXBContext jaxbContext = JAXBContext.newInstance(Membro.class);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -210,10 +211,10 @@ public class XMLParserTestMembro extends XMLParserTest {
   {
 	  	logger.trace(this.getName());
 	  
-	  	Membro paperino = new Membro("DONALD", "AUTISTA", DataModelEnums.AUTISTA);   
-		Membro topolino = new Membro("MICKEY", "MOUSE", DataModelEnums.SOCCORRITORE);   
-		Membro pippo = new Membro("GOOFY", "GOOF", DataModelEnums.CAPOSERVIZIO);   
-		Membro paperone = new Membro("SCRUDGE", "MCDUCK", DataModelEnums.SOCCORRITORE_ADD);   
+	  	Membro paperino = new Membro("DONALD", "AUTISTA", EmmaDataModelEnums.AUTISTA);   
+		Membro topolino = new Membro("MICKEY", "MOUSE", EmmaDataModelEnums.SOCCORRITORE);   
+		Membro pippo = new Membro("GOOFY", "GOOF", EmmaDataModelEnums.CAPOSERVIZIO);   
+		Membro paperone = new Membro("SCRUDGE", "MCDUCK", EmmaDataModelEnums.SOCCORRITORE_ADD);   
 		
 		String test_file = "test_membri.xml";
 		JAXBContext jaxbContext = JAXBContext.newInstance(Membri.class);

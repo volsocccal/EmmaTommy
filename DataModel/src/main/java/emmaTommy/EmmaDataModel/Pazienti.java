@@ -1,4 +1,4 @@
-package emmaTommy.DataModel;
+package emmaTommy.EmmaDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,21 +9,21 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import emmaTommy.DataModel.Missione;
+import emmaTommy.EmmaDataModel.Paziente;
  
-@XmlRootElement(name = "missioni")
+@XmlRootElement(name = "pazienti")
 @XmlAccessorType (XmlAccessType.FIELD)
-public class Missioni extends DataFormatClass {
+public class Pazienti extends EmmaDataModel {
 	
 	/** Empty Constructor */
-	public Missioni() {
+	public Pazienti() {
 		super();
-		this.missioni = new ArrayList<Missione>();
+		this.pazienti = new ArrayList<Paziente>();
 	}
 	
 	/** validateObject
 	 * type: not null, not empty, not blanck, equals "array"
-	 * missioni list: not null, not empty, every element is not in errorStatus
+	 * Pazienti list: not null, not empty, every element is not in errorStatus
 	 * 
 	 * @return true if the object is valid, false otherwise
 	 */
@@ -56,30 +56,30 @@ public class Missioni extends DataFormatClass {
 			logger.warn(errorMsg);
 		}
 				
-		// Check Missioni List
-		if (this.missioni == null) {
+		// Check Pazienti List
+		if (this.pazienti == null) {
 			this.validState = false;
-			errorMsg += "Missioni list was NULL";
+			errorMsg += "Pazienti list was NULL";
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
 		}
-		if (this.missioni.size() == 0) {
+		if (this.pazienti.size() == 0) {
 			this.validState = false;
-			errorMsg += "Missioni list was EMPTY";
+			errorMsg += "Pazienti list was EMPTY";
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
 		} else {
-			for (Missione m : this.missioni) {
-				if (m == null) {
+			for (Paziente p : this.pazienti) {
+				if (p == null) {
 					this.validState = false;
-					errorMsg += "Missioni list has a NULL element";
+					errorMsg += "Pazienti list has a NULL element";
 					this.errorList.add(errorMsg);
 					logger.warn(errorMsg);
 				} else {
-					Boolean elValidState = m.validateObject();
+					Boolean elValidState = p.validateObject();
 					if (!elValidState) {
 						this.validState = false;
-						this.errorList.addAll(m.getErrorList());
+						this.errorList.addAll(p.getErrorList());
 					}
 				}
 			}
@@ -88,7 +88,7 @@ public class Missioni extends DataFormatClass {
 		// Return validState
 		return this.validState;
 	}
-	
+		
 	/** type Attribute */
 	@XmlAttribute(name = "type")
 	protected String type = "array";	
@@ -99,35 +99,36 @@ public class Missioni extends DataFormatClass {
 		return this.type;
 	}
 	
-	/** Missioni Annotated List */
-    @XmlElement(name = "missione")
-    protected List<Missione> missioni = null; 
-    public List<Missione> getMissioni() {
-        return this.missioni;
+	/** Pazienti Annotated List */
+    @XmlElement(name = "paziente")
+    protected List<Paziente> pazienti = null; 
+    public List<Paziente> getPazienti() {
+        return this.pazienti;
     } 
-    public void setMissioni(List<Missione> missioni) {
-    	if (missioni == null) {
-    		logger.error("::setMissioni(): " + "missioni list was null");
-    		throw new NullPointerException("::setMissioni(): null missioni list");
+    public void setPazienti(List<Paziente> pazienti) {
+    	if (pazienti == null) {
+    		logger.error("::setPazienti(): " + "pazienti list was null");
+    		throw new NullPointerException("::setPazienti(): null pazienti list");
     	}
-        this.missioni = missioni;
-        logger.trace("::setMissioni(): " + "added missioni list of size " + missioni.size());
+    	this.pazienti = pazienti;
+        logger.trace("::setPazienti(): " + "added pazienti list of size " + pazienti.size());       
     }
     
-    @Override
+	@Override
 	public String toString() {
-		String str = "Missioni [";
-		for (Missione m: this.missioni) {
-			str += m.toString();
+		String str = "Pazienti [";
+		for (Paziente p: this.pazienti) {
+			str += p.toString();
 		}
 		str += "]";
 		return str;
 	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((missioni == null) ? 0 : missioni.hashCode());
+		result = prime * result + ((pazienti == null) ? 0 : pazienti.hashCode());
 		return result;
 	}
 	@Override
@@ -138,11 +139,11 @@ public class Missioni extends DataFormatClass {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Missioni other = (Missioni) obj;
-		if (missioni == null) {
-			if (other.missioni != null)
+		Pazienti other = (Pazienti) obj;
+		if (pazienti == null) {
+			if (other.getPazienti() != null)
 				return false;
-		} else if (!missioni.equals(other.missioni))
+		} else if (!pazienti.equals(other.getPazienti()))
 			return false;
 		return true;
 	}

@@ -1,13 +1,15 @@
-package emmaTommy.DataModel;
+package emmaTommy.EmmaDataModel;
 
 import java.util.Date;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import emmaTommy.DataModel.DateTimeAdapter;
+
 @XmlRootElement(name = "tratta")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Tratta extends DataFormatClass {
+public class Tratta extends EmmaDataModel {
 	
 	public Tratta() {
 		super();

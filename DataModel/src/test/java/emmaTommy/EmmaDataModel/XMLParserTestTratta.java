@@ -1,4 +1,4 @@
-package emmaTommy.DataModel;
+package emmaTommy.EmmaDataModel;
 
 import java.io.File;
 import java.util.Date;
@@ -7,6 +7,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import emmaTommy.EmmaDataModel.Tratta;
+import emmaTommy.EmmaDataModel.Tratte;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -200,8 +202,10 @@ public class XMLParserTestTratta extends XMLParserTest {
 	  {
 		  	logger.trace(this.getName());
 		  
-		  	Tratta tratta_1 = new Tratta (1, new Date(119, 9, 7, 7, 16, 44), new Date(119, 9, 7, 8, 01, 05), "");
-		  	Tratta tratta_2 = new Tratta (2, new Date(119, 9, 7, 8, 34, 2), new Date(119, 9, 7, 8, 49, 1), "H LECCO");
+		  	@SuppressWarnings("deprecation")
+			Tratta tratta_1 = new Tratta (1, new Date(119, 9, 7, 7, 16, 44), new Date(119, 9, 7, 8, 01, 05), "");
+		  	@SuppressWarnings("deprecation")
+			Tratta tratta_2 = new Tratta (2, new Date(119, 9, 7, 8, 34, 2), new Date(119, 9, 7, 8, 49, 1), "H LECCO");
 			
 			String test_file = "test_tratte.xml";
 			JAXBContext jaxbContext = JAXBContext.newInstance(Tratte.class);

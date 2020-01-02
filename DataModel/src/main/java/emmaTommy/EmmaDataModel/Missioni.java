@@ -1,4 +1,4 @@
-package emmaTommy.DataModel;
+package emmaTommy.EmmaDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,30 +8,22 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
-import emmaTommy.DataModel.Membro;
+import emmaTommy.EmmaDataModel.Missione;
  
-@XmlRootElement(name = "membri")
+@XmlRootElement(name = "missioni")
 @XmlAccessorType (XmlAccessType.FIELD)
-public class Membri extends DataFormatClass
-{
+public class Missioni extends EmmaDataModel {
 	
 	/** Empty Constructor */
-	public Membri() {
-		super(); 
-		this.membri = new ArrayList<Membro>();
-	}
-	
-	public Membri(ArrayList<Membro> membri) {
+	public Missioni() {
 		super();
-		this.setMembri(membri);
-		this.validateObject();
+		this.missioni = new ArrayList<Missione>();
 	}
 	
 	/** validateObject
 	 * type: not null, not empty, not blanck, equals "array"
-	 * membri list: not null, not empty, every element is not in errorStatus
+	 * missioni list: not null, not empty, every element is not in errorStatus
 	 * 
 	 * @return true if the object is valid, false otherwise
 	 */
@@ -64,23 +56,23 @@ public class Membri extends DataFormatClass
 			logger.warn(errorMsg);
 		}
 				
-		// Check Membri List
-		if (this.membri == null) {
+		// Check Missioni List
+		if (this.missioni == null) {
 			this.validState = false;
-			errorMsg += "Membri list was NULL";
+			errorMsg += "Missioni list was NULL";
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
 		}
-		if (this.membri.size() == 0) {
+		if (this.missioni.size() == 0) {
 			this.validState = false;
-			errorMsg += "Membri list was EMPTY";
+			errorMsg += "Missioni list was EMPTY";
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
 		} else {
-			for (Membro m : this.membri) {
+			for (Missione m : this.missioni) {
 				if (m == null) {
 					this.validState = false;
-					errorMsg += "Membri list has a NULL element";
+					errorMsg += "Missioni list has a NULL element";
 					this.errorList.add(errorMsg);
 					logger.warn(errorMsg);
 				} else {
@@ -96,8 +88,6 @@ public class Membri extends DataFormatClass
 		// Return validState
 		return this.validState;
 	}
-		
-	
 	
 	/** type Attribute */
 	@XmlAttribute(name = "type")
@@ -109,21 +99,25 @@ public class Membri extends DataFormatClass
 		return this.type;
 	}
 	
-	/** Membri Annotated List */  
-	@XmlElement(name = "membro")
-    protected List<Membro> membri = null;     
-    public List<Membro> getMembri() {
-        return this.membri;
+	/** Missioni Annotated List */
+    @XmlElement(name = "missione")
+    protected List<Missione> missioni = null; 
+    public List<Missione> getMissioni() {
+        return this.missioni;
     } 
-    public void setMembri(List<Membro> membri) {
-    	this.membri = membri;
-        logger.trace("::setMembri(): " + "added membri list of size " + membri.size());        
+    public void setMissioni(List<Missione> missioni) {
+    	if (missioni == null) {
+    		logger.error("::setMissioni(): " + "missioni list was null");
+    		throw new NullPointerException("::setMissioni(): null missioni list");
+    	}
+        this.missioni = missioni;
+        logger.trace("::setMissioni(): " + "added missioni list of size " + missioni.size());
     }
     
     @Override
 	public String toString() {
-		String str = "Membri [";
-		for (Membro m: this.membri) {
+		String str = "Missioni [";
+		for (Missione m: this.missioni) {
 			str += m.toString();
 		}
 		str += "]";
@@ -133,7 +127,7 @@ public class Membri extends DataFormatClass
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((membri == null) ? 0 : membri.hashCode());
+		result = prime * result + ((missioni == null) ? 0 : missioni.hashCode());
 		return result;
 	}
 	@Override
@@ -144,11 +138,11 @@ public class Membri extends DataFormatClass
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Membri other = (Membri) obj;
-		if (membri == null) {
-			if (other.membri != null)
+		Missioni other = (Missioni) obj;
+		if (missioni == null) {
+			if (other.getMissioni() != null)
 				return false;
-		} else if (!membri.equals(other.membri))
+		} else if (!missioni.equals(other.getMissioni()))
 			return false;
 		return true;
 	}

@@ -1,4 +1,4 @@
-package emmaTommy.DataModel;
+package emmaTommy.EmmaDataModel;
 
 import org.apache.logging.log4j.LogManager;
 
@@ -9,6 +9,7 @@ public abstract class XMLParserTest extends TestCase {
 	static org.apache.logging.log4j.Logger logger = LogManager.getLogger("dataModel");
 	protected String test_data_folder = "../data_xml_test/";
 	protected String test_data_folder_membro = test_data_folder + "membro/";
+	protected String test_data_folder_missione = test_data_folder + "missione/";
 	protected String test_data_folder_paziente = test_data_folder + "paziente/";
 	protected String test_data_folder_tratta = test_data_folder + "tratta/";
 	

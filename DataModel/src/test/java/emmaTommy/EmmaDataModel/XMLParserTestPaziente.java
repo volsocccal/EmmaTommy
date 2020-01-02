@@ -1,4 +1,4 @@
-package emmaTommy.DataModel;
+package emmaTommy.EmmaDataModel;
 
 import java.io.File;
 import java.util.Calendar;
@@ -8,6 +8,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import emmaTommy.EmmaDataModel.EmmaDataModelEnums;
+import emmaTommy.EmmaDataModel.Paziente;
+import emmaTommy.EmmaDataModel.Pazienti;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -41,13 +44,13 @@ public class XMLParserTestPaziente extends XMLParserTest {
   {
 	  logger.trace(this.getName());
 	  
-	   Paziente paperino = new Paziente("Donald", "Duck", DataModelEnums.MALE_GENDER,
+	   Paziente paperino = new Paziente("Donald", "Duck", EmmaDataModelEnums.MALE_GENDER,
 			    (new GregorianCalendar(1980, Calendar.FEBRUARY, 11).getTime()), 39, 
-				DataModelEnums.PEDIATRIC_NO,
-				DataModelEnums.OUTCOME_TRASPORTO_REGOLARE,
-				DataModelEnums.CODES_VERDE,
-				60, DataModelEnums.FR_NORMALE,
-				DataModelEnums.COSCIENCE_ALERT,
+				EmmaDataModelEnums.PEDIATRIC_NO,
+				EmmaDataModelEnums.OUTCOME_TRASPORTO_REGOLARE,
+				EmmaDataModelEnums.CODES_VERDE,
+				60, EmmaDataModelEnums.FR_NORMALE,
+				EmmaDataModelEnums.COSCIENCE_ALERT,
 				"Paperopoli");
 	   
   		String test_file = "test_paziente_generic_donald_duck.xml";
@@ -79,13 +82,13 @@ public class XMLParserTestPaziente extends XMLParserTest {
   {
 	  logger.trace(this.getName());
 	  
-	   Paziente minnie = new Paziente("Minnie", "Mouse", DataModelEnums.FEMALE_GENDER,
+	   Paziente minnie = new Paziente("Minnie", "Mouse", EmmaDataModelEnums.FEMALE_GENDER,
 			    (new GregorianCalendar(1950, Calendar.JUNE, 3).getTime()), 69, 
-				DataModelEnums.PEDIATRIC_NO,
-				DataModelEnums.OUTCOME_TRASPORTO_RIFIUTO_TRASPORTO,
-				DataModelEnums.CODES_GIALLO,
-				100, DataModelEnums.FR_DIFFICOLTOSO,
-				DataModelEnums.COSCIENCE_VERBAL,
+				EmmaDataModelEnums.PEDIATRIC_NO,
+				EmmaDataModelEnums.OUTCOME_TRASPORTO_RIFIUTO_TRASPORTO,
+				EmmaDataModelEnums.CODES_GIALLO,
+				100, EmmaDataModelEnums.FR_DIFFICOLTOSO,
+				EmmaDataModelEnums.COSCIENCE_VERBAL,
 				"Topolinia");
 	   
   		String test_file = "test_paziente_generic_minnie_mouse.xml";
@@ -115,7 +118,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   {
 	  logger.trace(this.getName());
 	  
-	   Paziente minimal = new Paziente(DataModelEnums.OUTCOME_TRASPORTO_REGOLARE);
+	   Paziente minimal = new Paziente(EmmaDataModelEnums.OUTCOME_TRASPORTO_REGOLARE);
 	   
   		String test_file = "test_paziente_generic_minimal.xml";
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
@@ -140,7 +143,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		p.toXML_print();
   		assertTrue( p.validateObject() );
-  		assertTrue (p.codicePazienteArrivo.compareTo(DataModelEnums.CODES_ROSSO) == 0);
+  		assertTrue (p.codicePazienteArrivo.compareTo(EmmaDataModelEnums.CODES_ROSSO) == 0);
   }
   
   /** Test Membro Unmarshalling - Paziente Codice Giallo
@@ -155,7 +158,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		p.toXML_print();
   		assertTrue( p.validateObject() );
-  		assertTrue (p.codicePazienteArrivo.compareTo(DataModelEnums.CODES_GIALLO) == 0);
+  		assertTrue (p.codicePazienteArrivo.compareTo(EmmaDataModelEnums.CODES_GIALLO) == 0);
   }
   
   /** Test Membro Unmarshalling - Paziente Codice Verde
@@ -170,7 +173,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		p.toXML_print();
   		assertTrue( p.validateObject() );
-  		assertTrue (p.codicePazienteArrivo.compareTo(DataModelEnums.CODES_VERDE) == 0);
+  		assertTrue (p.codicePazienteArrivo.compareTo(EmmaDataModelEnums.CODES_VERDE) == 0);
   }
   
   /** Test Membro Unmarshalling - Paziente Codice Blu
@@ -341,7 +344,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		p.toXML_print();
   		assertTrue( p.validateObject() );
-  		assertTrue (p.coscienza.compareTo(DataModelEnums.COSCIENCE_NOT_SET) == 0);
+  		assertTrue (p.coscienza.compareTo(EmmaDataModelEnums.COSCIENCE_NOT_SET) == 0);
   }
   
   /** Test Membro Unmarshalling - Paziente Coscienza ALERT
@@ -356,7 +359,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		p.toXML_print();
   		assertTrue( p.validateObject() );
-  		assertTrue (p.coscienza.compareTo(DataModelEnums.COSCIENCE_ALERT) == 0);
+  		assertTrue (p.coscienza.compareTo(EmmaDataModelEnums.COSCIENCE_ALERT) == 0);
   }
   
   /** Test Membro Unmarshalling - Paziente Coscienza VERBAL
@@ -371,7 +374,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		p.toXML_print();
   		assertTrue( p.validateObject() );
-  		assertTrue (p.coscienza.compareTo(DataModelEnums.COSCIENCE_VERBAL) == 0);
+  		assertTrue (p.coscienza.compareTo(EmmaDataModelEnums.COSCIENCE_VERBAL) == 0);
   }
   
   /** Test Membro Unmarshalling - Paziente Coscienza PAIN
@@ -386,7 +389,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		p.toXML_print();
   		assertTrue( p.validateObject() );
-  		assertTrue (p.coscienza.compareTo(DataModelEnums.COSCIENCE_PAIN) == 0);
+  		assertTrue (p.coscienza.compareTo(EmmaDataModelEnums.COSCIENCE_PAIN) == 0);
   }
   
   /** Test Membro Unmarshalling - Paziente Coscience UNRESPONSIVE
@@ -401,7 +404,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		p.toXML_print();
   		assertTrue( p.validateObject() );
-  		assertTrue (p.coscienza.compareTo(DataModelEnums.COSCIENCE_UNRESPONSIVE) == 0);
+  		assertTrue (p.coscienza.compareTo(EmmaDataModelEnums.COSCIENCE_UNRESPONSIVE) == 0);
   }
   
   /** Test Membro Unmarshalling - Paziente Coscienza Empty
@@ -462,7 +465,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		assertTrue( p.validateObject() );
-  		assertTrue (p.esitoTrasporto.compareTo(DataModelEnums.OUTCOME_TRASPORTO_DECEDUTO) == 0);
+  		assertTrue (p.esitoTrasporto.compareTo(EmmaDataModelEnums.OUTCOME_TRASPORTO_DECEDUTO) == 0);
   }
   
   /** Test Membro Unmarshalling - Paziente Esito NC
@@ -476,7 +479,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		assertTrue( p.validateObject() );
-  		assertTrue (p.esitoTrasporto.compareTo(DataModelEnums.OUTCOME_TRASPORTO_NC) == 0);
+  		assertTrue (p.esitoTrasporto.compareTo(EmmaDataModelEnums.OUTCOME_TRASPORTO_NC) == 0);
   }
   
   /** Test Membro Unmarshalling - Paziente Esito Non Necessita
@@ -490,7 +493,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		assertTrue( p.validateObject() );
-  		assertTrue (p.esitoTrasporto.compareTo(DataModelEnums.OUTCOME_TRASPORTO_NON_NECESSITA) == 0);
+  		assertTrue (p.esitoTrasporto.compareTo(EmmaDataModelEnums.OUTCOME_TRASPORTO_NON_NECESSITA) == 0);
   }
   
   
@@ -505,7 +508,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		assertTrue( p.validateObject() );
-  		assertTrue (p.esitoTrasporto.compareTo(DataModelEnums.OUTCOME_TRASPORTO_NON_RINVENUTO) == 0);
+  		assertTrue (p.esitoTrasporto.compareTo(EmmaDataModelEnums.OUTCOME_TRASPORTO_NON_RINVENUTO) == 0);
   }
   
   
@@ -520,7 +523,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		assertTrue( p.validateObject() );
-  		assertTrue (p.esitoTrasporto.compareTo(DataModelEnums.OUTCOME_TRASPORTO_REGOLARE) == 0);
+  		assertTrue (p.esitoTrasporto.compareTo(EmmaDataModelEnums.OUTCOME_TRASPORTO_REGOLARE) == 0);
   }
   
   /** Test Membro Unmarshalling - Paziente Esito Si Allontana
@@ -534,7 +537,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		assertTrue( p.validateObject() );
-  		assertTrue (p.esitoTrasporto.compareTo(DataModelEnums.OUTCOME_TRASPORTO_ALLONTANA) == 0);
+  		assertTrue (p.esitoTrasporto.compareTo(EmmaDataModelEnums.OUTCOME_TRASPORTO_ALLONTANA) == 0);
   }
   
   /** Test Membro Unmarshalling - Paziente Esito Rifiuto Trasporto 
@@ -548,7 +551,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		assertTrue( p.validateObject() );
-  		assertTrue (p.esitoTrasporto.compareTo(DataModelEnums.OUTCOME_TRASPORTO_RIFIUTO_TRASPORTO) == 0);
+  		assertTrue (p.esitoTrasporto.compareTo(EmmaDataModelEnums.OUTCOME_TRASPORTO_RIFIUTO_TRASPORTO) == 0);
   }
   
   /** Test Membro Unmarshalling - Paziente Esito Trattenuto  
@@ -562,7 +565,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		assertTrue( p.validateObject() );
-  		assertTrue (p.esitoTrasporto.compareTo(DataModelEnums.OUTCOME_TRASPORTO_TRATTENUTO) == 0);
+  		assertTrue (p.esitoTrasporto.compareTo(EmmaDataModelEnums.OUTCOME_TRASPORTO_TRATTENUTO) == 0);
   }
   
   
@@ -709,7 +712,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		p.toXML_print();
   		assertTrue( p.validateObject() );
-  		assertTrue (p.FR == DataModelEnums.FR_NOT_SET);
+  		assertTrue (p.FR == EmmaDataModelEnums.FR_NOT_SET);
   }
   
   /** Test Membro Unmarshalling - Paziente FR NORMALE
@@ -724,7 +727,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		p.toXML_print();
   		assertTrue( p.validateObject() );
-  		assertTrue (p.FR == DataModelEnums.FR_NORMALE);
+  		assertTrue (p.FR == EmmaDataModelEnums.FR_NORMALE);
   }
   
   /** Test Membro Unmarshalling - Paziente FR DIFFICOLTOSO
@@ -739,7 +742,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		p.toXML_print();
   		assertTrue( p.validateObject() );
-  		assertTrue (p.FR == DataModelEnums.FR_DIFFICOLTOSO);
+  		assertTrue (p.FR == EmmaDataModelEnums.FR_DIFFICOLTOSO);
   }
   
   /** Test Membro Unmarshalling - Paziente FR ASSENTE
@@ -754,7 +757,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		p.toXML_print();
   		assertTrue( p.validateObject() );
-  		assertTrue (p.FR == DataModelEnums.FR_ASSENTE);
+  		assertTrue (p.FR == EmmaDataModelEnums.FR_ASSENTE);
   }
   
   /** Test Membro Unmarshalling - Paziente FR Decimal
@@ -769,7 +772,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		p.toXML_print();
   		assertTrue( p.validateObject() );
-  		assertTrue (p.FR == DataModelEnums.FR_NOT_SET);
+  		assertTrue (p.FR == EmmaDataModelEnums.FR_NOT_SET);
   }
   
   /** Test Membro Unmarshalling - Paziente FR Negative
@@ -908,7 +911,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		p.toXML_print();
   		assertTrue( p.validateObject() );
-  		assertTrue (p.pediatrico.compareTo(DataModelEnums.PEDIATRIC_SI) == 0);
+  		assertTrue (p.pediatrico.compareTo(EmmaDataModelEnums.PEDIATRIC_SI) == 0);
   }
   
   /** Test Membro Unmarshalling - Paziente Pediatric No
@@ -923,7 +926,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
   		p.toXML_print();
   		assertTrue( p.validateObject() );
-  		assertTrue (p.pediatrico.compareTo(DataModelEnums.PEDIATRIC_NO) == 0);
+  		assertTrue (p.pediatrico.compareTo(EmmaDataModelEnums.PEDIATRIC_NO) == 0);
   }
   
   /** Test Membro Unmarshalling - Paziente Pediatric Null
@@ -979,49 +982,49 @@ public class XMLParserTestPaziente extends XMLParserTest {
   {
 	  	logger.trace(this.getName());
 	  
-	  	Paziente paperino = new Paziente("Donald", "Duck", DataModelEnums.MALE_GENDER,
+	  	Paziente paperino = new Paziente("Donald", "Duck", EmmaDataModelEnums.MALE_GENDER,
 			    (new GregorianCalendar(1980, Calendar.FEBRUARY, 11).getTime()), 39, 
-				DataModelEnums.PEDIATRIC_NO,
-				DataModelEnums.OUTCOME_TRASPORTO_REGOLARE,
-				DataModelEnums.CODES_VERDE,
-				60, DataModelEnums.FR_NORMALE,
-				DataModelEnums.COSCIENCE_ALERT,
+				EmmaDataModelEnums.PEDIATRIC_NO,
+				EmmaDataModelEnums.OUTCOME_TRASPORTO_REGOLARE,
+				EmmaDataModelEnums.CODES_VERDE,
+				60, EmmaDataModelEnums.FR_NORMALE,
+				EmmaDataModelEnums.COSCIENCE_ALERT,
 				"Paperopoli");
 	  	
-	  	Paziente qui = new Paziente("Huey", "Duck", DataModelEnums.MALE_GENDER,
+	  	Paziente qui = new Paziente("Huey", "Duck", EmmaDataModelEnums.MALE_GENDER,
 			    (new GregorianCalendar(2010, Calendar.OCTOBER, 17).getTime()), 9, 
-				DataModelEnums.PEDIATRIC_SI,
-				DataModelEnums.OUTCOME_TRASPORTO_REGOLARE,
-				DataModelEnums.CODES_GIALLO,
-				60, DataModelEnums.FR_NORMALE,
-				DataModelEnums.COSCIENCE_VERBAL,
+				EmmaDataModelEnums.PEDIATRIC_SI,
+				EmmaDataModelEnums.OUTCOME_TRASPORTO_REGOLARE,
+				EmmaDataModelEnums.CODES_GIALLO,
+				60, EmmaDataModelEnums.FR_NORMALE,
+				EmmaDataModelEnums.COSCIENCE_VERBAL,
 				"Paperopoli");
 	  	
-	  	Paziente quo = new Paziente("Dewey", "Duck", DataModelEnums.MALE_GENDER,
+	  	Paziente quo = new Paziente("Dewey", "Duck", EmmaDataModelEnums.MALE_GENDER,
 			    (new GregorianCalendar(2010, Calendar.OCTOBER, 17).getTime()), 9, 
-				DataModelEnums.PEDIATRIC_SI,
-				DataModelEnums.OUTCOME_TRASPORTO_REGOLARE,
-				DataModelEnums.CODES_VERDE,
-				60, DataModelEnums.FR_NORMALE,
-				DataModelEnums.COSCIENCE_ALERT,
+				EmmaDataModelEnums.PEDIATRIC_SI,
+				EmmaDataModelEnums.OUTCOME_TRASPORTO_REGOLARE,
+				EmmaDataModelEnums.CODES_VERDE,
+				60, EmmaDataModelEnums.FR_NORMALE,
+				EmmaDataModelEnums.COSCIENCE_ALERT,
 				"Paperopoli");
 	  	
-	  	Paziente qua = new Paziente("Louie", "Duck", DataModelEnums.MALE_GENDER,
+	  	Paziente qua = new Paziente("Louie", "Duck", EmmaDataModelEnums.MALE_GENDER,
 			    (new GregorianCalendar(2010, Calendar.OCTOBER, 17).getTime()), 9, 
-				DataModelEnums.PEDIATRIC_SI,
-				DataModelEnums.OUTCOME_TRASPORTO_REGOLARE,
-				DataModelEnums.CODES_VERDE,
-				60, DataModelEnums.FR_NORMALE,
-				DataModelEnums.COSCIENCE_ALERT,
+				EmmaDataModelEnums.PEDIATRIC_SI,
+				EmmaDataModelEnums.OUTCOME_TRASPORTO_REGOLARE,
+				EmmaDataModelEnums.CODES_VERDE,
+				60, EmmaDataModelEnums.FR_NORMALE,
+				EmmaDataModelEnums.COSCIENCE_ALERT,
 				"Paperopoli");
 	  	
-	  	Paziente paperina = new Paziente("Daisy", "Duck", DataModelEnums.FEMALE_GENDER,
+	  	Paziente paperina = new Paziente("Daisy", "Duck", EmmaDataModelEnums.FEMALE_GENDER,
 			    (new GregorianCalendar(1979, Calendar.JUNE, 28).getTime()), 40, 
-				DataModelEnums.PEDIATRIC_NO,
-				DataModelEnums.OUTCOME_TRASPORTO_REGOLARE,
-				DataModelEnums.CODES_VERDE,
-				60, DataModelEnums.FR_NORMALE,
-				DataModelEnums.COSCIENCE_ALERT,
+				EmmaDataModelEnums.PEDIATRIC_NO,
+				EmmaDataModelEnums.OUTCOME_TRASPORTO_REGOLARE,
+				EmmaDataModelEnums.CODES_VERDE,
+				60, EmmaDataModelEnums.FR_NORMALE,
+				EmmaDataModelEnums.COSCIENCE_ALERT,
 				"Paperopoli");
 		
 		String test_file = "test_pazienti.xml";
@@ -1042,13 +1045,13 @@ public class XMLParserTestPaziente extends XMLParserTest {
   {
 	  	logger.trace(this.getName());
 	  
-	  	Paziente paperino = new Paziente("Donald", "Duck", DataModelEnums.MALE_GENDER,
+	  	Paziente paperino = new Paziente("Donald", "Duck", EmmaDataModelEnums.MALE_GENDER,
 			    (new GregorianCalendar(1980, Calendar.FEBRUARY, 11).getTime()), 39, 
-				DataModelEnums.PEDIATRIC_NO,
-				DataModelEnums.OUTCOME_TRASPORTO_REGOLARE,
-				DataModelEnums.CODES_VERDE,
-				60, DataModelEnums.FR_NORMALE,
-				DataModelEnums.COSCIENCE_ALERT,
+				EmmaDataModelEnums.PEDIATRIC_NO,
+				EmmaDataModelEnums.OUTCOME_TRASPORTO_REGOLARE,
+				EmmaDataModelEnums.CODES_VERDE,
+				60, EmmaDataModelEnums.FR_NORMALE,
+				EmmaDataModelEnums.COSCIENCE_ALERT,
 				"Paperopoli");
 		
 		String test_file = "test_pazienti_singleton.xml";

@@ -1,15 +1,15 @@
-package emmaTommy.DataModel;
+package emmaTommy.EmmaDataModel;
 
 import java.util.Date;
 import javax.xml.bind.annotation.*;
 
-import emmaTommy.DataModel.Membri;
-import emmaTommy.DataModel.Pazienti;
-import emmaTommy.DataModel.Tratte;
+import emmaTommy.EmmaDataModel.Membri;
+import emmaTommy.EmmaDataModel.Pazienti;
+import emmaTommy.EmmaDataModel.Tratte;
 
 @XmlRootElement(name = "missione")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Missione extends DataFormatClass {
+public class Missione extends EmmaDataModel {
 
 	/** Empty Constructor */
 	public Missione () {super();}
@@ -64,8 +64,8 @@ public class Missione extends DataFormatClass {
 	}
 	
 	/** Elenco Delle Tratte della Missione */
-	protected Tratte tratte = null;
-	@XmlElement(name = "tratte", required = true)	
+	@XmlElement(name = "tratte", required = true)
+	protected Tratte tratte = null;	
 	public void setTratte(Tratte tratte) {
 		this.tratte = tratte;
 	}
@@ -74,8 +74,8 @@ public class Missione extends DataFormatClass {
 	}
 	
 	/** Elenco Dei Membri dell'Equipaggio della Missione */
-	protected Membri membri = null;
 	@XmlElement(name = "membri", required = true)	
+	protected Membri membri = null;	
 	public void setMembri(Membri membri) {
 		this.membri = membri;
 	}
@@ -84,8 +84,8 @@ public class Missione extends DataFormatClass {
 	}
 	
 	/** Elenco Dei Pazienti della Missione */
-	protected Pazienti pazienti = null;
 	@XmlElement(name = "pazienti", required = true)	
+	protected Pazienti pazienti = null;	
 	public void setPazienti(Pazienti pazienti) {
 		this.pazienti = pazienti;
 	}
@@ -326,6 +326,12 @@ public class Missione extends DataFormatClass {
 	/** Via - Incrocio  dell'Indirizzo del Soccorso */
 	@XmlElement(name = "sc-ds-via-2", required = true)	
 	protected String indirizzoSoccorsoViaIncrocio;
+	public void setIndirizzoSoccorsoViaIncrocio(String indirizzoSoccorsoViaIncrocio) {
+		this.indirizzoSoccorsoViaIncrocio = indirizzoSoccorsoViaIncrocio;
+	}
+	public String getIndirizzoSoccorsoViaIncrocio() {
+		return this.indirizzoSoccorsoViaIncrocio;
+	}
 	
 	/** Numero Civico dell'Indirizzo del Soccorso */
 	@XmlElement(name = "sc-vl-civico-v1", required = true)	
@@ -436,145 +442,145 @@ public class Missione extends DataFormatClass {
 			return false;
 		Missione other = (Missione) obj;
 		if (codiceEnte == null) {
-			if (other.codiceEnte != null)
+			if (other.getCodiceEnte() != null)
 				return false;
-		} else if (!codiceEnte.equals(other.codiceEnte))
+		} else if (!codiceEnte.equals(other.getCodiceEnte()))
 			return false;
 		if (codiceEvento == null) {
-			if (other.codiceEvento != null)
+			if (other.getCodiceEvento() != null)
 				return false;
-		} else if (!codiceEvento.equals(other.codiceEvento))
+		} else if (!codiceEvento.equals(other.getCodiceEvento()))
 			return false;
 		if (codiceMezzo == null) {
-			if (other.codiceMezzo != null)
+			if (other.getCodiceMezzo() != null)
 				return false;
-		} else if (!codiceMezzo.equals(other.codiceMezzo))
+		} else if (!codiceMezzo.equals(other.getCodiceMezzo()))
 			return false;
-		if (codiceMissione != other.codiceMissione)
+		if (codiceMissione != other.getCodiceMissione())
 			return false;
-		if (codiceMissionePrecedente != other.codiceMissionePrecedente)
+		if (codiceMissionePrecedente != other.getCodiceMissionePrecedente())
 			return false;
 		if (codiceTrasporto == null) {
-			if (other.codiceTrasporto != null)
+			if (other.getCodiceTrasporto() != null)
 				return false;
-		} else if (!codiceTrasporto.equals(other.codiceTrasporto))
+		} else if (!codiceTrasporto.equals(other.getCodiceTrasporto()))
 			return false;
 		if (comuneIntervento == null) {
-			if (other.comuneIntervento != null)
+			if (other.getComuneIntervento() != null)
 				return false;
-		} else if (!comuneIntervento.equals(other.comuneIntervento))
+		} else if (!comuneIntervento.equals(other.getComuneIntervento()))
 			return false;
 		if (convenzioneEnte == null) {
-			if (other.convenzioneEnte != null)
+			if (other.getConvenzioneEnte() != null)
 				return false;
-		} else if (!convenzioneEnte.equals(other.convenzioneEnte))
+		} else if (!convenzioneEnte.equals(other.getConvenzioneEnte()))
 			return false;
 		if (esitoMissione == null) {
-			if (other.esitoMissione != null)
+			if (other.getEsitoMissione() != null)
 				return false;
-		} else if (!esitoMissione.equals(other.esitoMissione))
+		} else if (!esitoMissione.equals(other.getEsitoMissione()))
 			return false;
 		if (fineMissione == null) {
-			if (other.fineMissione != null)
+			if (other.getFineMissione() != null)
 				return false;
-		} else if (!fineMissione.equals(other.fineMissione))
+		} else if (!fineMissione.equals(other.getFineMissione()))
 			return false;
 		if (indirizzoSoccorsoCivico == null) {
-			if (other.indirizzoSoccorsoCivico != null)
+			if (other.getIndirizzoSoccorsoCivico() != null)
 				return false;
-		} else if (!indirizzoSoccorsoCivico.equals(other.indirizzoSoccorsoCivico))
+		} else if (!indirizzoSoccorsoCivico.equals(other.getIndirizzoSoccorsoCivico()))
 			return false;
 		if (indirizzoSoccorsoCivicoBarra == null) {
-			if (other.indirizzoSoccorsoCivicoBarra != null)
+			if (other.getIndirizzoSoccorsoCivicoBarra() != null)
 				return false;
-		} else if (!indirizzoSoccorsoCivicoBarra.equals(other.indirizzoSoccorsoCivicoBarra))
+		} else if (!indirizzoSoccorsoCivicoBarra.equals(other.getIndirizzoSoccorsoCivicoBarra()))
 			return false;
 		if (indirizzoSoccorsoTipoVia == null) {
-			if (other.indirizzoSoccorsoTipoVia != null)
+			if (other.getIndirizzoSoccorsoTipoVia() != null)
 				return false;
-		} else if (!indirizzoSoccorsoTipoVia.equals(other.indirizzoSoccorsoTipoVia))
+		} else if (!indirizzoSoccorsoTipoVia.equals(other.getIndirizzoSoccorsoTipoVia()))
 			return false;
 		if (indirizzoSoccorsoVia == null) {
-			if (other.indirizzoSoccorsoVia != null)
+			if (other.getIndirizzoSoccorsoVia() != null)
 				return false;
-		} else if (!indirizzoSoccorsoVia.equals(other.indirizzoSoccorsoVia))
+		} else if (!indirizzoSoccorsoVia.equals(other.getIndirizzoSoccorsoVia()))
 			return false;
 		if (indirizzoSoccorsoViaIncrocio == null) {
-			if (other.indirizzoSoccorsoViaIncrocio != null)
+			if (other.getIndirizzoSoccorsoViaIncrocio() != null)
 				return false;
-		} else if (!indirizzoSoccorsoViaIncrocio.equals(other.indirizzoSoccorsoViaIncrocio))
+		} else if (!indirizzoSoccorsoViaIncrocio.equals(other.getIndirizzoSoccorsoViaIncrocio()))
 			return false;
 		if (inizioMissione == null) {
-			if (other.inizioMissione != null)
+			if (other.getInizioMissione() != null)
 				return false;
-		} else if (!inizioMissione.equals(other.inizioMissione))
+		} else if (!inizioMissione.equals(other.getInizioMissione()))
 			return false;
 		if (inizioRientro == null) {
-			if (other.inizioRientro != null)
+			if (other.getInizioRientro() != null)
 				return false;
-		} else if (!inizioRientro.equals(other.inizioRientro))
+		} else if (!inizioRientro.equals(other.getInizioRientro()))
 			return false;
 		if (luogoDestinazioneMissione == null) {
-			if (other.luogoDestinazioneMissione != null)
+			if (other.getLuogoDestinazioneMissione() != null)
 				return false;
-		} else if (!luogoDestinazioneMissione.equals(other.luogoDestinazioneMissione))
+		} else if (!luogoDestinazioneMissione.equals(other.getLuogoDestinazioneMissione()))
 			return false;
 		if (membri == null) {
-			if (other.membri != null)
+			if (other.getMembri() != null)
 				return false;
-		} else if (!membri.equals(other.membri))
+		} else if (!membri.equals(other.getMembri()))
 			return false;
 		if (motivoChiamata == null) {
-			if (other.motivoChiamata != null)
+			if (other.getMotivoChiamata() != null)
 				return false;
-		} else if (!motivoChiamata.equals(other.motivoChiamata))
+		} else if (!motivoChiamata.equals(other.getMotivoChiamata()))
 			return false;
 		if (motivoChiamataDettaglio == null) {
-			if (other.motivoChiamataDettaglio != null)
+			if (other.getMotivoChiamataDettaglio() != null)
 				return false;
-		} else if (!motivoChiamataDettaglio.equals(other.motivoChiamataDettaglio))
+		} else if (!motivoChiamataDettaglio.equals(other.getMotivoChiamataDettaglio()))
 			return false;
 		if (partenzaMezzo == null) {
-			if (other.partenzaMezzo != null)
+			if (other.getPartenzaMezzo() != null)
 				return false;
-		} else if (!partenzaMezzo.equals(other.partenzaMezzo))
+		} else if (!partenzaMezzo.equals(other.getPartenzaMezzo()))
 			return false;
 		if (partenzaMissioneLocalita == null) {
-			if (other.partenzaMissioneLocalita != null)
+			if (other.getPartenzaMissioneLocalita() != null)
 				return false;
-		} else if (!partenzaMissioneLocalita.equals(other.partenzaMissioneLocalita))
+		} else if (!partenzaMissioneLocalita.equals(other.getPartenzaMissioneLocalita()))
 			return false;
 		if (partenzaMissioneVia == null) {
-			if (other.partenzaMissioneVia != null)
+			if (other.getPartenzaMissioneVia() != null)
 				return false;
-		} else if (!partenzaMissioneVia.equals(other.partenzaMissioneVia))
+		} else if (!partenzaMissioneVia.equals(other.getPartenzaMissioneVia()))
 			return false;
 		if (pazienti == null) {
-			if (other.pazienti != null)
+			if (other.getPazienti() != null)
 				return false;
-		} else if (!pazienti.equals(other.pazienti))
+		} else if (!pazienti.equals(other.getPazienti()))
 			return false;
 		if (riferimenti == null) {
-			if (other.riferimenti != null)
+			if (other.getRiferimenti() != null)
 				return false;
-		} else if (!riferimenti.equals(other.riferimenti))
+		} else if (!riferimenti.equals(other.getRiferimenti()))
 			return false;
 		if (stazionamentoFineMissione == null) {
-			if (other.stazionamentoFineMissione != null)
+			if (other.getStazionamentoFineMissione() != null)
 				return false;
-		} else if (!stazionamentoFineMissione.equals(other.stazionamentoFineMissione))
+		} else if (!stazionamentoFineMissione.equals(other.getStazionamentoFineMissione()))
 			return false;
 		if (stazionamentoFineMissionePosMezzo == null) {
-			if (other.stazionamentoFineMissionePosMezzo != null)
+			if (other.getStazionamentoFineMissionePosMezzo() != null)
 				return false;
-		} else if (!stazionamentoFineMissionePosMezzo.equals(other.stazionamentoFineMissionePosMezzo))
+		} else if (!stazionamentoFineMissionePosMezzo.equals(other.getStazionamentoFineMissionePosMezzo()))
 			return false;
-		if (totKMPercorsi != other.totKMPercorsi)
+		if (totKMPercorsi != other.getTotKMPercorsi())
 			return false;
 		if (tratte == null) {
-			if (other.tratte != null)
+			if (other.getTratte() != null)
 				return false;
-		} else if (!tratte.equals(other.tratte))
+		} else if (!tratte.equals(other.getTratte()))
 			return false;
 		return true;
 	}

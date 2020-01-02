@@ -1,4 +1,4 @@
-package emmaTommy.DataModel;
+package emmaTommy.EmmaDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,21 +9,28 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import emmaTommy.DataModel.Tratta;
+import emmaTommy.EmmaDataModel.Membro;
  
-@XmlRootElement(name = "tratte")
+@XmlRootElement(name = "membri")
 @XmlAccessorType (XmlAccessType.FIELD)
-public class Tratte  extends DataFormatClass {
+public class Membri extends EmmaDataModel
+{
 	
 	/** Empty Constructor */
-	public Tratte() {
+	public Membri() {
+		super(); 
+		this.membri = new ArrayList<Membro>();
+	}
+	
+	public Membri(ArrayList<Membro> membri) {
 		super();
-		this.tratte = new ArrayList<Tratta>();
+		this.setMembri(membri);
+		this.validateObject();
 	}
 	
 	/** validateObject
 	 * type: not null, not empty, not blanck, equals "array"
-	 * tratte list: not null, not empty, every element is not in errorStatus
+	 * membri list: not null, not empty, every element is not in errorStatus
 	 * 
 	 * @return true if the object is valid, false otherwise
 	 */
@@ -56,39 +63,30 @@ public class Tratte  extends DataFormatClass {
 			logger.warn(errorMsg);
 		}
 				
-		// Check Tratte List
-		if (this.tratte == null) {
+		// Check Membri List
+		if (this.membri == null) {
 			this.validState = false;
-			errorMsg += "Tratte list was NULL";
+			errorMsg += "Membri list was NULL";
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
 		}
-		if (this.tratte.size() == 0) {
+		if (this.membri.size() == 0) {
 			this.validState = false;
-			errorMsg += "Tratte list was EMPTY";
+			errorMsg += "Membri list was EMPTY";
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
 		} else {
-			ArrayList<Integer> ids = new ArrayList<Integer>();
-			for (Tratta t : this.tratte) {
-				if (t == null) {
+			for (Membro m : this.membri) {
+				if (m == null) {
 					this.validState = false;
-					errorMsg += "Tratte list has a NULL element";
+					errorMsg += "Membri list has a NULL element";
 					this.errorList.add(errorMsg);
 					logger.warn(errorMsg);
 				} else {
-					Boolean elValidState = t.validateObject();
+					Boolean elValidState = m.validateObject();
 					if (!elValidState) {
 						this.validState = false;
-						this.errorList.addAll(t.getErrorList());
-					}
-					if (ids.contains(t.getId())) {
-						this.validState = false;
-						errorMsg += "Tratta list has a multiple id " + t.getId() + " element";
-						this.errorList.add(errorMsg);
-						logger.warn(errorMsg);
-					} else {
-						ids.add(t.getId());
+						this.errorList.addAll(m.getErrorList());
 					}
 				}
 			}
@@ -110,58 +108,50 @@ public class Tratte  extends DataFormatClass {
 		return this.type;
 	}
 	
-	/** Tratte Annotated List */
-    @XmlElement(name = "tratta")
-    protected List<Tratta> tratte = null; 
-    public List<Tratta> getTratte() {
-        return this.tratte;
+	/** Membri Annotated List */  
+	@XmlElement(name = "membro")
+    protected List<Membro> membri = null;     
+    public List<Membro> getMembri() {
+        return this.membri;
     } 
-    public void setTratte(List<Tratta> tratte) {
-    	if (tratte == null) {
-    		logger.error("::setTratte(): " + "tratte list was null");
-    		throw new NullPointerException("::setTratte(): null tratte list");
-    	}
-    	this.tratte = tratte;
-        logger.trace("::setTratte(): " + "added tratte list of size " + tratte.size());       
+    public void setMembri(List<Membro> membri) {
+    	this.membri = membri;
+        logger.trace("::setMembri(): " + "added membri list of size " + membri.size());        
     }
     
     @Override
 	public String toString() {
-		String str = "Tratte [";
-		for (Tratta t: this.tratte) {
-			str += t.toString();
+		String str = "Membri [";
+		for (Membro m: this.membri) {
+			str += m.toString();
 		}
 		str += "]";
 		return str;
 	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((tratte == null) ? 0 : tratte.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + ((membri == null) ? 0 : membri.hashCode());
 		return result;
 	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!(obj instanceof Tratte))
+		if (obj == null)
 			return false;
-		Tratte other = (Tratte) obj;
-		if (tratte == null) {
-			if (other.getTratte() != null)
-				return false;
-		} else if (!tratte.equals(other.getTratte()))
+		if (getClass() != obj.getClass())
 			return false;
-		if (type == null) {
-			if (other.getType() != null)
+		Membri other = (Membri) obj;
+		if (membri == null) {
+			if (other.getMembri() != null)
 				return false;
-		} else if (!type.equals(other.getType()))
+		} else if (!membri.equals(other.getMembri()))
 			return false;
 		return true;
 	}
+    
+    
     
 }

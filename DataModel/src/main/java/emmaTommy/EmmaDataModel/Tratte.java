@@ -1,4 +1,4 @@
-package emmaTommy.DataModel;
+package emmaTommy.EmmaDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,21 +9,21 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import emmaTommy.DataModel.Paziente;
+import emmaTommy.EmmaDataModel.Tratta;
  
-@XmlRootElement(name = "pazienti")
+@XmlRootElement(name = "tratte")
 @XmlAccessorType (XmlAccessType.FIELD)
-public class Pazienti extends DataFormatClass {
+public class Tratte  extends EmmaDataModel {
 	
 	/** Empty Constructor */
-	public Pazienti() {
+	public Tratte() {
 		super();
-		this.pazienti = new ArrayList<Paziente>();
+		this.tratte = new ArrayList<Tratta>();
 	}
 	
 	/** validateObject
 	 * type: not null, not empty, not blanck, equals "array"
-	 * Pazienti list: not null, not empty, every element is not in errorStatus
+	 * tratte list: not null, not empty, every element is not in errorStatus
 	 * 
 	 * @return true if the object is valid, false otherwise
 	 */
@@ -56,30 +56,39 @@ public class Pazienti extends DataFormatClass {
 			logger.warn(errorMsg);
 		}
 				
-		// Check Pazienti List
-		if (this.pazienti == null) {
+		// Check Tratte List
+		if (this.tratte == null) {
 			this.validState = false;
-			errorMsg += "Pazienti list was NULL";
+			errorMsg += "Tratte list was NULL";
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
 		}
-		if (this.pazienti.size() == 0) {
+		if (this.tratte.size() == 0) {
 			this.validState = false;
-			errorMsg += "Pazienti list was EMPTY";
+			errorMsg += "Tratte list was EMPTY";
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
 		} else {
-			for (Paziente p : this.pazienti) {
-				if (p == null) {
+			ArrayList<Integer> ids = new ArrayList<Integer>();
+			for (Tratta t : this.tratte) {
+				if (t == null) {
 					this.validState = false;
-					errorMsg += "Pazienti list has a NULL element";
+					errorMsg += "Tratte list has a NULL element";
 					this.errorList.add(errorMsg);
 					logger.warn(errorMsg);
 				} else {
-					Boolean elValidState = p.validateObject();
+					Boolean elValidState = t.validateObject();
 					if (!elValidState) {
 						this.validState = false;
-						this.errorList.addAll(p.getErrorList());
+						this.errorList.addAll(t.getErrorList());
+					}
+					if (ids.contains(t.getId())) {
+						this.validState = false;
+						errorMsg += "Tratta list has a multiple id " + t.getId() + " element";
+						this.errorList.add(errorMsg);
+						logger.warn(errorMsg);
+					} else {
+						ids.add(t.getId());
 					}
 				}
 			}
@@ -89,6 +98,8 @@ public class Pazienti extends DataFormatClass {
 		return this.validState;
 	}
 		
+	
+	
 	/** type Attribute */
 	@XmlAttribute(name = "type")
 	protected String type = "array";	
@@ -99,55 +110,58 @@ public class Pazienti extends DataFormatClass {
 		return this.type;
 	}
 	
-	/** Pazienti Annotated List */
-    @XmlElement(name = "paziente")
-    protected List<Paziente> pazienti = null; 
-    public List<Paziente> getPazienti() {
-        return this.pazienti;
+	/** Tratte Annotated List */
+    @XmlElement(name = "tratta")
+    protected List<Tratta> tratte = null; 
+    public List<Tratta> getTratte() {
+        return this.tratte;
     } 
-    public void setPazienti(List<Paziente> pazienti) {
-    	if (pazienti == null) {
-    		logger.error("::setPazienti(): " + "pazienti list was null");
-    		throw new NullPointerException("::setPazienti(): null pazienti list");
+    public void setTratte(List<Tratta> tratte) {
+    	if (tratte == null) {
+    		logger.error("::setTratte(): " + "tratte list was null");
+    		throw new NullPointerException("::setTratte(): null tratte list");
     	}
-    	this.pazienti = pazienti;
-        logger.trace("::setPazienti(): " + "added pazienti list of size " + pazienti.size());       
+    	this.tratte = tratte;
+        logger.trace("::setTratte(): " + "added tratte list of size " + tratte.size());       
     }
     
-	@Override
+    @Override
 	public String toString() {
-		String str = "Pazienti [";
-		for (Paziente p: this.pazienti) {
-			str += p.toString();
+		String str = "Tratte [";
+		for (Tratta t: this.tratte) {
+			str += t.toString();
 		}
 		str += "]";
 		return str;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((pazienti == null) ? 0 : pazienti.hashCode());
+		result = prime * result + ((tratte == null) ? 0 : tratte.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!(obj instanceof Tratte))
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Pazienti other = (Pazienti) obj;
-		if (pazienti == null) {
-			if (other.pazienti != null)
+		Tratte other = (Tratte) obj;
+		if (tratte == null) {
+			if (other.getTratte() != null)
 				return false;
-		} else if (!pazienti.equals(other.pazienti))
+		} else if (!tratte.equals(other.getTratte()))
+			return false;
+		if (type == null) {
+			if (other.getType() != null)
+				return false;
+		} else if (!type.equals(other.getType()))
 			return false;
 		return true;
 	}
-    
-    
     
 }

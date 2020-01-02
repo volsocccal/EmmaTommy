@@ -15,7 +15,7 @@
                 <SizeBasedTriggeringPolicy size="100 MB"/>
             </Policies>
         </RollingFile>
-        <RollingFile name="dataModel" fileName="../logs/dataModel_TEST.log" filePattern="../logs/dataModel_TEST-%i.log">
+        <RollingFile name="EmmaDataModel" fileName="../logs/EmmaDataModel_TEST.log" filePattern="../logs/EmmaDataModel_TEST-%i.log">
             <PatternLayout>
                 <Pattern>%d [%t] %-5p %c%m%n</Pattern>
             </PatternLayout>
@@ -29,8 +29,8 @@
         <Logger name="emmaREST" level="trace">
             <AppenderRef ref="emmaREST"/>
         </Logger>
-        <Logger name="dataModel" level="trace">
-            <AppenderRef ref="dataModel"/>
+        <Logger name="EmmaDataModel" level="trace">
+            <AppenderRef ref="EmmaDataModel"/>
         </Logger>
         <Root level="trace">
             <AppenderRef ref="Console"/>

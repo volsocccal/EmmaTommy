@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 
-import org.apache.logging.log4j.LogManager;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.eclipse.persistence.oxm.MediaType;
 
@@ -15,8 +14,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlTransient;
 
 public abstract class DataFormatClass {
-	
-	static org.apache.logging.log4j.Logger logger = LogManager.getLogger("dataModel");
 	
 	public DataFormatClass() {
 		validState = true;

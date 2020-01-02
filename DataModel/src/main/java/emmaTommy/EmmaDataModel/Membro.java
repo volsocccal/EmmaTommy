@@ -1,14 +1,10 @@
-package emmaTommy.DataModel;
-
-import java.util.ArrayList;
+package emmaTommy.EmmaDataModel;
 
 import javax.xml.bind.annotation.*;
 
-import org.apache.logging.log4j.LogManager;
-
 @XmlRootElement(name = "membro")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Membro extends DataFormatClass {
+public class Membro extends EmmaDataModel {
     	
 	public Membro() {
 		super();
@@ -117,7 +113,7 @@ public class Membro extends DataFormatClass {
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
 		}
-		else if (!DataModelEnums.acceptedQualifiche.contains(qualifica)) {
+		else if (!EmmaDataModelEnums.acceptedQualifiche.contains(qualifica)) {
 			this.validState = false;
 			errorMsg += qualifica + "isn't in the accepted list of qualifiche (New One?)";
 			this.errorList.add(errorMsg);
@@ -194,24 +190,24 @@ public class Membro extends DataFormatClass {
 			return false;
 		Membro other = (Membro) obj;
 		if (cognome == null) {
-			if (other.cognome != null)
+			if (other.getCognome() != null)
 				return false;
-		} else if (!cognome.equals(other.cognome))
+		} else if (!cognome.equals(other.getCognome()))
 			return false;
 		if (nome == null) {
-			if (other.nome != null)
+			if (other.getNome() != null)
 				return false;
-		} else if (!nome.equals(other.nome))
+		} else if (!nome.equals(other.getNome()))
 			return false;
 		if (qualifica == null) {
-			if (other.qualifica != null)
+			if (other.getQualifica() != null)
 				return false;
-		} else if (!qualifica.equals(other.qualifica))
+		} else if (!qualifica.equals(other.getQualifica()))
 			return false;
 		if (type == null) {
-			if (other.type != null)
+			if (other.getType() != null)
 				return false;
-		} else if (!type.equals(other.type))
+		} else if (!type.equals(other.getType()))
 			return false;
 		return true;
 	}
