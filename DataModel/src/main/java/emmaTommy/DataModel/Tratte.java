@@ -69,6 +69,7 @@ public class Tratte  extends DataFormatClass {
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
 		} else {
+			ArrayList<Integer> ids = new ArrayList<Integer>();
 			for (Tratta t : this.tratte) {
 				if (t == null) {
 					this.validState = false;
@@ -80,6 +81,14 @@ public class Tratte  extends DataFormatClass {
 					if (!elValidState) {
 						this.validState = false;
 						this.errorList.addAll(t.getErrorList());
+					}
+					if (ids.contains(t.getId())) {
+						this.validState = false;
+						errorMsg += "Tratta list has a multiple id " + t.getId() + " element";
+						this.errorList.add(errorMsg);
+						logger.warn(errorMsg);
+					} else {
+						ids.add(t.getId());
 					}
 				}
 			}

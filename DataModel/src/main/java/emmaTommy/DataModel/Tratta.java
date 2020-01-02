@@ -1,6 +1,5 @@
 package emmaTommy.DataModel;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import javax.xml.bind.annotation.*;
@@ -30,7 +29,7 @@ public class Tratta extends DataFormatClass {
 		super();
 		this.setId(id);
 		this.setDataPartenza(dataPartenza);
-		this.setDataPartenza(dataPartenza);
+		this.setDataArrivo(dataArrivo);
 		this.setDestinazione(destinazione);
 	}
 	
@@ -69,6 +68,36 @@ public class Tratta extends DataFormatClass {
 			errorMsg += "type was diffent from ClassName";
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
+		}
+		
+		// Check Id
+		if (this.id == 0) {
+			this.validState = false;
+			errorMsg += "id was zero";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		} else if (this.id < 0) {
+			this.validState = false;
+			errorMsg += "id was negative";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		
+		// Check DateTimes
+		if (this.dataArrivo != null) {
+			if (this.dataPartenza != null) {
+				if (this.dataPartenza.after(this.dataArrivo)) { // Check timeline
+					this.validState = false;
+					errorMsg += "partenza was afer arrivo";
+					this.errorList.add(errorMsg);
+					logger.warn(errorMsg);
+				}
+			} else {
+				this.validState = false;
+				errorMsg += "partenza was null but arrivo was an accepted value";
+				this.errorList.add(errorMsg);
+				logger.warn(errorMsg);
+			}
 		}
 		
 		// Return validState
@@ -154,21 +183,21 @@ public class Tratta extends DataFormatClass {
 			return false;
 		Tratta other = (Tratta) obj;
 		if (dataArrivo == null) {
-			if (other.dataArrivo != null)
+			if (other.getDataArrivo() != null)
 				return false;
-		} else if (!dataArrivo.equals(other.dataArrivo))
+		} else if (!dataArrivo.equals(other.getDataArrivo()))
 			return false;
 		if (dataPartenza == null) {
-			if (other.dataPartenza != null)
+			if (other.getDataPartenza() != null)
 				return false;
-		} else if (!dataPartenza.equals(other.dataPartenza))
+		} else if (!dataPartenza.equals(other.getDataPartenza()))
 			return false;
 		if (destinazione == null) {
-			if (other.destinazione != null)
+			if (other.getDestinazione() != null)
 				return false;
-		} else if (!destinazione.equals(other.destinazione))
+		} else if (!destinazione.equals(other.getDestinazione()))
 			return false;
-		if (id != other.id)
+		if (id != other.getId())
 			return false;
 		return true;
 	}

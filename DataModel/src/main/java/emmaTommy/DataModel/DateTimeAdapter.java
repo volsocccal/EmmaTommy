@@ -27,7 +27,6 @@ public class DateTimeAdapter extends XmlAdapter<String, Date> {
         try {
 			d = new SimpleDateFormat(DATE_FORMAT_STRING).parse(v);
 		} catch (ParseException e) {
-			e.printStackTrace();
 		}
         return d;
     }

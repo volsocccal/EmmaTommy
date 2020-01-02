@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tratta type="Tratta">
+    <tr-id-tratta type="integer">1</tr-id-tratta>
+    <tr-dt-arrivo type="dateTime">2019-10-07T07:16:44Z</tr-dt-arrivo>
+    <tr-dt-partenza type="dateTime">2019-10-07T08:01:05Z</tr-dt-partenza>
+    <tr-ds-lg-dest>H LECCO</tr-ds-lg-dest>
+</tratta>
