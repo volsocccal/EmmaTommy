@@ -134,5 +134,34 @@ public class Tratte  extends DataFormatClass {
 		str += "]";
 		return str;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((tratte == null) ? 0 : tratte.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof Tratte))
+			return false;
+		Tratte other = (Tratte) obj;
+		if (tratte == null) {
+			if (other.getTratte() != null)
+				return false;
+		} else if (!tratte.equals(other.getTratte()))
+			return false;
+		if (type == null) {
+			if (other.getType() != null)
+				return false;
+		} else if (!type.equals(other.getType()))
+			return false;
+		return true;
+	}
     
 }
