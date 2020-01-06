@@ -1,0 +1,17 @@
+#!/bin/bash
+
+SCRIPTS_FOLDER=.
+
+# Kafka
+KAFKA_FOLDER_NAME=kafka
+KAFKA_FOLDER=${SCRIPTS_FOLDER}/${KAFKA_FOLDER_NAME}
+cd ${KAFKA_FOLDER}
+chmod +x *.sh
+cd ..
+
+# Mongo Paths
+MONGO_FOLDER_NAME=mongo
+MONGO_FOLDER=${SCRIPTS_FOLDER}/${MONGO_FOLDER_NAME}
+cd ${MONGO_FOLDER}
+chmod +x *.sh
+cd ..
