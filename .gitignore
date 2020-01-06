@@ -13,9 +13,8 @@ logs/*
 # Ignore the folder for full xml downloads (since it may contains sensible patient information)
 data_xml_download/
 
-# Ignore the folder with real xml missioni (since it may contains sensible patient information)
-data_xml_test/missione/test_missione_generic_h24.xml
-data_xml_test/missione/test_missione_generic_get.xml
+# Ignore the folder for jsons produced files (since it may contains sensible patient information)
+data_json_download/
 
 # Ignore the docs/xml 
 docs/xmlParsing_REST_MISSIONI
