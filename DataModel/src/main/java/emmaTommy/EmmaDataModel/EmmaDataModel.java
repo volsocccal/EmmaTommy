@@ -6,6 +6,6 @@ import emmaTommy.DataModel.DataFormatClass;
 
 public abstract class EmmaDataModel extends DataFormatClass {
 
-	static org.apache.logging.log4j.Logger logger = LogManager.getLogger("emmaDataModel");
+	static org.apache.logging.log4j.Logger logger = LogManager.getLogger("EmmaDataModel");
 	
 }

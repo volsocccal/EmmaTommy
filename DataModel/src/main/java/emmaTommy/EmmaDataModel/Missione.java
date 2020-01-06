@@ -28,29 +28,87 @@ public class Missione extends EmmaDataModel {
 			errorMsg += "type was NULL";
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
+			errorMsg = this.getClass().getSimpleName() + ": ";
 		}
 		else if (this.type.isEmpty()) {
 			this.validState = false;
 			errorMsg += "type was Empty";
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
+			errorMsg = this.getClass().getSimpleName() + ": ";
 		}
 		else if (this.type.isBlank()) {
 			this.validState = false;
 			errorMsg += "type was Blanck";
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
+			errorMsg = this.getClass().getSimpleName() + ": ";
 		}
 		else if (this.type.compareTo(this.getClass().getSimpleName()) != 0) {
 			this.validState = false;
 			errorMsg += "type was diffent from ClassName";
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
+			errorMsg = this.getClass().getSimpleName() + ": ";
 		}
+		
+		// ID
+		int ID = 203100001;
+		
+		// Pazienti
+		if (this.pazienti == null) {
+			this.validState = false;
+			errorMsg += "pazienti list was null";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+			errorMsg = this.getClass().getSimpleName() + ": ";
+		} else {
+			Boolean pazientiValidState = this.pazienti.getValidState();
+			if (!pazientiValidState) {
+				this.validState = false;
+				this.errorList.addAll(this.pazienti.getErrorList());
+			}
+		}
+		
+		// Tratte
+		if (this.tratte == null) {
+			this.validState = false;
+			errorMsg += "tratte list was null";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+			errorMsg = this.getClass().getSimpleName() + ": ";
+		} else {
+			Boolean tratteValidState = this.tratte.getValidState();
+			if (!tratteValidState) {
+				this.validState = false;
+				this.errorList.addAll(this.tratte.getErrorList());
+			}
+		}
+		
+		// Membri Equipaggio
+		if (this.membri == null) {
+			this.validState = false;
+			errorMsg += "membri list was null";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+			errorMsg = this.getClass().getSimpleName() + ": ";
+		} else {
+			Boolean membriValidState = this.membri.getValidState();
+			if (!membriValidState) {
+				this.validState = false;
+				this.errorList.addAll(this.membri.getErrorList());
+			}
+		}
+		
+		
+		
+		
 		
 		// Return validState
 		return this.validState;
 	}
+	
+	
 	
 	/** type Attribute */
 	@XmlAttribute(name = "type")
@@ -114,7 +172,7 @@ public class Missione extends EmmaDataModel {
 	}
 	
 	/** Codice del Mezzo Impiegato */
-	@XmlElement(name = "mi-cd-mezzo>", required = true)	
+	@XmlElement(name = "mi-cd-mezzo", required = true)	
 	protected String codiceMezzo;
 	public void setCodiceMezzo(String codiceMezzo) {
 		this.codiceMezzo = codiceMezzo;

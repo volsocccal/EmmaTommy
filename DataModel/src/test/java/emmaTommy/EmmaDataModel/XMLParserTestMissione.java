@@ -43,7 +43,6 @@ public class XMLParserTestMissione extends XMLParserTest {
 			JAXBContext jaxbContext = JAXBContext.newInstance(Missione.class);
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			Missione m = (Missione) jaxbUnmarshaller.unmarshal( new File(test_data_folder_missione + "/" + test_file) );
-			m.toJSON_print();
 			assertTrue( m.validateObject() );
 	  }
 	  
@@ -57,7 +56,6 @@ public class XMLParserTestMissione extends XMLParserTest {
 			JAXBContext jaxbContext = JAXBContext.newInstance(Missione.class);
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			Missione m = (Missione) jaxbUnmarshaller.unmarshal( new File(test_data_folder_missione + "/" + test_file) );
-			m.toJSON_print();
 			assertTrue( m.validateObject() );
 	  }
 	  

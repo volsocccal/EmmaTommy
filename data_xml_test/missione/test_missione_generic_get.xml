@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<missione>
+    <mi-id-missione type="integer">193187732</mi-id-missione>
+    <sc-ds-comune>TOPOLINIA</sc-ds-comune>
+    <sc-ds-via-1>DEL FORMAGGIO</sc-ds-via-1>
+    <sc-ds-via-2 nil="true"/>
+    <sc-vl-civico-v1>3</sc-vl-civico-v1>
+    <sc-vl-barra-v1 nil="true"/>
+    <sc-ds-riferimen>1P CIT BASETTONI</sc-ds-riferimen>
+    <sc-ds-motivo>CADUTA</sc-ds-motivo>
+    <sc-ds-det-mot>SCALA</sc-ds-det-mot>
+    <lg-ds-luogo>CASA</lg-ds-luogo>
+    <mi-dt-missione type="dateTime">2019-11-31T22:15:19Z</mi-dt-missione>
+    <mi-ac-ente>VOLCAL</mi-ac-ente>
+    <mi-ds-punsta>TOPOLINIA VOLTOP</mi-ds-punsta>
+    <mi-cd-mezzo>VOLTOP_106</mi-cd-mezzo>
+    <mi-ds-convenz>GET_3</mi-ds-convenz>
+    <mi-id-codice-e>V</mi-id-codice-e>
+    <mi-dt-partenza type="dateTime">2019-11-31T21:19:05Z</mi-dt-partenza>
+    <mi-ds-esito>REGOLARE</mi-ds-esito>
+    <mi-vl-totkm>16</mi-vl-totkm>
+    <mi-dt-inizio-r type="dateTime">2019-11-31T22:05:17Z</mi-dt-inizio-r>
+    <mi-ds-lg-dest>TOPOLINIA VOLTOP</mi-ds-lg-dest>
+    <mi-dt-fine-mi type="dateTime">2019-11-31T22:29:27Z</mi-dt-fine-mi>
+    <mi-id-codice-t>V</mi-id-codice-t>
+    <mi-id-miss-int type="integer" nil="true"/>
+    <sc-ds-tp-via-1>VICOLO DEL</sc-ds-tp-via-1>
+    <mi-ds-loc-part>TOPOLINIA</mi-ds-loc-part>
+    <mi-ds-via-part>BRIE</mi-ds-via-part>
+    <tratte type="array">
+      <tratta type="Tratta">
+        <tr-id-tratta type="integer">70062</tr-id-tratta>
+        <tr-dt-arrivo type="dateTime">2019-11-31T21:27:07Z</tr-dt-arrivo>
+        <tr-dt-partenza type="dateTime">2019-11-31T21:45:26Z</tr-dt-partenza>
+        <tr-ds-lg-dest nil="true"/>
+      </tratta>
+      <tratta type="Tratta">
+        <tr-id-tratta type="integer">70063</tr-id-tratta>
+        <tr-dt-arrivo type="dateTime">2019-11-31T21:55:26Z</tr-dt-arrivo>
+        <tr-dt-partenza type="dateTime">2019-11-31T22:05:16Z</tr-dt-partenza>
+        <tr-ds-lg-dest>H TOPO</tr-ds-lg-dest>
+      </tratta>
+    </tratte>
+    <membri type="array">
+      <membro type="Membro">
+        <me-ds-tp-equip>AUTISTA</me-ds-tp-equip>
+        <me-ds-nome>MICKEY</me-ds-nome>
+        <me-ds-cognome>MOUSE</me-ds-cognome>
+      </membro>
+      <membro type="Membro">
+        <me-ds-tp-equip>CAPO SERVIZIO</me-ds-tp-equip>
+        <me-ds-nome>MINNIE</me-ds-nome>
+        <me-ds-cognome>MOUSE</me-ds-cognome>
+      </membro>
+      <membro type="Membro">
+        <me-ds-tp-equip>SOCCORRITORE</me-ds-tp-equip>
+        <me-ds-nome>GOOFY</me-ds-nome>
+        <me-ds-cognome>GOOF</me-ds-cognome>
+      </membro>
+    </membri>
+    <pazienti type="array">
+      <paziente type="Paziente">
+        <pz-ds-cognome>BASETTONI</pz-ds-cognome>
+        <pz-ds-nome>ADAMO</pz-ds-nome>
+        <pz-ac-sesso>M</pz-ac-sesso>
+        <pz-dt-nascita type="date">1959-11-11</pz-dt-nascita>
+        <pz-vl-eta>60</pz-vl-eta>
+        <pz-fl-pz-pediatrico>N</pz-fl-pz-pediatrico>
+        <pz-ds-esito>REGOLARE</pz-ds-esito>
+        <pz-id-codice-r nil="true"/>
+        <pz-cd-coscienza>A</pz-cd-coscienza>
+        <pz-id-polso nil="true"/>
+        <pz-id-respiro>1</pz-id-respiro>
+        <pz-ds-loc-res>TOPOLINIA</pz-ds-loc-res>
+      </paziente>
+    </pazienti>
+  </missione>
