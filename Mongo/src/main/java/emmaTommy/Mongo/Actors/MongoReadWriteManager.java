@@ -4,7 +4,6 @@ package emmaTommy.Mongo.Actors;
 import java.net.UnknownHostException;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
@@ -36,12 +35,6 @@ public class MongoReadWriteManager {
 			DBObject dbObject = (DBObject) JSON.parse(jsonData);
 			
 			this.collection.insert(dbObject);
-	
-			DBCursor cursorDoc = this.collection.find();
-			while (cursorDoc.hasNext()) {
-				System.out.println(cursorDoc.next());
-			}
-	
 			System.out.println("Done");
 			
 		} catch (MongoException e) {
