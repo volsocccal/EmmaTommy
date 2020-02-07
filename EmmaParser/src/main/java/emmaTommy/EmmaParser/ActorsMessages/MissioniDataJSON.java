@@ -2,8 +2,8 @@ package emmaTommy.EmmaParser.ActorsMessages;
 
 public class MissioniDataJSON extends MissioniData {
 		
-	public int ID;
-    public final String json;
+	protected int ID;
+    protected final String json;
     
     public MissioniDataJSON(int ID, String json) {
     	super();
@@ -27,6 +27,14 @@ public class MissioniDataJSON extends MissioniData {
     		this.errorMsg = "JSON Data was Blanck";
     	}
     	return this.validData;
+    }
+    
+    public int getID() {
+    	return this.ID;
+    }
+    
+    public String getJSON() {
+    	return this.json; 
     }
 
 }

@@ -73,15 +73,15 @@ public class EmmaJSONProducer extends AbstractActor {
 		String method_name = "::onSend(): ";
 		
 		// Check if the received data is valid
-		logger.info(method_name + "Got new Missione JSON - ID=" + jsonData.ID);
+		logger.info(method_name + "Got new Missione JSON - ID=" + jsonData.getID());
 		if (!jsonData.validData) {
 			logger.error(method_name + "Something is wrong in the received data - " + jsonData.getErrorMsg());	
 		}
 		
 		// Send Over Kafka
 		try {
-			logger.info(method_name + "Writing missione with ID= " + jsonData.ID + " over topic " + this.topic);	
-			ProducerRecord<Integer, String> kafkaProducerRecord = new ProducerRecord<Integer, String>(this.topic, jsonData.ID, jsonData.json);
+			logger.info(method_name + "Writing missione with ID= " + jsonData.getID() + " over topic " + this.topic);	
+			ProducerRecord<Integer, String> kafkaProducerRecord = new ProducerRecord<Integer, String>(this.topic, jsonData.getID(), jsonData.getJSON());
 			this.kafkaProducer.send(kafkaProducerRecord);		
 		} catch (Exception e) {
 			logger.error(method_name + e.getClass().getSimpleName() + " - " + e.getMessage());

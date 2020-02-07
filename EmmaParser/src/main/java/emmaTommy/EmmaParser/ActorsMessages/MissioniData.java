@@ -6,14 +6,14 @@ public abstract class MissioniData {
 	public String errorMsg;
 	
 	 public MissioniData() {
-	      this.validData = false;
-	      this.errorMsg = "Data Not Yet Validated";
-	    }
-	    
-	    public abstract Boolean validateData();
-	    
-		public String getErrorMsg() {
-			return this.errorMsg;
-		}
+      this.validData = false;
+      this.errorMsg = "Data Not Yet Validated";
+    }
+    
+    public abstract Boolean validateData();
+    
+	public String getErrorMsg() {
+		return this.errorMsg;
+	}
 
 }

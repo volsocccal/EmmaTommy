@@ -33,6 +33,14 @@ public final class MissioniDataXML extends MissioniData {
     	}
     	return this.validData;
     }
+    
+    public ActorRef getProducerJSONFAKFA() {
+    	return this.producerJSONKAFKA;
+    }
+    
+    public String getXML() {
+    	return this.xml; 
+    }
 	
 }
 
