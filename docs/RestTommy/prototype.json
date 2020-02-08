@@ -1,0 +1,78 @@
+[{
+     "data" : "type:YYYYMMDD:required"
+    ,"codice_servizio" : "type:String:required"
+    ,"orario_inizio_servizio" : "type:HH:II:required"
+    ,"orario_arrivo_posto" : "type:HH:II"
+    ,"orario_partenza_posto" : "type:HH:II"
+    ,"orario_arrivo_ospedale" : "type:HH:II"
+    ,"orario_partenza_ospedale" : "type:HH:II"
+    ,"orario_fine_servizio" : "type:HH:II:required"
+    ,"tag_idintervento" : "type:String:required"
+    ,"tag_idautomezzo" : "type:String:required"
+    ,"km" : "type:Int:required"
+    ,"luogo_partenza" : "type:String"
+    ,"luogo_arrivo" : "type:String"
+    
+    ,"assistiti": [{
+        "codice_fiscale" : "type:String:required"
+       ,"cognome" : "type:String:required"
+       ,"nome" : "type:String:required"
+       ,"datanascita" : "type:YYYYMMDD"
+       ,"sesso" : "type:M/F"
+       ,"residenza" : "type:stringa"
+    },{
+        "codice_fiscale" : "type:String:required"
+       ,"cognome" : "type:String:required"
+       ,"nome" : "type:String:required"
+       ,"datanascita" : "type:YYYYMMDD"
+       ,"sesso" : "type:M/F"
+       ,"residenza" : "type:String"
+    }]
+    
+    ,"squadra": [{
+        "tag_idanagrafica" : "type:String:required"
+       ,"tag_idqualifica" : "type:String:required"
+    },{
+        "tag_idanagrafica" : "type:String:required"
+       ,"tag_idqualifica" : "type:String:required"
+    }]
+},
+{
+     "data" : "type:YYYYMMDD:required"
+    ,"codice_servizio" : "type:String:required"
+    ,"orario_inizio_servizio" : "type:HH:II:required"
+    ,"orario_arrivo_posto" : "type:HH:II"
+    ,"orario_partenza_posto" : "type:HH:II"
+    ,"orario_arrivo_ospedale" : "type:HH:II"
+    ,"orario_partenza_ospedale" : "type:HH:II"
+    ,"orario_fine_servizio" : "type:HH:II:required"
+    ,"tag_idintervento" : "type:String:required"
+    ,"tag_idautomezzo" : "type:String:required"
+    ,"km" : "type:Int:required"
+    ,"luogo_partenza" : "type:String"
+    ,"luogo_arrivo" : "type:String"
+    
+    ,"assistiti": [{
+        "codice_fiscale" : "type:String:required"
+       ,"cognome" : "type:String:required"
+       ,"nome" : "type:String:required"
+       ,"datanascita" : "type:YYYYMMDD"
+       ,"sesso" : "type:M/F"
+       ,"residenza" : "type:String"
+    },{
+        "codice_fiscale" : "type:String:required"
+       ,"cognome" : "type:String:required"
+       ,"nome" : "type:String:required"
+       ,"datanascita" : "type:YYYYMMDD"
+       ,"sesso" : "type:M/F"
+       ,"residenza" : "type:String"
+    }]
+    
+    ,"squadra": [{
+        "tag_idanagrafica" : "type:String:required"
+       ,"tag_idqualifica" : "type:String:required"
+    },{
+        "tag_idanagrafica" : "type:String:required"
+       ,"tag_idqualifica" : "type:String:required"
+    }]
+}]

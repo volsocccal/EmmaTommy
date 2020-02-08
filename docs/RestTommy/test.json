@@ -1,0 +1,78 @@
+[{
+     "data" : "20210101"
+    ,"codice_servizio" : "001"
+    ,"orario_inizio_servizio" : "08:00"
+    ,"orario_arrivo_posto" : ""
+    ,"orario_partenza_posto" : ""
+    ,"orario_arrivo_ospedale" : ""
+    ,"orario_partenza_ospedale" : ""
+    ,"orario_fine_servizio" : "10:00"
+    ,"tag_idintervento" : "EMER-H24"
+    ,"tag_idautomezzo" : "FW965AJ"
+    ,"km" : "10"
+    ,"luogo_partenza" : "Testing"
+    ,"luogo_arrivo" : "Prova"
+    
+    ,"assistiti": [{
+        "codice_fiscale" : "ANONIMO"
+       ,"cognome" : "PROVA"
+       ,"nome" : "Test"
+       ,"datanascita" : "19831118"
+       ,"sesso" : "M"
+       ,"residenza" : "Viareggio - Via Fasulla, 123"
+    },{
+        "codice_fiscale" : "ANONIMO"
+       ,"cognome" : "02-PROVA"
+       ,"nome" : "02-Test"
+       ,"datanascita" : "19831118"
+       ,"sesso" : "M"
+       ,"residenza" : "Viareggio - Via Fasulla, 456"
+    }]
+    
+    ,"squadra": [{
+        "tag_idanagrafica" : "PARDINI_SIMONE"
+       ,"tag_idqualifica" : "AUTISTA"
+    },{
+        "tag_idanagrafica" : "BROZZO_FABIO"
+       ,"tag_idqualifica" : "BLSD"
+    }]
+},
+{
+     "data" : "20210101"
+    ,"codice_servizio" : "002"
+    ,"orario_inizio_servizio" : "08:00"
+    ,"orario_arrivo_posto" : ""
+    ,"orario_partenza_posto" : ""
+    ,"orario_arrivo_ospedale" : ""
+    ,"orario_partenza_ospedale" : ""
+    ,"orario_fine_servizio" : "10:00"
+    ,"tag_idintervento" : "EMER-H24"
+    ,"tag_idautomezzo" : "FW965AJ"
+    ,"km" : "20"
+    ,"luogo_partenza" : "02-Testing"
+    ,"luogo_arrivo" : "02-Prova"
+    
+    ,"assistiti": [{
+        "codice_fiscale" : "ANONIMO"
+       ,"cognome" : "PROVA"
+       ,"nome" : "Test"
+       ,"datanascita" : "19831118"
+       ,"sesso" : "M"
+       ,"residenza" : "Viareggio - Via Fasulla, 123"
+    },{
+        "codice_fiscale" : "ANONIMO"
+       ,"cognome" : "02-PROVA"
+       ,"nome" : "02-Test"
+       ,"datanascita" : "19831118"
+       ,"sesso" : "M"
+       ,"residenza" : "Viareggio - Via Fasulla, 456"
+    }]
+    
+    ,"squadra": [{
+        "tag_idanagrafica" : "PARDINI_SIMONE"
+       ,"tag_idqualifica" : "AUTISTA"
+    },{
+        "tag_idanagrafica" : "BROZZO_FABIO"
+       ,"tag_idqualifica" : "BLSD"
+    }]
+}]
