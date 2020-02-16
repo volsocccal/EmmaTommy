@@ -72,6 +72,10 @@ public class EmmaXMLParserActor extends AbstractActor {
 		return receiveBuilder()
 				.match(MissioniDataXML.class, this::onParse)
 				.match(PostStop.class, signal -> onPostStop())
+				.match(String.class, s -> {
+					logger.info(this.getClass().getSimpleName() + " Received String message: {}", s);
+	             })
+				.matchAny(o -> logger.warn(this.getClass().getSimpleName() + " received unknown message"))
 				.build();
 	}
 

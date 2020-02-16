@@ -18,7 +18,7 @@ import emmaTommy.EmmaParser.ActorsMessages.MissioniDataJSON;
 public class EmmaJSONProducer extends AbstractActor {
 
 	protected org.apache.logging.log4j.Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
-	protected Properties properties;
+	protected Properties KafkaConsumerProps;
 	protected String topic;
 	protected KafkaProducer<Integer, String> kafkaProducer;
 	
@@ -33,7 +33,7 @@ public class EmmaJSONProducer extends AbstractActor {
 		String method_name = "::EmmaJSONProducer(): ";
 		
 		// Define and Load Configuration File
-		this.properties = new Properties();
+		this.KafkaConsumerProps = new Properties();
 		logger.trace(method_name + "Loading Properties FileName: " + confPath);
 		FileInputStream fileStream = null;
 		try {
@@ -43,20 +43,20 @@ public class EmmaJSONProducer extends AbstractActor {
 			throw new FileNotFoundException(e.getMessage());			
 		}
 		try {
-			this.properties.load(fileStream);
-		    logger.trace(method_name + this.properties.toString());
+			this.KafkaConsumerProps.load(fileStream);
+		    logger.trace(method_name + this.KafkaConsumerProps.toString());
 		} catch (IOException e) {
 			logger.fatal(e.getMessage());
 			throw new FileNotFoundException(e.getMessage());	
 		}
 		
 		// Read Topic
-		this.topic = this.properties.getProperty("topic");
-		this.properties.remove("topic");
+		this.topic = this.KafkaConsumerProps.getProperty("topic");
+		this.KafkaConsumerProps.remove("topic");
 		
 		// Create Kafka Producer	
 		//Thread.currentThread().setContextClassLoader(null);
-		this.kafkaProducer = new KafkaProducer<Integer, String> (this.properties);
+		this.kafkaProducer = new KafkaProducer<Integer, String> (this.KafkaConsumerProps);
 	}
 
 	@Override
@@ -64,6 +64,10 @@ public class EmmaJSONProducer extends AbstractActor {
 		return receiveBuilder()
 				.match(MissioniDataJSON.class, this::onSend)
 				.match(PostStop.class, signal -> onPostStop())
+				.match(String.class, s -> {
+					logger.info(this.getClass().getSimpleName() + " Received String message: {}", s);
+	             })
+				.matchAny(o -> logger.warn(this.getClass().getSimpleName() + " received unknown message"))
 				.build();
 	}
 

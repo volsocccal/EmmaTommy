@@ -14,7 +14,10 @@ logs/*
 data_xml_download/
 
 # Ignore the folder for jsons produced files (since it may contains sensible patient information)
-data_json_download/
+data_json_missioni_download/
+
+# Ignore the folder for jsons produced files (since it may contains sensible patient information)
+data_json_servizi_download/
 
 # Ignore the docs/xml 
 docs/xmlParsing_REST_MISSIONI

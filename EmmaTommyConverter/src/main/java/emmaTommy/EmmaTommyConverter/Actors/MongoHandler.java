@@ -9,14 +9,21 @@ import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 import com.mongodb.util.JSON;
 
-public class MongoReadWriteManager {
+import akka.actor.AbstractActor;
+import akka.actor.Props;
+
+public class MongoHandler extends AbstractActor {
 	
 	
 	protected Mongo mongo;
 	protected DB db;
 	protected DBCollection collection;
 	
-	public MongoReadWriteManager () {
+	public static Props props(String text, String confPath) {
+        return Props.create(MongoHandler.class, text, confPath);
+    }
+	
+	public MongoHandler (String confPath) {
 		
 		try {
 			this.mongo = new Mongo("localhost", 27017);
@@ -43,7 +50,8 @@ public class MongoReadWriteManager {
 		
 	}
 	
-    public static void main( String[] args ) {
-        System.out.println( "Hello World!" );
-    }
+	@Override
+	public Receive createReceive() {
+		return null;
+	}
 }

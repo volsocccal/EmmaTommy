@@ -103,6 +103,10 @@ public class EmmaOrchestrator extends AbstractActor {
         return receiveBuilder()
         		.match(Start.class, this::onStart)
         		.match(PostStop.class, signal -> onPostStop())
+        		.match(String.class, s -> {
+					logger.info(this.getClass().getSimpleName() + " Received String message: {}", s);
+	             })
+				.matchAny(o -> logger.warn(this.getClass().getSimpleName() + " received unknown message"))
 				.build();
     }
 
@@ -173,6 +177,7 @@ public class EmmaOrchestrator extends AbstractActor {
 		Scanner scan = new Scanner(System.in);
 		System.out.print("Press any key to quit . . . ");
 	    scan.nextLine();
+	    scan.close();
 
 	}
 
