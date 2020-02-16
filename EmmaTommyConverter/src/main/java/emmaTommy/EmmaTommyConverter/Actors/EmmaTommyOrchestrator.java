@@ -128,7 +128,6 @@ public class EmmaTommyOrchestrator extends AbstractActor {
     	
     	// Tell EmmaTommyConverterActor to Start
     	logger.info(method_name + "Tell EmmaTommyConsumerActor to Start Consuming");
-    	this.emmaTommyConsumerActorRef.tell("Hello", this.getSelf());
     	this.emmaTommyConsumerActorRef.tell(new StartConsuming(this.emmaTommyConverterActorRef), this.getSelf());
     	
     }

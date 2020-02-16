@@ -64,7 +64,13 @@ public class EmmaTommyKafkaConsumer extends AbstractActor {
 		this.KafkaConsumerProps.remove("kafkaPollingTime");
 		
 	    // Create the kafka consumer using props.
-		this.kafkaConsumer = new KafkaConsumer<>(this.KafkaConsumerProps);
+		try {
+			logger.trace(method_name + "Creating Kafka Consumer");
+			this.kafkaConsumer = new KafkaConsumer<>(this.KafkaConsumerProps);
+			logger.trace(method_name + "Created Kafka Consumer");
+		} catch (Exception e) {
+			logger.error(method_name + "Failed to Create Kafka Consumer - " + e.getMessage());
+		}
 		
 		// Set Conversion cicle to false
 		this.convert = false;
@@ -100,6 +106,7 @@ public class EmmaTommyKafkaConsumer extends AbstractActor {
 		}
 		
 		this.kafkaConsumer.subscribe(Collections.singletonList(this.topic));
+		logger.trace(method_name + "Subscribed to Kafka Topic: " + this.topic);
 		this.self().tell(new Consume(), this.getSelf());
 		
 		
