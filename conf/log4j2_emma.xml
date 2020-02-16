@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        <!--RollingFile name="EmmaRESTActor" fileName="../logs/Emma/EmmaRESTActor.log" filePattern="../logs/$${date:yyyy-MM}/Emma/EmmaRESTActor-%d{MM-dd-yyyy}-%i.log"-->
+        <RollingFile name="EmmaRESTActor" fileName="../logs/Emma/EmmaRESTActor.log" filePattern="../logs/Emma/EmmaRESTActor-%i.log">
+            <PatternLayout>
+                <Pattern>%d [%t] %-5p %c%m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!--TimeBasedTriggeringPolicy interval="24" modulate="true"/-->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="EmmaDataModel" fileName="../logs/Emma/EmmaDataModel.log" filePattern="../logs/Emma/EmmaDataModel-%i.log">
+            <PatternLayout>
+                <Pattern>%d [%t] %-5p %c%m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!--TimeBasedTriggeringPolicy interval="24" modulate="true"/-->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="EmmaXMLParserActor" fileName="../logs/Emma/EmmaXMLParserActor.log" filePattern="../logs/Emma/EmmaXMLParserActor-%i.log">
+            <PatternLayout>
+                <Pattern>%d [%t] %-5p %c%m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!--TimeBasedTriggeringPolicy interval="24" modulate="true"/-->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
+        <!--RollingFile name="EmmaJSONProducer" fileName="../logs/Emma/EmmaJSONProducer.log" filePattern="../logs/$${date:yyyy-MM}/Emma/EmmaJSONProducer-%d{MM-dd-yyyy}-%i.log"-->
+        <RollingFile name="EmmaJSONProducer" fileName="../logs/Emma/EmmaJSONProducer.log" filePattern="../logs/Emma/EmmaJSONProducer-%i.log">
+            <PatternLayout>
+                <Pattern>%d [%t] %-5p %c%m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!--TimeBasedTriggeringPolicy interval="24" modulate="true"/-->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
+        <!--RollingFile name="EmmaOrchestrator" fileName="../logs/Emma/EmmaOrchestrator.log" filePattern="../logs/$${date:yyyy-MM}/Emma/EmmaOrchestrator-%d{MM-dd-yyyy}-%i.log"-->
+        <RollingFile name="EmmaOrchestrator" fileName="../logs/Emma/EmmaOrchestrator.log" filePattern="../logs/Emma/EmmaOrchestrator-%i.log">
+            <PatternLayout>
+                <Pattern>%d [%t] %-5p %c%m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!--TimeBasedTriggeringPolicy interval="24" modulate="true"/-->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="EmmaRESTActor" level="trace">
+            <AppenderRef ref="EmmaRESTActor"/>
+        </Logger>
+        <Logger name="EmmaDataModel" level="trace">
+            <AppenderRef ref="EmmaDataModel"/>
+        </Logger>
+        <Logger name="EmmaXMLParserActor" level="trace">
+            <AppenderRef ref="EmmaXMLParserActor"/>
+        </Logger>
+         <Logger name="EmmaJSONProducer" level="trace">
+            <AppenderRef ref="EmmaJSONProducer"/>
+        </Logger>
+         <Logger name="EmmaOrchestrator" level="trace">
+            <AppenderRef ref="EmmaOrchestrator"/>
+        </Logger>
+        <Root level="warn">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
+    
+    
+ 
