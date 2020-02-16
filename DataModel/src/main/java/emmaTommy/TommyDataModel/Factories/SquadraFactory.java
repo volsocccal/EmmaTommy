@@ -1,4 +1,4 @@
-package emmaTommy.TommyDataModel;
+package emmaTommy.TommyDataModel.Factories;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -9,6 +9,9 @@ import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 import org.eclipse.persistence.oxm.MediaType;
+
+import emmaTommy.TommyDataModel.Squadra;
+import emmaTommy.TommyDataModel.TommyDataModelEnums;
 
 
 public class SquadraFactory {

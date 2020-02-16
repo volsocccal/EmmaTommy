@@ -1,10 +1,12 @@
 package emmaTommy.EmmaTommyDataConverter.Actors;
 
 import akka.actor.typed.PostStop;
+import emmaTommy.EmmaDataModel.Missione;
+import emmaTommy.EmmaDataModel.Factories.MissioneFactory;
 import emmaTommy.EmmaTommyDataConverter.ActorsMessages.MissioniDataJSON;
 import emmaTommy.EmmaTommyDataConverter.ActorsMessages.ServizioDataJSON;
 import emmaTommy.TommyDataModel.Servizio;
-import emmaTommy.TommyDataModel.ServizioFactory;
+import emmaTommy.TommyDataModel.Factories.ServizioFactory;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

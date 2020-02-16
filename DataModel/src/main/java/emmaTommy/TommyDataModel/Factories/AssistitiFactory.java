@@ -1,4 +1,4 @@
-package emmaTommy.TommyDataModel;
+package emmaTommy.TommyDataModel.Factories;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -10,6 +10,10 @@ import javax.xml.bind.Unmarshaller;
 import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 import org.eclipse.persistence.oxm.MediaType;
 
+import emmaTommy.TommyDataModel.Assistiti;
+import emmaTommy.TommyDataModel.Assistito;
+import emmaTommy.TommyDataModel.Squadra;
+
 public class AssistitiFactory {
 
 	/** Empty Constructor */
@@ -19,6 +23,7 @@ public class AssistitiFactory {
 		return new Assistiti();
 	}
 	
+	@SuppressWarnings("deprecation")
 	public Assistiti buildAssistiti(emmaTommy.EmmaDataModel.Pazienti pazienti) {
 		
 		// Build new Empty Assistiti
@@ -98,7 +103,7 @@ public class AssistitiFactory {
 		// Validate Object
 		ass.validateObject();
 		
-		// Return Squadra
+		// Return Assistiti
 		return ass;
 		
 	}

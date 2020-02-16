@@ -1,18 +1,17 @@
-package emmaTommy.TommyDataModel;
+package emmaTommy.TommyDataModel.Factories;
 
 import java.io.StringReader;
-import java.util.Date;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 import org.eclipse.persistence.oxm.MediaType;
 
 import emmaTommy.EmmaDataModel.Missione;
-import emmaTommy.EmmaDataModel.Missioni;
+import emmaTommy.TommyDataModel.Servizio;
+import emmaTommy.TommyDataModel.TommyDataModelEnums;
 
 public class ServizioFactory {
 	
@@ -157,7 +156,7 @@ public class ServizioFactory {
 		// Validate Object
 		s.validateObject();
 		
-		// Return Missioni
+		// Return Servizio
 		return s;
 		
 	}
@@ -178,7 +177,7 @@ public class ServizioFactory {
 		// Validate Object
 		s.validateObject();
 		
-		// Return Missioni
+		// Return Servizio
 		return s;
 		
 	}
