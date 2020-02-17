@@ -5,10 +5,14 @@ import java.util.Date;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.eclipse.persistence.oxm.annotations.XmlDiscriminatorNode;
+
 import emmaTommy.DataModel.DateAdapter;
 
 @XmlRootElement(name = "paziente")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Paziente")
+@XmlAccessorType (XmlAccessType.FIELD)
+@XmlDiscriminatorNode("@@type")
 public class Paziente extends EmmaDataModel {
 	
 	public Paziente() {

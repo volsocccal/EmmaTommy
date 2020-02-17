@@ -8,11 +8,16 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+import org.eclipse.persistence.oxm.annotations.XmlDiscriminatorNode;
 
 import emmaTommy.EmmaDataModel.Membro;
  
 @XmlRootElement(name = "squadra")
+@XmlType(name = "Squadra")
 @XmlAccessorType (XmlAccessType.FIELD)
+@XmlDiscriminatorNode("@@type")
 public class Squadra extends TommyDataModel
 {
 	

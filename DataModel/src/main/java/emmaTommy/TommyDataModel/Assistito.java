@@ -5,10 +5,12 @@ import java.util.Date;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+
 import emmaTommy.DataModel.DateAdapter;
 
 @XmlRootElement(name = "assistito")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Assistito")
+@XmlAccessorType (XmlAccessType.FIELD)
 public class Assistito extends TommyDataModel {
 	
 	public Assistito() {

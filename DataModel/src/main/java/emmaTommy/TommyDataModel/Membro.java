@@ -2,8 +2,12 @@ package emmaTommy.TommyDataModel;
 
 import javax.xml.bind.annotation.*;
 
+import org.eclipse.persistence.oxm.annotations.XmlDiscriminatorNode;
+
 @XmlRootElement(name = "membro")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Membro")
+@XmlAccessorType (XmlAccessType.FIELD)
+@XmlDiscriminatorNode("@@type")
 public class Membro extends TommyDataModel {
     	
 	public Membro() {

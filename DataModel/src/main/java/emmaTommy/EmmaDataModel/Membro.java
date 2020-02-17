@@ -3,7 +3,8 @@ package emmaTommy.EmmaDataModel;
 import javax.xml.bind.annotation.*;
 
 @XmlRootElement(name = "membro")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Membro")
+@XmlAccessorType (XmlAccessType.FIELD)
 public class Membro extends EmmaDataModel {
     	
 	public Membro() {

@@ -72,7 +72,7 @@ public class EmmaTommyKafkaConsumer extends AbstractActor {
 			logger.error(method_name + "Failed to Create Kafka Consumer - " + e.getMessage());
 		}
 		
-		// Set Conversion cicle to false
+		// Set Conversion cycle to false
 		this.convert = false;
 		
 	}
@@ -105,15 +105,19 @@ public class EmmaTommyKafkaConsumer extends AbstractActor {
 			this.convert = true;
 		}
 		
-		this.kafkaConsumer.subscribe(Collections.singletonList(this.topic));
-		logger.trace(method_name + "Subscribed to Kafka Topic: " + this.topic);
-		this.self().tell(new Consume(), this.getSelf());
-		
+		try {
+			this.kafkaConsumer.subscribe(Collections.singletonList(this.topic));
+			logger.trace(method_name + "Subscribed to Kafka Topic: " + this.topic);
+			this.self().tell(new Consume(), this.getSelf());
+		} catch (Exception e) {
+			logger.error(method_name + "Error in subscribing to Topic " + this.topic + ": " + e.getMessage());
+		}
 		
 	}
 	
 	protected void consume(Consume cons) {
 		String method_name = "::consume(): ";
+		logger.trace(method_name + "Received a consume msg");
 		@SuppressWarnings("deprecation")
 		final ConsumerRecords<Integer, String> consumerRecords = this.kafkaConsumer.poll(kafkaPollingTime);      	
 		consumerRecords.forEach(record -> {

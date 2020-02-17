@@ -5,10 +5,14 @@ import java.util.Date;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.eclipse.persistence.oxm.annotations.XmlDiscriminatorNode;
+
 import emmaTommy.DataModel.DateTimeAdapter;
 
 @XmlRootElement(name = "tratta")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Tratta")
+@XmlAccessorType (XmlAccessType.FIELD)
+@XmlDiscriminatorNode("@@type")
 public class Tratta extends EmmaDataModel {
 	
 	public Tratta() {
@@ -88,9 +92,10 @@ public class Tratta extends EmmaDataModel {
 		// Check DateTimes
 		if (this.dataArrivo != null) {
 			if (this.dataPartenza != null) {
-				if (this.dataPartenza.after(this.dataArrivo)) { // Check timeline
+				if (this.dataArrivo.after(this.dataPartenza)) { // Check timeline
 					this.validState = false;
-					errorMsg += "partenza was afer arrivo";
+					errorMsg += "arrivo " + this.dataArrivo.toGMTString() 
+							 + " was afer partenza " + this.dataPartenza.toGMTString();
 					this.errorList.add(errorMsg);
 					logger.warn(errorMsg);
 				}

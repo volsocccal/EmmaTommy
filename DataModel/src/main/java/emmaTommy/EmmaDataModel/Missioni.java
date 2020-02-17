@@ -8,11 +8,16 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+import org.eclipse.persistence.oxm.annotations.XmlDiscriminatorNode;
 
 import emmaTommy.EmmaDataModel.Missione;
  
 @XmlRootElement(name = "missioni")
+@XmlType(name = "Missioni")
 @XmlAccessorType (XmlAccessType.FIELD)
+@XmlDiscriminatorNode("@@type")
 public class Missioni extends EmmaDataModel {
 	
 	/** Empty Constructor */
@@ -49,11 +54,8 @@ public class Missioni extends EmmaDataModel {
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
 		}
-		if (this.type.compareTo("array") != 0) {
-			this.validState = false;
-			errorMsg += "type wasnt array";
-			this.errorList.add(errorMsg);
-			logger.warn(errorMsg);
+		if (this.type.compareTo(this.getClass().getSimpleName()) != 0) {
+			this.type = this.getClass().getSimpleName();
 		}
 				
 		// Check Missioni List

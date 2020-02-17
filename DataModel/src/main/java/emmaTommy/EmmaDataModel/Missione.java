@@ -3,12 +3,16 @@ package emmaTommy.EmmaDataModel;
 import java.util.Date;
 import javax.xml.bind.annotation.*;
 
+import org.eclipse.persistence.oxm.annotations.XmlDiscriminatorNode;
+
 import emmaTommy.EmmaDataModel.Membri;
 import emmaTommy.EmmaDataModel.Pazienti;
 import emmaTommy.EmmaDataModel.Tratte;
 
 @XmlRootElement(name = "missione")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Missione")
+@XmlAccessorType (XmlAccessType.FIELD)
+@XmlDiscriminatorNode("@@type")
 public class Missione extends EmmaDataModel {
 
 	/** Empty Constructor */
@@ -63,7 +67,7 @@ public class Missione extends EmmaDataModel {
 			logger.warn(errorMsg);
 			errorMsg = this.getClass().getSimpleName() + ": ";
 		} else {
-			Boolean pazientiValidState = this.pazienti.getValidState();
+			Boolean pazientiValidState = this.pazienti.validateObject();
 			if (!pazientiValidState) {
 				this.validState = false;
 				this.errorList.addAll(this.pazienti.getErrorList());
@@ -78,7 +82,7 @@ public class Missione extends EmmaDataModel {
 			logger.warn(errorMsg);
 			errorMsg = this.getClass().getSimpleName() + ": ";
 		} else {
-			Boolean tratteValidState = this.tratte.getValidState();
+			Boolean tratteValidState = this.tratte.validateObject();
 			if (!tratteValidState) {
 				this.validState = false;
 				this.errorList.addAll(this.tratte.getErrorList());
@@ -93,7 +97,7 @@ public class Missione extends EmmaDataModel {
 			logger.warn(errorMsg);
 			errorMsg = this.getClass().getSimpleName() + ": ";
 		} else {
-			Boolean membriValidState = this.membri.getValidState();
+			Boolean membriValidState = this.membri.validateObject();
 			if (!membriValidState) {
 				this.validState = false;
 				this.errorList.addAll(this.membri.getErrorList());
