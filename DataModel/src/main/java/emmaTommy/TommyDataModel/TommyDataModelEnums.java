@@ -8,7 +8,7 @@ public class TommyDataModelEnums {
 
 	// Qualifiche Tommy
 	public static final String AUTISTA = "AUT";
-	public static final String CAPOEQUIPAGGIO = "CAPO";
+	public static final String CAPOEQUIPAGGIO = "CAP";
 	public static final String SOCCORRITORE_ADD = "SOCC_ADD";
 	public static final String SOCCORRITORE = "SOCC";
 	public static final ArrayList<String> acceptedQualifiche = new ArrayList<String>() { 

@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.persistence.oxm.annotations.XmlDiscriminatorNode;
@@ -106,6 +107,7 @@ public class Squadra extends TommyDataModel
 	/** type Attribute */
 	@XmlAttribute(name = "type")
 	protected String type = "array";	
+	@XmlTransient()
 	public void setType(String type) {
 		this.type = type;
 	}

@@ -42,7 +42,7 @@ public class ServizioFactory {
 		s.setData(m.getInizioMissione());
 		
 		// "codice_servizio" : "type:String:required"
-		s.setCodiceServizio(m.getCodiceEvento());
+		s.setCodiceServizio(Integer.toString(m.getCodiceMissione()));
 		
 		// orario_inizio_servizio" : "type:HH:II:required"
 		s.setOrarioInizioServizio(m.getInizioMissione());

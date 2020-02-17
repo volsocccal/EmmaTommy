@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
  
 @XmlRootElement(name = "Assistiti")
 @XmlAccessorType (XmlAccessType.FIELD)
@@ -98,6 +99,7 @@ public class Assistiti extends TommyDataModel
 	
 	/** type Attribute */
 	@XmlAttribute(name = "type")
+	@XmlTransient()
 	protected String type = "array";	
 	public void setType(String type) {
 		this.type = type;
