@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.persistence.oxm.annotations.XmlDiscriminatorNode;
 
-import emmaTommy.DataModel.DateAdapter;
+import emmaTommy.DataModel.DateAdapterYYMMDDdash;
 
 @XmlRootElement(name = "paziente")
 @XmlType(name = "Paziente")
@@ -172,12 +172,14 @@ public class Paziente extends EmmaDataModel {
 		if (this.sesso != null) {
 			if (!this.sesso.isEmpty()) {
 				if (!this.sesso.isBlank()) {
-					if (sesso.compareToIgnoreCase(EmmaDataModelEnums.MALE_GENDER) != 0 
-						&& sesso.compareToIgnoreCase(EmmaDataModelEnums.FEMALE_GENDER) != 0) {
+					if (this.sesso.compareToIgnoreCase(EmmaDataModelEnums.MALE_GENDER) != 0 
+						&& this.sesso.compareToIgnoreCase(EmmaDataModelEnums.FEMALE_GENDER) != 0) {
 						this.validState = false;
-						errorMsg += "sesso wasn't an accepted value (" + sesso + ")";
+						errorMsg += "sesso wasn't an accepted value (" + this.sesso + "), setting it to blanck";
 						this.errorList.add(errorMsg);
 						logger.warn(errorMsg);
+						this.sesso = "";
+						this.validState = true;
 					}
 				}
 			}
@@ -317,7 +319,7 @@ public class Paziente extends EmmaDataModel {
 	
 	/** Data di Nascita del Paziente */	
 	@XmlElement(name = "pz-dt-nascita", required = false)
-	@XmlJavaTypeAdapter(DateAdapter.class)
+	@XmlJavaTypeAdapter(DateAdapterYYMMDDdash.class)
 	protected Date dataNascita;
 	public void setDataNascita(Date dataNascita) {
 		this.dataNascita = dataNascita;

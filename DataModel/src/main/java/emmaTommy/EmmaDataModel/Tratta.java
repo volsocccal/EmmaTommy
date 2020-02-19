@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.persistence.oxm.annotations.XmlDiscriminatorNode;
 
-import emmaTommy.DataModel.DateTimeAdapter;
+import emmaTommy.DataModel.DateTimeAdapterYYYYMMDDTHHmmssZ;
 
 @XmlRootElement(name = "tratta")
 @XmlType(name = "Tratta")
@@ -134,7 +134,7 @@ public class Tratta extends EmmaDataModel {
 	
 	/** Data di Partenza */
 	@XmlElement(name = "tr-dt-partenza", required = true)	
-	@XmlJavaTypeAdapter(DateTimeAdapter.class)
+	@XmlJavaTypeAdapter(DateTimeAdapterYYYYMMDDTHHmmssZ.class)
 	protected Date dataPartenza;	
 	public void setDataPartenza(Date dataPartenza) {
 		this.dataPartenza = dataPartenza;
@@ -145,7 +145,7 @@ public class Tratta extends EmmaDataModel {
 	
 	/** Data di Arrivo */	
 	@XmlElement(name = "tr-dt-arrivo", required = true)	
-	@XmlJavaTypeAdapter(DateTimeAdapter.class)
+	@XmlJavaTypeAdapter(DateTimeAdapterYYYYMMDDTHHmmssZ.class)
 	protected Date dataArrivo;	
 	public void setDataArrivo(Date dataArrivo) {
 		this.dataArrivo = dataArrivo;
