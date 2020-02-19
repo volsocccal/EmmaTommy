@@ -40,22 +40,27 @@ public class SquadraFactory {
 		}
 				
 		// Build new Empty Membri list
-		ArrayList<emmaTommy.TommyDataModel.Membro> membri = new ArrayList<emmaTommy.TommyDataModel.Membro>();
+		ArrayList<emmaTommy.TommyDataModel.Membro> membriSquadra = new ArrayList<emmaTommy.TommyDataModel.Membro>();
 		
 		// Iterate over every member
 		for (emmaTommy.EmmaDataModel.Membro m: membriMissione.getMembri()) {
 			if (m != null) {
-				String tag_idanagrafica = "";
 				if (m.getCognome() != null && m.getNome() != null) {
-					tag_idanagrafica = m.getNome() + "_" + m.getCognome();
+					if (!m.getCognome().isBlank() && !m.getNome().isBlank()) {
+						String tag_idanagrafica = m.getNome() + "_" + m.getCognome();
+						String tag_idqualifica = this.qualificaConverter(m.getQualifica());
+						emmaTommy.TommyDataModel.Membro newMembro = new emmaTommy.TommyDataModel.Membro(); 
+						newMembro.setTagIdAnagrafica(tag_idanagrafica);
+						newMembro.setTagIdQualifica(tag_idqualifica);
+						membriSquadra.add(newMembro);
+					}
 				}			
-				String tag_idqualifica = this.qualificaConverter(m.getQualifica());
-				emmaTommy.TommyDataModel.Membro newMembro = new emmaTommy.TommyDataModel.Membro(); 
-				newMembro.setTagIdAnagrafica(tag_idanagrafica);
-				newMembro.setTagIdQualifica(tag_idqualifica);
-				membri.add(newMembro);
+				
 			}
 		}
+		
+		// Set membriSquadra
+		s.setMembri(membriSquadra);
 		
 		// Return squadra		
 		return s;

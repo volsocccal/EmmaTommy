@@ -8,8 +8,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.eclipse.persistence.oxm.annotations.XmlDiscriminatorNode;
+import emmaTommy.DataModel.DateAdapterYYMMDD;
+import emmaTommy.DataModel.DateTimeAdapterHHmm;
 
 @XmlRootElement(name = "servizio")
 @XmlType(name = "Servizio")
@@ -20,6 +22,7 @@ public class Servizio extends TommyDataModel {
 	
 	// "data" : "type:YYYYMMDD:required"
 	@XmlElement(name = "data", required = true)	
+	@XmlJavaTypeAdapter(DateAdapterYYMMDD.class)
 	protected Date data;
 	public void setData(Date data) {
 		this.data = data;
@@ -40,6 +43,7 @@ public class Servizio extends TommyDataModel {
 	
 	// orario_inizio_servizio" : "type:HH:II:required"
 	@XmlElement(name = "orario_inizio_servizio", required = true)	
+	@XmlJavaTypeAdapter(DateTimeAdapterHHmm.class)
 	protected Date orario_inizio_servizio;
 	public void setOrarioInizioServizio (Date orario_inizio_servizio) {
 		this.orario_inizio_servizio = orario_inizio_servizio;
@@ -50,6 +54,7 @@ public class Servizio extends TommyDataModel {
 	
 	// orario_arrivo_posto" : "type:HH:II"
 	@XmlElement(name = "orario_arrivo_posto", required = false)	
+	@XmlJavaTypeAdapter(DateTimeAdapterHHmm.class)
 	protected Date orario_arrivo_posto;
 	public void setOrarioArrivoPosto (Date orario_arrivo_posto) {
 		this.orario_arrivo_posto = orario_arrivo_posto;
@@ -60,6 +65,7 @@ public class Servizio extends TommyDataModel {
 	
 	// orario_partenza_posto" : "type:HH:II"
 	@XmlElement(name = "orario_partenza_posto", required = false)	
+	@XmlJavaTypeAdapter(DateTimeAdapterHHmm.class)
 	protected Date orario_partenza_posto;
 	public void setOrarioPartenzaPosto (Date orario_partenza_posto) {
 		this.orario_partenza_posto = orario_partenza_posto;
@@ -69,7 +75,8 @@ public class Servizio extends TommyDataModel {
 	}
 	
 	// orario_arrivo_ospedale" : "type:HH:II"
-	@XmlElement(name = "orario_arrivo_ospedale", required = false)	
+	@XmlElement(name = "orario_arrivo_ospedale", required = false)
+	@XmlJavaTypeAdapter(DateTimeAdapterHHmm.class)
 	protected Date orario_arrivo_ospedale; 
 	public void setOrarioArrivoOspedale (Date orario_arrivo_ospedale) {
 		this.orario_arrivo_ospedale = orario_arrivo_ospedale;
@@ -79,7 +86,8 @@ public class Servizio extends TommyDataModel {
 	}
 	
 	// orario_partenza_ospedale" : "type:HH:II"
-	@XmlElement(name = "orario_partenza_ospedale", required = false)	
+	@XmlElement(name = "orario_partenza_ospedale", required = false)
+	@XmlJavaTypeAdapter(DateTimeAdapterHHmm.class)
 	protected Date orario_partenza_ospedale;
 	public void setOrarioPartenzaOspedale (Date orario_partenza_ospedale) {
 		this.orario_partenza_ospedale = orario_arrivo_ospedale;
@@ -90,6 +98,7 @@ public class Servizio extends TommyDataModel {
 	
 	// orario_fine_servizio" : "type:HH:II:required"
 	@XmlElement(name = "orario_fine_servizio", required = true)	
+	@XmlJavaTypeAdapter(DateTimeAdapterHHmm.class)
 	protected Date orario_fine_servizio;
 	public void setOrarioFineServizio (Date orario_fine_servizio) {
 		this.orario_fine_servizio = orario_fine_servizio;

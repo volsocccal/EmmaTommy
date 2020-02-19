@@ -5,8 +5,7 @@ import java.util.Date;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
-import emmaTommy.DataModel.DateAdapter;
+import emmaTommy.DataModel.DateAdapterYYMMDD;
 
 @XmlRootElement(name = "assistito")
 @XmlType(name = "Assistito")
@@ -117,7 +116,7 @@ public class Assistito extends TommyDataModel {
 	
 	/** datanascita" : "type:YYYYMMDD"*/	
 	@XmlElement(name = "datanascita", required = false)
-	@XmlJavaTypeAdapter(DateAdapter.class)
+	@XmlJavaTypeAdapter(DateAdapterYYMMDD.class)
 	protected Date dataNascita;
 	public void setDataNascita(Date dataNascita) {
 		this.dataNascita = dataNascita;
