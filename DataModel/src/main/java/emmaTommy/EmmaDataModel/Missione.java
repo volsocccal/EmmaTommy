@@ -331,7 +331,7 @@ public class Missione extends EmmaDataModel {
 	}
 	
 	/** Comune dove avviene l'intervento */
-	@XmlElement(name = "me-sc-ds-comune-nome", required = true)	
+	@XmlElement(name = "sc-ds-comune", required = true)	
 	protected String comuneIntervento;
 	public void setComuneIntervento(String comuneIntervento) {
 		this.comuneIntervento = comuneIntervento;
@@ -341,7 +341,7 @@ public class Missione extends EmmaDataModel {
 	}
 	
 	/** Motivo della Chiamata */
-	@XmlElement(name = "sc-ds-det-mot", required = true)	
+	@XmlElement(name = "sc-ds-motivo", required = true)	
 	protected String motivoChiamata;
 	public void setMotivoChiamata(String motivoChiamata) {
 		this.motivoChiamata = motivoChiamata;
@@ -432,7 +432,7 @@ public class Missione extends EmmaDataModel {
 	}
 	
 	/** Via di Partenza della Missione */
-	@XmlElement(name = "mi-ds-loc-part", required = true)	
+	@XmlElement(name = "mi-ds-via-part", required = true)	
 	protected String partenzaMissioneVia;
 	public void setPartenzaMissioneVia(String partenzaMissioneVia) {
 		this.partenzaMissioneVia =partenzaMissioneVia;
