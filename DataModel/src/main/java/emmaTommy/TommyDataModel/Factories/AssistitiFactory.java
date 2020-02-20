@@ -46,7 +46,11 @@ public class AssistitiFactory {
 		// Iterate over every member
 		for (emmaTommy.EmmaDataModel.Paziente p: pazienti.getPazienti()) {
 			if (p != null) {
-				if (p.getNome() != null && p.getCognome() != null) {					
+				
+				emmaTommy.TommyDataModel.Assistito newAssistito;
+				
+				// Anagrafica
+				if (p.getNome() != null && p.getCognome() != null) {						
 					String codiceFiscale = p.getCognome() + "_" + p.getNome();
 					if (p.getDataNascita() != null) {
 						int correctYear = p.getDataNascita().getYear() + 1900;
@@ -63,18 +67,46 @@ public class AssistitiFactory {
 						} else {
 							codiceFiscale += p.getDataNascita().getDay();
 						}
-					}
-					emmaTommy.TommyDataModel.Assistito newAssistito = new emmaTommy.TommyDataModel.Assistito();
+					}					
+					newAssistito = new emmaTommy.TommyDataModel.Assistito();
 					newAssistito.setCodiceFiscale(codiceFiscale);
 					newAssistito.setCognome(p.getCognome());
 					newAssistito.setNome(p.getNome());
 					newAssistito.setSesso(p.getSesso());
 					newAssistito.setComuneResidenza(p.getComuneResidenza());
 					newAssistito.setDataNascita(p.getDataNascita());
-					assistitiList.add(newAssistito);
+					newAssistito.setNote(p.getEsitoTrasporto());				
 				} else { // If nome or cognome are null, add the Assistito Anonimo Instead
-					assistitiList.add(this.buildAssistitoAnonimo());
+					newAssistito = this.buildAssistitoAnonimo();
 				}
+				
+				// Dati Paziente
+				String esitoTrasporto = p.getEsitoTrasporto();
+				String coscienza = p.getCoscienza();
+				int FC = p.getFC();
+				int FR = p.getFR();
+				String pediatric = p.getPediatrico();
+				
+				// Note
+				String notePaziente = esitoTrasporto;
+				if (coscienza != null && !coscienza.isBlank()) {
+					notePaziente += "\n" + "Coscienza: " + coscienza;
+				}
+				if (FC > 0) {
+					notePaziente += "\n" + "FC: " + FC;
+				}
+				if (FR >= 0) {
+					notePaziente += "\n" + "FR Cat: " + FR;
+				}
+				if (pediatric != null && !pediatric.isBlank()) {
+					notePaziente += "\n" + "Pediatric: " + pediatric;
+				}
+				newAssistito.setNote(notePaziente);
+				
+				// Add new Assistito to the List
+				assistitiList.add(newAssistito);
+				
+				
 			} else { // If patient is null, add the Assistito Anonimo Instead
 				assistitiList.add(this.buildAssistitoAnonimo());
 			}

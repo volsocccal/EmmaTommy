@@ -139,7 +139,7 @@ public class Assistito extends TommyDataModel {
 	/** note" : "type:String" */	
 	@XmlElement(name = "note", required = false)	
 	protected String note;
-	public void setNOte(String note) {
+	public void setNote(String note) {
 		this.note = note;
 	}
 	public String getNote() {
