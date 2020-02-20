@@ -23,24 +23,21 @@ public class SquadraFactory {
 		return new Squadra();
 	}
 	
-	public Squadra buildSquadra(emmaTommy.EmmaDataModel.Membri membriMissione) {
+	public ArrayList<emmaTommy.TommyDataModel.Membro> buildSquadra(emmaTommy.EmmaDataModel.Membri membriMissione) {
 		
-		// Build new Empty Squadra
-		Squadra s = new Squadra();
+		// Build new Empty Membri list
+		ArrayList<emmaTommy.TommyDataModel.Membro> membriSquadra = new ArrayList<emmaTommy.TommyDataModel.Membro>();
 				
 		// Check for null or empty Squadra
 		if (membriMissione == null) {
-			return s;
+			return membriSquadra;
 		}
 		if (membriMissione.getMembri() == null) {
-			return s;
+			return membriSquadra;
 		}
 		if (membriMissione.getMembri().size() == 0) {
-			return s;
-		}
-				
-		// Build new Empty Membri list
-		ArrayList<emmaTommy.TommyDataModel.Membro> membriSquadra = new ArrayList<emmaTommy.TommyDataModel.Membro>();
+			return membriSquadra;
+		}		
 		
 		// Iterate over every member
 		for (emmaTommy.EmmaDataModel.Membro m: membriMissione.getMembri()) {
@@ -59,11 +56,8 @@ public class SquadraFactory {
 			}
 		}
 		
-		// Set membriSquadra
-		s.setMembri(membriSquadra);
-		
 		// Return squadra		
-		return s;
+		return membriSquadra;
 		
 	}
 	

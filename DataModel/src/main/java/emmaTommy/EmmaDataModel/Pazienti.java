@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.persistence.oxm.annotations.XmlDiscriminatorNode;
@@ -32,10 +33,12 @@ public class Pazienti extends EmmaDataModel {
 	 * 
 	 * @return true if the object is valid, false otherwise
 	 */
+	@XmlTransient
 	public Boolean validateObject() {
 		String errorMsg = this.getClass().getSimpleName() + ": ";
 		
 		// Check Type
+		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.type == null) {
 			this.validState = false;
 			errorMsg += "type was NULL";
@@ -59,6 +62,8 @@ public class Pazienti extends EmmaDataModel {
 		}
 				
 		// Check Pazienti List
+		errorMsg = this.getClass().getSimpleName() + ": ";
+		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.pazienti == null) {
 			this.validState = false;
 			errorMsg += "Pazienti list was NULL";

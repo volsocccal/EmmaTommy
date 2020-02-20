@@ -6,9 +6,9 @@ import java.util.Date;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-public class DateTimeAdapterYYYYMMDDTHHmmssZ extends XmlAdapter<String, Date> {
+public class DateTimeAdapterHHmm extends XmlAdapter<String, Date> {
  
-    private static final String DATE_FORMAT_STRING = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    private static final String DATE_FORMAT_STRING = "HH:mm";
  
     @Override
     public String marshal(Date date) {

@@ -104,6 +104,14 @@ public class EmmaXMLParserActor extends AbstractActor {
 		// Logger Method Name
 		String method_name = "::parseXML(): ";
 		
+		// Check Input
+		if (xml == null) {
+			throw new NullPointerException ("Given XML was null");
+		}
+		if (xml.isBlank()) {
+			throw new NullPointerException ("Given XML was empty");
+		}
+		
 		// Create String Reader
 		StringReader xmlReader = new StringReader(xml);
 		
@@ -135,7 +143,10 @@ public class EmmaXMLParserActor extends AbstractActor {
 					throw new RuntimeException("");
 				}
 				if (!missione.getValidState()) {
-					logger.error(method_name + "missione " + codiceMissione + "was not valid. I will parse it for bookkeping");
+					logger.error(method_name + "missione " + codiceMissione + " was not valid. I will parse it for bookkeping");
+					logger.error(method_name + "missione " + codiceMissione + " invalid mission stack: \n" + missione.getErrorListFormatted());
+				} else {
+					logger.info(method_name + "missione " + codiceMissione + " was valid.");
 				}
 				String missione_JSON = missione.toJSON();
 				if (this.sendJSONOverKAFKA) {

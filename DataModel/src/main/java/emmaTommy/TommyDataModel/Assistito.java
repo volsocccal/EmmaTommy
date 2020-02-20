@@ -50,10 +50,9 @@ public class Assistito extends TommyDataModel {
 	 * 
 	 * @return true if the object is valid, false otherwise
 	 */
+	@XmlTransient
 	public Boolean validateObject() {
 		String errorMsg = this.getClass().getSimpleName() + ": ";
-		
-		
 		
 		// Check Sesso
 		if (this.sesso != null) {

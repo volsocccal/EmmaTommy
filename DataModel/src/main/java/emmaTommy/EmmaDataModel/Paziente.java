@@ -139,10 +139,12 @@ public class Paziente extends EmmaDataModel {
 	 * 
 	 * @return true if the object is valid, false otherwise
 	 */
+	@XmlTransient
 	public Boolean validateObject() {
 		String errorMsg = this.getClass().getSimpleName() + ": ";
 		
 		// Check Type
+		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.type == null) {
 			this.validState = false;
 			errorMsg += "type was NULL";
@@ -169,6 +171,7 @@ public class Paziente extends EmmaDataModel {
 		}
 		
 		// Check Sesso
+		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.sesso != null) {
 			if (!this.sesso.isEmpty()) {
 				if (!this.sesso.isBlank()) {
@@ -186,6 +189,7 @@ public class Paziente extends EmmaDataModel {
 		}
 		
 		// Check Età
+		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.eta < 0) {
 			this.validState = false;
 			errorMsg += "eta was less than zero" + this.eta + ")";
@@ -194,6 +198,7 @@ public class Paziente extends EmmaDataModel {
 		}
 		
 		// Check Pediatrico
+		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.pediatrico != null) {
 			if (!this.pediatrico.isEmpty()) {
 				if (!this.pediatrico.isBlank()) {
@@ -209,6 +214,7 @@ public class Paziente extends EmmaDataModel {
 		}
 		
 		// Esito Trasporto
+		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.esitoTrasporto == null) {
 			this.validState = false;
 			errorMsg += "esitoTrasporto was NULL";
@@ -227,7 +233,7 @@ public class Paziente extends EmmaDataModel {
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
 		}
-		else if (!EmmaDataModelEnums.acceptedTransportOutcome.contains(this.esitoTrasporto)) {
+		else if (!EmmaDataModelEnums.acceptedTransportPazienteOutcome.contains(this.esitoTrasporto)) {
 			this.validState = false;
 			errorMsg += esitoTrasporto + "isn't in the accepted list of esiti trasporto (New One?)";
 			this.errorList.add(errorMsg);
@@ -235,6 +241,7 @@ public class Paziente extends EmmaDataModel {
 		}
 		
 		// Codice Paziente
+		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.codicePazienteArrivo != null) {
 			if (!this.codicePazienteArrivo.isEmpty()) {
 				if (!this.codicePazienteArrivo.isBlank()) {
@@ -251,6 +258,7 @@ public class Paziente extends EmmaDataModel {
 		}
 		
 		// Check FR
+		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (!EmmaDataModelEnums.acceptedFR.contains(this.FR)) {
 			this.validState = false;
 			errorMsg += FR + " wasn't an accepted FR (New One?) - ";
@@ -258,7 +266,8 @@ public class Paziente extends EmmaDataModel {
 			logger.warn(errorMsg);
 		}
 		
-		// Check Coscenza
+		// Check Coscienza
+		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.coscienza != null) {
 			if (!this.coscienza.isEmpty()) {
 				if (!this.coscienza.isBlank()) {

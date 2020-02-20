@@ -26,10 +26,12 @@ public class Membro extends EmmaDataModel {
 	 * 
 	 * @return true if the object is valid, false otherwise
 	 */
+	@XmlTransient
 	public Boolean validateObject() {
 		String errorMsg = this.getClass().getSimpleName() + ": ";
 		
 		// Check Type
+		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.type == null) {
 			this.validState = false;
 			errorMsg += "type was NULL";
@@ -56,6 +58,7 @@ public class Membro extends EmmaDataModel {
 		}
 		
 		// Name Type
+		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.nome == null) {
 			this.validState = false;
 			errorMsg += "nome was NULL";
@@ -76,6 +79,7 @@ public class Membro extends EmmaDataModel {
 		}
 		
 		// Cognome Type
+		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.cognome == null) {
 			this.validState = false;
 			errorMsg += "cognome was NULL";
@@ -96,6 +100,7 @@ public class Membro extends EmmaDataModel {
 		}
 		
 		// Qualifica
+		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.qualifica == null) {
 			this.validState = false;
 			errorMsg += "qualifica was NULL";

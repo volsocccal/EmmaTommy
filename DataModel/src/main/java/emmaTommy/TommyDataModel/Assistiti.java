@@ -33,6 +33,7 @@ public class Assistiti extends TommyDataModel
 	 * 
 	 * @return true if the object is valid, false otherwise
 	 */
+	@XmlTransient
 	public Boolean validateObject() {
 		String errorMsg = this.getClass().getSimpleName() + ": ";
 		

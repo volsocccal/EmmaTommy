@@ -6,7 +6,7 @@ import java.util.Date;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-public class DateAdapter extends XmlAdapter<String, Date> {
+public class DateAdapterYYMMDDdash extends XmlAdapter<String, Date> {
  
     private static final String DATE_FORMAT_STRING = "yyyy-MM-dd";
  

@@ -23,10 +23,12 @@ public class Missione extends EmmaDataModel {
 	 * 
 	 * @return true if the object is valid, false otherwise
 	 */
+	@XmlTransient
 	public Boolean validateObject() {
 		String errorMsg = this.getClass().getSimpleName() + ": ";
 		
 		// Check Type
+		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.type == null) {
 			this.validState = false;
 			errorMsg += "type was NULL";
@@ -60,6 +62,7 @@ public class Missione extends EmmaDataModel {
 		int ID = 203100001;
 		
 		// Pazienti
+		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.pazienti == null) {
 			this.validState = false;
 			errorMsg += "pazienti list was null";
@@ -75,6 +78,7 @@ public class Missione extends EmmaDataModel {
 		}
 		
 		// Tratte
+		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.tratte == null) {
 			this.validState = false;
 			errorMsg += "tratte list was null";
@@ -90,6 +94,7 @@ public class Missione extends EmmaDataModel {
 		}
 		
 		// Membri Equipaggio
+		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.membri == null) {
 			this.validState = false;
 			errorMsg += "membri list was null";

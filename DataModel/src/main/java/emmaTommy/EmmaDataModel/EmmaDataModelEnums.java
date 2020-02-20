@@ -59,30 +59,31 @@ public class EmmaDataModelEnums {
     public static final String FEMALE_GENDER = "F";
     
     // Transport Outcome
-    public static final String OUTCOME_TRASPORTO_DECEDUTO = "DECEDUTO";
-    public static final String OUTCOME_TRASPORTO_NC = "N.C.";
-    public static final String OUTCOME_TRASPORTO_NON_NECESSITA = "NON_NECESSITA";
-    public static final String OUTCOME_TRASPORTO_NON_RINVENUTO = "NON RINVENUTO";
-    public static final String OUTCOME_TRASPORTO_REGOLARE = "REGOLARE";
-    public static final String OUTCOME_TRASPORTO_RIFIUTO_TRASPORTO = "RIFIUTA TRASPORTO";
-    public static final String OUTCOME_TRASPORTO_ALLONTANA = "SI ALLONTANA";
-    public static final String OUTCOME_TRASPORTO_TRATTENUTO = "TRATTENUTO DA ALTRI";
-    public static final ArrayList<String> acceptedTransportOutcome = new ArrayList<String>() { 
+    public static final String OUTCOME_TRASPORTO_PAZIENTE_DECEDUTO = "DECEDUTO";
+    public static final String OUTCOME_TRASPORTO_PAZIENTE_NC = "N.C.";
+    public static final String OUTCOME_TRASPORTO_PAZIENTE_NON_NECESSITA = "NON_NECESSITA";
+    public static final String OUTCOME_TRASPORTO_PAZIENTE_NON_RINVENUTO = "NON RINVENUTO";
+    public static final String OUTCOME_TRASPORTO_PAZIENTE_REGOLARE = "REGOLARE";
+    public static final String OUTCOME_TRASPORTO_PAZIENTE_RIFIUTO_TRASPORTO = "RIFIUTA TRASPORTO";
+    public static final String OUTCOME_TRASPORTO_PAZIENTE_ALLONTANA = "SI ALLONTANA";
+    public static final String OUTCOME_TRASPORTO_PAZIENTE_TRATTENUTO = "TRATTENUTO DA ALTRI";
+    public static final ArrayList<String> acceptedTransportPazienteOutcome = new ArrayList<String>() { 
 		private static final long serialVersionUID = 1L;
 		{ 
-            add(OUTCOME_TRASPORTO_DECEDUTO); 
-            add(OUTCOME_TRASPORTO_NC); 
-            add(OUTCOME_TRASPORTO_NON_NECESSITA);             
-            add(OUTCOME_TRASPORTO_NON_RINVENUTO);
-            add(OUTCOME_TRASPORTO_REGOLARE);            
-            add(OUTCOME_TRASPORTO_RIFIUTO_TRASPORTO);             
-            add(OUTCOME_TRASPORTO_ALLONTANA);
-            add(OUTCOME_TRASPORTO_TRATTENUTO);
+            add(OUTCOME_TRASPORTO_PAZIENTE_DECEDUTO); 
+            add(OUTCOME_TRASPORTO_PAZIENTE_NC); 
+            add(OUTCOME_TRASPORTO_PAZIENTE_NON_NECESSITA);             
+            add(OUTCOME_TRASPORTO_PAZIENTE_NON_RINVENUTO);
+            add(OUTCOME_TRASPORTO_PAZIENTE_REGOLARE);            
+            add(OUTCOME_TRASPORTO_PAZIENTE_RIFIUTO_TRASPORTO);             
+            add(OUTCOME_TRASPORTO_PAZIENTE_ALLONTANA);
+            add(OUTCOME_TRASPORTO_PAZIENTE_TRATTENUTO);
         } 
     }; 
     
     // Coscience
     public static final String COSCIENCE_NOT_SET = "O";
+    public static final String COSCIENCE_NOT_SET_NUMERIC = "0";
     public static final String COSCIENCE_ALERT = "A";
     public static final String COSCIENCE_VERBAL = "V";
     public static final String COSCIENCE_PAIN = "P";
@@ -90,6 +91,7 @@ public class EmmaDataModelEnums {
     public static final ArrayList<String> acceptedCosciences = new ArrayList<String>() { 
 		private static final long serialVersionUID = 1L;
 		{ 
+			add(COSCIENCE_NOT_SET_NUMERIC);
             add(COSCIENCE_NOT_SET); 
             add(COSCIENCE_ALERT); 
             add(COSCIENCE_VERBAL);             

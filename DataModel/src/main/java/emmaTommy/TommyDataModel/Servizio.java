@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -18,6 +19,7 @@ import emmaTommy.DataModel.DateTimeAdapterHHmm;
 @XmlAccessorType (XmlAccessType.FIELD)
 public class Servizio extends TommyDataModel {
 	
+	@XmlTransient
 	public static final String VALIDATE_OK = "SERVIZIO OK";	
 	
 	// "data" : "type:YYYYMMDD:required"
@@ -159,21 +161,21 @@ public class Servizio extends TommyDataModel {
 	
 	// Assistiti
 	@XmlElement(name = "assistiti", required = true)	
-	protected Assistiti assistiti;
-	public void setAssistiti(Assistiti assistiti) {
-		this.assistiti = assistiti;
+	protected ArrayList<Assistito> assistiti;
+	public void setAssistiti(ArrayList<Assistito> arrayList) {
+		this.assistiti = arrayList;
 	}
-	public Assistiti getAssistiti() {
+	public ArrayList<Assistito> getAssistiti() {
 		return this.assistiti;
 	}
 	
 	// Squadra
 	@XmlElement(name = "squadra", required = true)	
-	protected Squadra squadra;
-	public void setSquadra(Squadra squadra) {
-		this.squadra = squadra;
+	protected ArrayList<Membro> squadra;
+	public void setSquadra(ArrayList<Membro> arrayList) {
+		this.squadra = arrayList;
 	}
-	public Squadra getSquadra() {
+	public ArrayList<Membro> getSquadra() {
 		return this.squadra;
 	}
 	
@@ -186,6 +188,7 @@ public class Servizio extends TommyDataModel {
 	
 	
 	@Override
+	@XmlTransient
 	public Boolean validateObject() {
 		ArrayList<String> errorMsgList = this.validateForStoring();
 		if (errorMsgList == null) {
@@ -198,6 +201,7 @@ public class Servizio extends TommyDataModel {
 		}
 	}
 	
+	@XmlTransient
 	public ArrayList<String> validateForStoring() {
 		ArrayList<String> errorMsgList = new ArrayList<String>();
 		return errorMsgList;

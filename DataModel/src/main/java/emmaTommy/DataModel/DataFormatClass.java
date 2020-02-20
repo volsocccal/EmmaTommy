@@ -11,18 +11,20 @@ import org.eclipse.persistence.oxm.MediaType;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
+@XmlAccessorType (XmlAccessType.FIELD)
 public abstract class DataFormatClass {
 	
 	public DataFormatClass() {
-		validState = true;
+		this.validState = true;
 		this.errorList = new ArrayList<String>();		
 	}
 	
 	/** True if the object is valid */
-	@XmlTransient
-	protected Boolean validState;
+	@XmlTransient protected Boolean validState;
 	public void setValidState(Boolean validState) {
 		this.validState = validState;  
 	}
@@ -31,10 +33,18 @@ public abstract class DataFormatClass {
 	}
 	
 	/** List of all the errors */
-	@XmlTransient
-	protected ArrayList<String> errorList;
+	@XmlTransient protected ArrayList<String> errorList;
 	public ArrayList<String> getErrorList() {
 		return this.errorList;
+	}
+	public String getErrorListFormatted() {
+		String errorMsg = "";
+		for (String err : this.errorList) {
+			if (err != null) {
+				errorMsg += err + "\n";
+			}
+		}
+		return errorMsg;
 	}
 	public void addError (String error) {
 		if (this.errorList != null) {

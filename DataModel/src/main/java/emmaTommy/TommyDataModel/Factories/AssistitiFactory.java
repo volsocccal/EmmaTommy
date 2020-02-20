@@ -24,10 +24,7 @@ public class AssistitiFactory {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public Assistiti buildAssistiti(emmaTommy.EmmaDataModel.Pazienti pazienti) {
-		
-		// Build new Empty Assistiti
-		Assistiti ass = new Assistiti();
+	public ArrayList<emmaTommy.TommyDataModel.Assistito> buildAssistiti(emmaTommy.EmmaDataModel.Pazienti pazienti) {
 		
 		// Build new Empty Assistiti list
 		ArrayList<emmaTommy.TommyDataModel.Assistito> assistitiList = new ArrayList<emmaTommy.TommyDataModel.Assistito>();
@@ -35,18 +32,15 @@ public class AssistitiFactory {
 		// Check for null or empty Squadra
 		if (pazienti == null) {
 			assistitiList.add(this.buildAssistitoAnonimo());
-			ass.setAssistiti(assistitiList);
-			return ass;
+			return assistitiList;
 		}
 		if (pazienti.getPazienti() == null) {
 			assistitiList.add(this.buildAssistitoAnonimo());
-			ass.setAssistiti(assistitiList);
-			return ass;
+			return assistitiList;
 		}
 		if (pazienti.getPazienti().size() == 0) {
 			assistitiList.add(this.buildAssistitoAnonimo());
-			ass.setAssistiti(assistitiList);
-			return ass;
+			return assistitiList;
 		}
 		
 		// Iterate over every member
@@ -55,7 +49,20 @@ public class AssistitiFactory {
 				if (p.getNome() != null && p.getCognome() != null) {					
 					String codiceFiscale = p.getCognome() + "_" + p.getNome();
 					if (p.getDataNascita() != null) {
-						codiceFiscale += p.getDataNascita().toGMTString();
+						int correctYear = p.getDataNascita().getYear() + 1900;
+						codiceFiscale += "_" + correctYear;
+						int month = p.getDataNascita().getMonth();
+						if (month < 10) {
+							codiceFiscale += "0" + p.getDataNascita().getMonth();
+						} else {
+							codiceFiscale += p.getDataNascita().getMonth();
+						}
+						int day = p.getDataNascita().getDay();
+						if (day < 10) {
+							codiceFiscale += "0" + p.getDataNascita().getDay();
+						} else {
+							codiceFiscale += p.getDataNascita().getDay();
+						}
 					}
 					emmaTommy.TommyDataModel.Assistito newAssistito = new emmaTommy.TommyDataModel.Assistito();
 					newAssistito.setCodiceFiscale(codiceFiscale);
@@ -63,6 +70,7 @@ public class AssistitiFactory {
 					newAssistito.setNome(p.getNome());
 					newAssistito.setSesso(p.getSesso());
 					newAssistito.setComuneResidenza(p.getComuneResidenza());
+					newAssistito.setDataNascita(p.getDataNascita());
 					assistitiList.add(newAssistito);
 				} else { // If nome or cognome are null, add the Assistito Anonimo Instead
 					assistitiList.add(this.buildAssistitoAnonimo());
@@ -77,11 +85,8 @@ public class AssistitiFactory {
 			assistitiList.add(this.buildAssistitoAnonimo());
 		}
 		
-		// Add Assistiti List
-		ass.setAssistiti(assistitiList);
-		
 		// Return Assistiti		
-		return ass;
+		return assistitiList;
 		
 	}
 	
