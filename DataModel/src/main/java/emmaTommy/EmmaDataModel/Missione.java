@@ -2,9 +2,12 @@ package emmaTommy.EmmaDataModel;
 
 import java.util.Date;
 import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.persistence.oxm.annotations.XmlDiscriminatorNode;
 
+import emmaTommy.DataModel.DateAdapterYYMMDD;
+import emmaTommy.DataModel.DateTimeAdapterYYYYMMDDTHHmmssZ;
 import emmaTommy.EmmaDataModel.Membri;
 import emmaTommy.EmmaDataModel.Pazienti;
 import emmaTommy.EmmaDataModel.Tratte;
@@ -232,7 +235,8 @@ public class Missione extends EmmaDataModel {
 	
 	/** Data di Fine Missione */
 	@XmlElement(name = "mi-dt-fine-mi", required = true)	
-	protected Date fineMissione;
+	@XmlJavaTypeAdapter(DateTimeAdapterYYYYMMDDTHHmmssZ.class)
+	protected Date fineMissione;	
 	public void setFineMissione (Date fineMissione) {
 		this.fineMissione = fineMissione;
 	}
@@ -242,6 +246,7 @@ public class Missione extends EmmaDataModel {
 	
 	/** Data di Inizio Rientro */
 	@XmlElement(name = "mi-dt-inizio-r", required = true)	
+	@XmlJavaTypeAdapter(DateTimeAdapterYYYYMMDDTHHmmssZ.class)
 	protected Date inizioRientro;
 	public void setInizioRientro(Date inizioRientro) {
 		this.inizioRientro = inizioRientro;
@@ -251,7 +256,8 @@ public class Missione extends EmmaDataModel {
 	}
 	
 	/** Data di Inizio Missione (Creazione Scheda) */
-	@XmlElement(name = "mi-dt-missione", required = true)	
+	@XmlElement(name = "mi-dt-missione", required = true)
+	@XmlJavaTypeAdapter(DateTimeAdapterYYYYMMDDTHHmmssZ.class)
 	protected Date inizioMissione;
 	public void setInizioMissione(Date inizioMissione) {
 		this.inizioMissione = inizioMissione;
@@ -261,7 +267,8 @@ public class Missione extends EmmaDataModel {
 	}
 	
 	/** Data di Partenza del Mezzo */
-	@XmlElement(name = "mi-dt-partenza", required = true)	
+	@XmlElement(name = "mi-dt-partenza", required = true)
+	@XmlJavaTypeAdapter(DateTimeAdapterYYYYMMDDTHHmmssZ.class)
 	protected Date partenzaMezzo;
 	public void setPartenzaMezzo (Date partenzaMezzo) {
 		this.partenzaMezzo = partenzaMezzo;
