@@ -152,6 +152,37 @@ public class ServizioFactory {
 		// Squadra
 		s.setSquadra(this.squadraFact.buildSquadra(m.getMembri()));
 		
+		// Codice Evento
+		String codiceEvento = m.getCodiceEvento();
+		if (codiceEvento == null || codiceEvento.isBlank()) {
+			codiceEvento = "Non Noto";
+		}
+		
+		// Codice Trasporto
+		String codiceTrasporto = m.getCodiceTrasporto();
+		if (codiceTrasporto == null || codiceTrasporto.isBlank()) {
+			codiceTrasporto = "Non Noto";
+		}
+		
+		// Motivo Chiamata
+		String motivoChiamata = m.getMotivoChiamata();
+		if (motivoChiamata == null || motivoChiamata.isBlank()) {
+			motivoChiamata = "Non Noto";
+		} else {
+			String motivoDettaglio = m.getMotivoChiamataDettaglio();
+			if (motivoDettaglio != null) {
+				if (!motivoDettaglio.isBlank()) {
+					motivoChiamata += " " + motivoDettaglio;
+				}
+			}			
+		}
+				
+		// Set Note		
+		String noteServizio = "Invio Codice: " + codiceEvento + "\n"
+							+ "Motivo Chiamata: " + motivoChiamata + "\n"
+							+ "Trasporto Codice: " + codiceTrasporto + "\n";
+		s.setNote(noteServizio);
+		
 		// Validate Servizio
 		s.validateObject();
 		
