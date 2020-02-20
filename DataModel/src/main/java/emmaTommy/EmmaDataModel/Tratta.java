@@ -91,8 +91,8 @@ public class Tratta extends EmmaDataModel {
 		}
 		
 		// Check DateTimes
-		if (this.dataArrivo != null) {
-			if (this.dataPartenza != null) {
+		if (this.dataPartenza != null) {
+			if (this.dataArrivo != null) {
 				if (this.dataArrivo.after(this.dataPartenza)) { // Check timeline
 					this.validState = false;
 					errorMsg += "arrivo " + this.dataArrivo.toGMTString() 
@@ -102,7 +102,7 @@ public class Tratta extends EmmaDataModel {
 				}
 			} else {
 				this.validState = false;
-				errorMsg += "partenza was null but arrivo was an accepted value";
+				errorMsg += "arrivo was null but partenza was an accepted value";
 				this.errorList.add(errorMsg);
 				logger.warn(errorMsg);
 			}
