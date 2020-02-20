@@ -61,7 +61,7 @@ public class EmmaDataModelEnums {
     // Transport Outcome
     public static final String OUTCOME_TRASPORTO_PAZIENTE_DECEDUTO = "DECEDUTO";
     public static final String OUTCOME_TRASPORTO_PAZIENTE_NC = "N.C.";
-    public static final String OUTCOME_TRASPORTO_PAZIENTE_NON_NECESSITA = "NON_NECESSITA";
+    public static final String OUTCOME_TRASPORTO_PAZIENTE_NON_NECESSITA = "NON NECESSITA";
     public static final String OUTCOME_TRASPORTO_PAZIENTE_NON_RINVENUTO = "NON RINVENUTO";
     public static final String OUTCOME_TRASPORTO_PAZIENTE_REGOLARE = "REGOLARE";
     public static final String OUTCOME_TRASPORTO_PAZIENTE_RIFIUTO_TRASPORTO = "RIFIUTA TRASPORTO";
