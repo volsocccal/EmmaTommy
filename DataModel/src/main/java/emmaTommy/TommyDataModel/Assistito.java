@@ -136,6 +136,17 @@ public class Assistito extends TommyDataModel {
 	}
 	
 	
+	/** note" : "type:String" */	
+	@XmlElement(name = "note", required = false)	
+	protected String note;
+	public void setNOte(String note) {
+		this.note = note;
+	}
+	public String getNote() {
+		return this.note;
+	}
+	
+	
 
 	@Override
 	public String toString() {
