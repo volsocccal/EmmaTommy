@@ -1,6 +1,7 @@
 package emmaTommy.TommyDataModel.Factories;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -10,6 +11,8 @@ import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 import org.eclipse.persistence.oxm.MediaType;
 
 import emmaTommy.EmmaDataModel.Missione;
+import emmaTommy.EmmaDataModel.Tratta;
+import emmaTommy.EmmaDataModel.Tratte;
 import emmaTommy.TommyDataModel.Servizio;
 import emmaTommy.TommyDataModel.TommyDataModelEnums;
 
@@ -35,7 +38,7 @@ public class ServizioFactory {
 			return null;
 		}
 		
-		//
+		// BUild new Servizio
 		Servizio s = new Servizio();
 		
 		// "data" : "type:YYYYMMDD:required"
@@ -47,24 +50,40 @@ public class ServizioFactory {
 		// orario_inizio_servizio" : "type:HH:II:required"
 		s.setOrarioInizioServizio(m.getInizioMissione());
 		
-		/**
-		// orario_arrivo_posto" : "type:HH:II"		
-		m.getTratte().getTratte().get(0)
-		s.setOrarioArrivoPosto();
-		// orario_partenza_posto" : "type:HH:II"
-		s.OrarioPartenzaPosto();
-		*/
-		
-		
-		
-		/**
-		// orario_arrivo_ospedale" : "type:HH:II"
-		s.orarioArrivoOspedale(); 
-		// orario_partenza_ospedale" : "type:HH:II"
-		s.setOrarioPartenzaOspedale();
-		 */
-		
-		
+		// Get Tratte
+		Tratte tr = m.getTratte();
+		if (tr != null) {
+			ArrayList<Tratta> trList = (ArrayList<Tratta>) tr.getTratte(); 
+			if (trList != null) {
+				if (!trList.isEmpty()) {
+					if (trList.size() == 1) {
+						Tratta tr1 = trList.get(0);
+						if (tr1 != null) {
+							s.setOrarioArrivoPosto(tr1.getDataArrivo());
+							s.setOrarioPartenzaPosto(tr1.getDataPartenza());
+							//s.setLuogoPartenza(tr1.getDestinazione());
+						}
+					} else {
+						Tratta tr1 = trList.get(0);
+						Tratta tr2 = trList.get(1);
+						if (tr1 != null) {
+							if (tr2 != null) {
+								if (tr1.getId() > tr2.getId()) { // Swap if they are in the wrong order
+									tr1 = trList.get(1);
+									tr2 = trList.get(0);
+								}
+								s.setOrarioArrivoOspedale(tr2.getDataArrivo());
+								s.setOrarioPartenzaOspedale(tr2.getDataPartenza());
+								s.setLuogoArrivo(tr2.getDestinazione());
+							}
+							s.setOrarioArrivoPosto(tr1.getDataArrivo());
+							s.setOrarioPartenzaPosto(tr1.getDataPartenza());
+							//s.setLuogoPartenza(tr1.getDestinazione());
+						}
+					}
+				}
+			}
+		}
 		
 		// orario_fine_servizio" : "type:HH:II:required"
 		s.setOrarioFineServizio(m.getFineMissione());
@@ -96,35 +115,36 @@ public class ServizioFactory {
 		String luogoEvento = "";
 		if (m.getComuneIntervento() != null) {
 			if (!m.getComuneIntervento().isBlank()) {
-				luogoPartenza += m.getComuneIntervento();
+				luogoEvento += m.getComuneIntervento();
 				if (m.getIndirizzoSoccorsoTipoVia() != null) {
 					if (!m.getIndirizzoSoccorsoTipoVia().isBlank()) {
-						luogoPartenza += " " + m.getIndirizzoSoccorsoTipoVia();
+						luogoEvento += " " + m.getIndirizzoSoccorsoTipoVia();
 					}
 				}
 				if (m.getIndirizzoSoccorsoVia() != null) {
 					if (!m.getIndirizzoSoccorsoVia().isBlank()) {
-						luogoPartenza += " " + m.getIndirizzoSoccorsoVia();
+						luogoEvento += " " + m.getIndirizzoSoccorsoVia();
 						if (m.getIndirizzoSoccorsoCivico() != null) {
 							if (!m.getIndirizzoSoccorsoCivico().isBlank()) {
-								luogoPartenza += " " + m.getIndirizzoSoccorsoCivico();
+								luogoEvento += " " + m.getIndirizzoSoccorsoCivico();
 								if (m.getIndirizzoSoccorsoCivicoBarra() != null) {
 									if (!m.getIndirizzoSoccorsoCivicoBarra().isBlank()) {
-										luogoPartenza += " " + m.getIndirizzoSoccorsoCivicoBarra();
+										luogoEvento += " " + m.getIndirizzoSoccorsoCivicoBarra();
 									}
 								}
 							}
 						}
 						if (m.getIndirizzoSoccorsoViaIncrocio() != null) {
 							if (!m.getIndirizzoSoccorsoViaIncrocio().isBlank()) {
-								luogoPartenza += " " + m.getIndirizzoSoccorsoViaIncrocio();
+								luogoEvento += " " + m.getIndirizzoSoccorsoViaIncrocio();
 							}
 						}
 					}
 				}
 			}
 		}
-		s.setLuogoArrivo(luogoEvento);
+		//s.setLuogoArrivo(luogoEvento);
+		s.setLuogoPartenza(luogoEvento);
 		
 		// Assistiti
 		s.setAssistiti(this.assistitiFact.buildAssistiti(m.getPazienti()));
