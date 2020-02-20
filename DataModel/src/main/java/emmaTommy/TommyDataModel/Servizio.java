@@ -92,7 +92,7 @@ public class Servizio extends TommyDataModel {
 	@XmlJavaTypeAdapter(DateTimeAdapterHHmm.class)
 	protected Date orario_partenza_ospedale;
 	public void setOrarioPartenzaOspedale (Date orario_partenza_ospedale) {
-		this.orario_partenza_ospedale = orario_arrivo_ospedale;
+		this.orario_partenza_ospedale = orario_partenza_ospedale;
 	}
 	public Date getOrarioPartenzaOspedale() {
 		return this.orario_partenza_ospedale;
@@ -179,6 +179,16 @@ public class Servizio extends TommyDataModel {
 		return this.squadra;
 	}
 	
+	
+	// note" : "type:String" */	
+	@XmlElement(name = "note", required = false)	
+	protected String note;
+	public void setNote(String note) {
+		this.note = note;
+	}
+	public String getNote() {
+		return this.note;
+	}
 	
 		
 	/** Empty Constructor */
