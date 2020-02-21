@@ -113,7 +113,32 @@ public class Missione extends EmmaDataModel {
 		}
 		
 		
-		
+		// Esito Trasporto
+		errorMsg = this.getClass().getSimpleName() + ": ";
+		if (this.esitoMissione == null) {
+			this.validState = false;
+			errorMsg += "esitoMissione was NULL";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		else if (this.esitoMissione.isEmpty()) {
+			this.validState = false;
+			errorMsg += "esitoMissione was Empty";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		else if (this.esitoMissione.isBlank()) {
+			this.validState = false;
+			errorMsg += "esitoMissione was Blanck";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
+		else if (!EmmaDataModelEnums.acceptedMissioniOutcome.contains(this.esitoMissione)) {
+			this.validState = false;
+			errorMsg += esitoMissione + "isn't in the accepted list of esiti Missione (New One?)";
+			this.errorList.add(errorMsg);
+			logger.warn(errorMsg);
+		}
 		
 		
 		// Return validState
