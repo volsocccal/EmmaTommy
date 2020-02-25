@@ -3,6 +3,7 @@ package emmaTommy.EmmaTommyConverter.Actors;
 import akka.actor.typed.PostStop;
 import emmaTommy.EmmaTommyDataConverter.ActorsMessages.Consume;
 import emmaTommy.EmmaTommyDataConverter.ActorsMessages.MissioniDataJSON;
+import emmaTommy.EmmaTommyDataConverter.ActorsMessages.MongoDBWriteData;
 import emmaTommy.EmmaTommyDataConverter.ActorsMessages.StartConsuming;
 
 import java.io.FileInputStream;
@@ -31,6 +32,9 @@ public class EmmaTommyKafkaConsumer extends AbstractActor {
 	
 	protected ActorRef dataConverterActor;
 	protected Boolean convert;
+	protected ActorRef mongoHandlerActor;
+	protected Boolean sendJSONOverMONGO;
+	protected String missioniCollectionName;
 	
 	public static Props props(String text, String confPath) {
         return Props.create(EmmaTommyKafkaConsumer.class, text, confPath);
@@ -62,6 +66,8 @@ public class EmmaTommyKafkaConsumer extends AbstractActor {
 		this.KafkaConsumerProps.remove("topic");
 		this.kafkaPollingTime = Integer.parseInt(KafkaConsumerProps.getProperty("kafkaPollingTime"));
 		this.KafkaConsumerProps.remove("kafkaPollingTime");
+		this.sendJSONOverMONGO = (Integer.parseInt(KafkaConsumerProps.getProperty("sendJSONOverMONGO")) == 1) ? (true) : (false);
+		this.KafkaConsumerProps.remove("sendJSONOverMONGO");
 		
 	    // Create the kafka consumer using props.
 		try {
@@ -90,20 +96,25 @@ public class EmmaTommyKafkaConsumer extends AbstractActor {
 				.build();
 	}
 	
-	protected void onStart(StartConsuming start) {
+	protected void onStart(StartConsuming startCons) {
 		
 		// Logger Method Name
 		String method_name = "::onStart(): ";
 		logger.info(method_name + "Received Start Consuming Event");
 		
 		// Get Data Converter Actor
-		this.dataConverterActor = start.getDataConverterActor();
+		this.dataConverterActor = startCons.getDataConverterActor();
 		if (this.dataConverterActor == null)
 		{
 			this.convert = false;
 		} else {
 			this.convert = true;
 		}
+		
+		// Mongo Handler
+		this.mongoHandlerActor = startCons.getMongoHandlerActor();
+		this.sendJSONOverMONGO = this.sendJSONOverMONGO && startCons.getSendOverMongo();
+		this.missioniCollectionName = startCons.getMissioniCollectionName();
 		
 		try {
 			this.kafkaConsumer.subscribe(Collections.singletonList(this.topic));
@@ -125,6 +136,10 @@ public class EmmaTommyKafkaConsumer extends AbstractActor {
 			if (this.convert) {
 				this.dataConverterActor.tell(new MissioniDataJSON(record.key().intValue(), record.value()), this.getSelf());
 				logger.info(method_name + "Sent Missione " + record.key() + " to " + this.dataConverterActor.path().name());	
+			}
+			if (this.sendJSONOverMONGO) {
+				this.mongoHandlerActor.tell(new MongoDBWriteData(record.key().intValue(), this.missioniCollectionName, record.value()), this.getSelf());
+				logger.info(method_name + "Sent Missione " + record.key() + " to " + this.mongoHandlerActor.path().name());	
 			}
     	});
     	this.kafkaConsumer.commitAsync();            

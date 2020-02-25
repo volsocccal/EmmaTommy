@@ -4,6 +4,7 @@ import akka.actor.typed.PostStop;
 import emmaTommy.EmmaDataModel.Missione;
 import emmaTommy.EmmaDataModel.Factories.MissioneFactory;
 import emmaTommy.EmmaTommyDataConverter.ActorsMessages.MissioniDataJSON;
+import emmaTommy.EmmaTommyDataConverter.ActorsMessages.MongoDBWriteData;
 import emmaTommy.EmmaTommyDataConverter.ActorsMessages.ServizioDataJSON;
 import emmaTommy.EmmaTommyDataConverter.ActorsMessages.StartConversion;
 import emmaTommy.TommyDataModel.Servizio;
@@ -35,6 +36,10 @@ public class EmmaTommyJsonConverter extends AbstractActor {
 	protected String json_folder_path;
 	protected Boolean sendJSONOverKAFKA;
 	protected ActorRef JsonKafkaProducer;
+	protected ActorRef JsonMongoHandler;
+	protected Boolean sendJSONOverMONGO;
+	protected String serviziCollectionName;
+	 
 	
 	public static Props props(String text, String confPath) {
         return Props.create(EmmaTommyJsonConverter.class, text, confPath);
@@ -65,10 +70,12 @@ public class EmmaTommyJsonConverter extends AbstractActor {
 		this.saveJSONToLog = (Integer.parseInt(prop.getProperty("saveJSONToLog")) == 1) ? (true) : (false);
 		this.saveJSONToFile = (Integer.parseInt(prop.getProperty("saveJSONToFile")) == 1) ? (true) : (false);
 		this.sendJSONOverKAFKA = (Integer.parseInt(prop.getProperty("sendJSONOverKAFKA")) == 1) ? (true) : (false);
+		this.sendJSONOverMONGO = (Integer.parseInt(prop.getProperty("sendJSONOverKAFKA")) == 1) ? (true) : (false);
 		this.json_folder_path = prop.getProperty("json_folder_path");
 		
 		//
 		this.sendJSONOverKAFKA = false;
+		this.sendJSONOverMONGO = false;
 		
 		// Create Missione Factory
 		this.mFact = new MissioneFactory(); 
@@ -96,8 +103,11 @@ public class EmmaTommyJsonConverter extends AbstractActor {
 		String method_name = "::onStartConversion(): ";
 		logger.info(method_name + "Received Start Converting Event");
 		if (startConv.getKafkaProducerActor() != null) {
-			JsonKafkaProducer = startConv.getKafkaProducerActor();
+			this.JsonKafkaProducer = startConv.getKafkaProducerActor();
 			this.sendJSONOverKAFKA = this.sendJSONOverKAFKA && startConv.getSendOverKafka();
+			this.JsonMongoHandler = startConv.getMongoHandlerActor();
+			this.sendJSONOverMONGO = this.sendJSONOverMONGO && startConv.getSendOverMongo();
+			this.serviziCollectionName = startConv.getServiziCollectionName();
 		}
 	}
 	
@@ -134,19 +144,18 @@ public class EmmaTommyJsonConverter extends AbstractActor {
 			if (this.sendJSONOverKAFKA) {
 				ServizioDataJSON jsonServizio = new ServizioDataJSON(codiceMissione, servizio_JSON, errors.isEmpty(), errors);
 				JsonKafkaProducer.tell(jsonServizio, this.getSelf());
-			}
-			
-			String missione_JSON = s.toJSON();
-			if (this.sendJSONOverKAFKA) {
-				MissioniDataJSON jsonMissioni = new MissioniDataJSON(codiceMissione, missione_JSON);
-				JsonKafkaProducer.tell(jsonMissioni, this.getSelf());
+				logger.info(method_name + "Sent Servizio " + codiceMissione + " to " + this.JsonKafkaProducer.path().name());
+			}			
+			if (this.sendJSONOverMONGO) {
+				this.JsonMongoHandler.tell(new MongoDBWriteData(codiceMissione, this.serviziCollectionName, servizio_JSON), this.getSelf());
+				logger.info(method_name + "Sent Servizio " + codiceMissione + " to " + this.JsonMongoHandler.path().name());	
 			}
 			if (this.saveJSONToLog) {
 				logger.info(method_name + "Missione id=" + codiceMissione);
-				logger.trace(missione_JSON);
+				logger.trace(servizio_JSON);
 			}
 			if (this.saveJSONToFile) {
-				this.writeJSONToFile(this.json_folder_path, missione_JSON, codiceMissione);
+				this.writeJSONToFile(this.json_folder_path, servizio_JSON, codiceMissione);
 			}
 			
 			

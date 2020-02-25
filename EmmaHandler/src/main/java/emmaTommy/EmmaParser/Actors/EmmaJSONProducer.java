@@ -18,7 +18,7 @@ import emmaTommy.EmmaParser.ActorsMessages.MissioniDataJSON;
 public class EmmaJSONProducer extends AbstractActor {
 
 	protected org.apache.logging.log4j.Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
-	protected Properties KafkaConsumerProps;
+	protected Properties KafkaProducerProps;
 	protected String topic;
 	protected KafkaProducer<Integer, String> kafkaProducer;
 	
@@ -33,7 +33,7 @@ public class EmmaJSONProducer extends AbstractActor {
 		String method_name = "::EmmaJSONProducer(): ";
 		
 		// Define and Load Configuration File
-		this.KafkaConsumerProps = new Properties();
+		this.KafkaProducerProps = new Properties();
 		logger.trace(method_name + "Loading Properties FileName: " + confPath);
 		FileInputStream fileStream = null;
 		try {
@@ -43,20 +43,19 @@ public class EmmaJSONProducer extends AbstractActor {
 			throw new FileNotFoundException(e.getMessage());			
 		}
 		try {
-			this.KafkaConsumerProps.load(fileStream);
-		    logger.trace(method_name + this.KafkaConsumerProps.toString());
+			this.KafkaProducerProps.load(fileStream);
+		    logger.trace(method_name + this.KafkaProducerProps.toString());
 		} catch (IOException e) {
 			logger.fatal(e.getMessage());
 			throw new FileNotFoundException(e.getMessage());	
 		}
 		
-		// Read Topic
-		this.topic = this.KafkaConsumerProps.getProperty("topic");
-		this.KafkaConsumerProps.remove("topic");
+		// Read Topic Property
+		this.topic = this.KafkaProducerProps.getProperty("topic");
+		this.KafkaProducerProps.remove("topic");
 		
-		// Create Kafka Producer	
-		//Thread.currentThread().setContextClassLoader(null);
-		this.kafkaProducer = new KafkaProducer<Integer, String> (this.KafkaConsumerProps);
+		// Create Kafka Producer
+		this.kafkaProducer = new KafkaProducer<Integer, String> (this.KafkaProducerProps);
 	}
 
 	@Override

@@ -14,6 +14,7 @@ import akka.actor.ActorSystem;
 import akka.actor.Cancellable;
 import akka.actor.Props;
 import akka.actor.typed.PostStop;
+import emmaTommy.EmmaTommyDataConverter.ActorsMessages.MongoDBConnect;
 import emmaTommy.EmmaTommyDataConverter.ActorsMessages.StartConsuming;
 import emmaTommy.EmmaTommyDataConverter.ActorsMessages.StartConversion;
 import emmaTommy.EmmaTommyDataConverter.ActorsMessages.StartProducing;
@@ -35,6 +36,9 @@ public class EmmaTommyOrchestrator extends AbstractActor {
 	protected ActorRef emmaTommyMongoHandlerActorRef;
 	protected ActorRef emmaTommyProducerActorRef;
 	protected ActorRef emmaTommyConverterActorRef;
+	
+	protected String missioniCollectionName;
+	protected String serviziCollectionName;
 	
 	public static class Start {
         public final String name;
@@ -75,6 +79,10 @@ public class EmmaTommyOrchestrator extends AbstractActor {
  		this.emmatommy_orchestrator_conf = prop.getProperty("emmatommy_orchestrator_conf");
  		this.emmatommy_producer_conf = prop.getProperty("emmatommy_producer_conf");
  		this.emmatommy_consumer_conf = prop.getProperty("emmatommy_consumer_conf");
+ 		
+ 		// Collections Names
+ 		this.missioniCollectionName = prop.getProperty("missioniCollectionName");
+ 		this.serviziCollectionName = prop.getProperty("serviziCollectionName");
         
         // Creating EmmaTommy Kafka Producer Actor
         logger.info(method_name + "Creating EmmaTommy Kafka Producer Actor ...");
@@ -118,17 +126,24 @@ public class EmmaTommyOrchestrator extends AbstractActor {
 		String method_name = "::onStart(): ";
 		logger.info(method_name + "Received Start Event");
 		
+		// Tell emmaTommyMongoHandler to Connect to DB
+		logger.info(method_name + "Tell emmaTommyMongoHandler to Start the DB Handling");
+		this.emmaTommyMongoHandlerActorRef.tell(new MongoDBConnect(this.missioniCollectionName, this.serviziCollectionName), this.getSelf());
+		
 		// Tell emmaTommyProducerActorRef to Start
     	logger.info(method_name + "Tell EmmaTommyProducerActor to Start Producing");
     	//this.emmaTommyProducerActorRef.tell(new StartProducing(), this.getSelf());
     	
     	// Tell EmmaTommyDataConverterActor to Start Converting
     	logger.info(method_name + "Tell EmmaTommyDataConverterActor to Start Converting");
-    	this.emmaTommyConverterActorRef.tell(new StartConversion(null, false), this.getSelf());
+    	this.emmaTommyConverterActorRef.tell(new StartConversion(this.emmaTommyProducerActorRef, true, emmaTommyMongoHandlerActorRef, true, this.serviziCollectionName), 
+    										 this.getSelf());
+    	//this.emmaTommyConverterActorRef.tell(new StartConversion(null, false, null, false, this.serviziCollectionName), this.getSelf());
     	
     	// Tell EmmaTommyConverterActor to Start
     	logger.info(method_name + "Tell EmmaTommyConsumerActor to Start Consuming");
-    	this.emmaTommyConsumerActorRef.tell(new StartConsuming(this.emmaTommyConverterActorRef), this.getSelf());
+    	this.emmaTommyConsumerActorRef.tell(new StartConsuming(this.emmaTommyConverterActorRef, this.emmaTommyMongoHandlerActorRef, true, this.missioniCollectionName), 
+    										this.getSelf());
     	
     }
     

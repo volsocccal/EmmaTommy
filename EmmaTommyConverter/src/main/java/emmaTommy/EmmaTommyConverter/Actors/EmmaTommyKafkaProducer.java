@@ -1,24 +1,20 @@
 package emmaTommy.EmmaTommyConverter.Actors;
 
 import akka.actor.typed.PostStop;
-import emmaTommy.EmmaTommyDataConverter.ActorsMessages.Consume;
-import emmaTommy.EmmaTommyDataConverter.ActorsMessages.MissioniDataJSON;
-import emmaTommy.EmmaTommyDataConverter.ActorsMessages.StartConsuming;
+import emmaTommy.EmmaTommyDataConverter.ActorsMessages.StartProducing;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 
 import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
 import akka.actor.Props;
 
-import org.apache.kafka.clients.consumer.*;
-import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
 
 public class EmmaTommyKafkaProducer extends AbstractActor {
 	
@@ -26,55 +22,54 @@ public class EmmaTommyKafkaProducer extends AbstractActor {
 	
 	protected int kafkaPollingTime; 
 	protected String topic;
-	protected Properties KafkaConsumerProps;
-	protected Consumer<Integer, String> kafkaConsumer;
+	protected Properties KafkaProducerProps;
+	protected Producer<Integer, String> kafkaProducer;
 	
-	protected ActorRef dataConverterActor;
-	protected Boolean convert;
+	protected Boolean produce;
 	
 	public static Props props(String text, String confPath) {
         return Props.create(EmmaTommyKafkaProducer.class, text, confPath);
     }
 
-	private EmmaTommyKafkaProducer(String confPath) {
+	private EmmaTommyKafkaProducer(String confPath) throws FileNotFoundException {
 		
 		// Logger Method Name
-		String method_name = "::EmmaTommyKafkaConsumer(): ";
+		String method_name = "::EmmaTommyKafkaProducer(): ";
 		
 		// Define and Load Configuration File
-		this.KafkaConsumerProps = new Properties();
+		this.KafkaProducerProps = new Properties();
 		logger.trace(method_name + "Loading Properties FileName: " + confPath);
 		FileInputStream fileStream = null;
 		try {
 			fileStream = new FileInputStream(confPath);
 		} catch (FileNotFoundException e) {
 			logger.fatal(method_name + e.getMessage());
+			throw new FileNotFoundException(e.getMessage());			
 		}
 		try {
-			this.KafkaConsumerProps.load(fileStream);
-		    logger.trace(method_name + this.KafkaConsumerProps.toString());
+			this.KafkaProducerProps.load(fileStream);
+		    logger.trace(method_name + this.KafkaProducerProps.toString());
 		} catch (IOException e) {
-			logger.fatal(method_name + e.getMessage());
+			logger.fatal(e.getMessage());
+			throw new FileNotFoundException(e.getMessage());	
 		}
 		
-		// Load Configuration Data
-		this.topic = this.KafkaConsumerProps.getProperty("topic");
-		this.KafkaConsumerProps.remove("topic");
-		this.kafkaPollingTime = Integer.parseInt(KafkaConsumerProps.getProperty("kafkaPollingTime"));
+		// Read Topic Property
+		this.topic = this.KafkaProducerProps.getProperty("topic");
+		this.KafkaProducerProps.remove("topic");
 		
-	    // Create the kafka consumer using props.
-		this.kafkaConsumer = new KafkaConsumer<>(this.KafkaConsumerProps);
+		// Create Kafka Producer
+		this.kafkaProducer = new KafkaProducer<Integer, String> (this.KafkaProducerProps);
 		
 		// Set Conversion cicle to false
-		this.convert = false;
+		this.produce = false;
 		
 	}
 	
 	@Override
 	public Receive createReceive() {
 		return receiveBuilder()
-				.match(StartConsuming.class, this::onStart)
-				.match(Consume.class, this::consume)
+				.match(StartProducing.class, this::onStart)
 				.match(PostStop.class, signal -> onPostStop())
 				.match(String.class, s -> {
 					logger.info(this.getClass().getSimpleName() + " Received String message: {}", s);
@@ -83,48 +78,26 @@ public class EmmaTommyKafkaProducer extends AbstractActor {
 				.build();
 	}
 	
-	protected void onStart(StartConsuming start) {
+	protected void onStart(StartProducing startProd) {
 		
 		// Logger Method Name
 		String method_name = "::onStart(): ";
 		logger.info(method_name + "Received Start Producing Event");
 		
-		// Get Data Converter Actor
-		this.dataConverterActor = start.getDataConverterActor();
-		if (this.dataConverterActor == null)
-		{
-			this.convert = false;
-		} else {
-			this.convert = true;
-		}
-		
-		this.kafkaConsumer.subscribe(Collections.singletonList(this.topic));
-		this.self().tell(new Consume(), this.getSelf());
-		
+		// Set Producer Flag to True
+		this.produce = true;			
 		
 	}
 	
-	protected void consume(Consume cons) {
-		String method_name = "::consume(): ";
-		@SuppressWarnings("deprecation")
-		final ConsumerRecords<Integer, String> consumerRecords = this.kafkaConsumer.poll(kafkaPollingTime);      	
-		consumerRecords.forEach(record -> {
-			logger.info(method_name + "Received new Missione: " + record.key());	
-			if (this.convert) {
-				this.dataConverterActor.tell(new MissioniDataJSON(record.key().intValue(), record.value()), this.getSelf());
-				logger.info(method_name + "Sent Missione " + record.key() + " to " + this.dataConverterActor.path().name());	
-			}
-    	});
-    	this.kafkaConsumer.commitAsync();            
-    	this.getSelf().tell(new Consume(), this.getSelf());		
-	}	
+	
 	
 	protected void onPostStop() {
 		String method_name = "::onPostStop(): ";
 		logger.info(method_name + "Received Stop Event");		
-		logger.info(method_name + "Closing Kafka Consumer");
-		this.kafkaConsumer.close();
-		this.convert = false; 
+		logger.info(method_name + "Closing Kafka Producer");
+		this.produce = false; 
+		this.kafkaProducer.close();
+		
 		
 		
 	}
