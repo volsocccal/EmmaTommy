@@ -154,6 +154,7 @@ public class EmmaDataModelEnums {
     public static final String MISSIONE_OUTCOME_TRASF_PPI_CA = "TRASF.PPI CA";
     public static final String MISSIONE_OUTCOME_TRASF_PPI_PED = "TRASF.PPI PED";
     public static final String MISSIONE_OUTCOME_TRASF_PPI_PS = "TRASF.PPI PS";
+    public static final String MISSIONE_OUTCOME_VUOTO = "VUOTO"; // Paziente Non Trovato
 	public static final ArrayList<String> acceptedMissioniOutcome = new ArrayList<String>() { 
 		private static final long serialVersionUID = 1L;
 		{ 

@@ -146,6 +146,41 @@ public class ServizioFactory {
 		//s.setLuogoArrivo(luogoEvento);
 		s.setLuogoPartenza(luogoEvento);
 		
+		// Esito Missione
+		String esitoMissione = m.getEsitoMissione();
+		if (esitoMissione != null) {
+			if (!esitoMissione.isBlank()) {
+				if (esitoMissione.compareTo(emmaTommy.EmmaDataModel.EmmaDataModelEnums.MISSIONE_OUTCOME_REGOLARE) != 0) {
+					if (esitoMissione.contains("INTERROTTA")) {
+						s.setLuogoPartenza("_Missione Interrotta_");
+						s.setLuogoArrivo("_Missione Interrotta_");
+					}
+					else if (esitoMissione.compareTo(emmaTommy.EmmaDataModel.EmmaDataModelEnums.MISSIONE_OUTCOME_EVACUATO_ALS) == 0) {
+						s.setLuogoArrivo("_Trasportato da Altro Mezzo_");
+					}
+					else if (esitoMissione.compareTo(emmaTommy.EmmaDataModel.EmmaDataModelEnums.MISSIONE_OUTCOME_DECEDUTO) == 0) {
+						s.setLuogoArrivo("_Deceduto_");
+					}
+					else if (esitoMissione.compareTo(emmaTommy.EmmaDataModel.EmmaDataModelEnums.MISSIONE_OUTCOME_REGOLARE_NON_TRASPORTA) == 0) {
+						s.setLuogoArrivo("_Non Trasportato su Indicazione SOREU/Medico_");
+					}
+					else if (esitoMissione.compareTo(emmaTommy.EmmaDataModel.EmmaDataModelEnums.MISSIONE_OUTCOME_SI_ALLONTANA) == 0) {
+						s.setLuogoArrivo("_Paziente Si Allontana_");
+					}
+					else if (esitoMissione.compareTo(emmaTommy.EmmaDataModel.EmmaDataModelEnums.MISSIONE_OUTCOME_VUOTO) == 0) {
+						s.setLuogoArrivo("_Paziente non Trovato_");
+					}
+					else if (esitoMissione.compareTo(emmaTommy.EmmaDataModel.EmmaDataModelEnums.MISSIONE_OUTCOME_NON_TRASPORTA) == 0) {
+						s.setLuogoArrivo("_Rifiuto Ricovero_");
+					}
+					else {
+						s.setLuogoArrivo("_Altro_");
+					}
+					
+				}
+			}
+		}
+		
 		// Assistiti
 		s.setAssistiti(this.assistitiFact.buildAssistiti(m.getPazienti()));
 		
@@ -180,7 +215,8 @@ public class ServizioFactory {
 		// Set Note		
 		String noteServizio = "Invio Codice: " + codiceEvento + "\n"
 							+ "Motivo Chiamata: " + motivoChiamata + "\n"
-							+ "Trasporto Codice: " + codiceTrasporto + "\n";
+							+ "Trasporto Codice: " + codiceTrasporto + "\n"
+							+ "Esito Missione: " + esitoMissione;
 		s.setNote(noteServizio);
 		
 		// Validate Servizio
