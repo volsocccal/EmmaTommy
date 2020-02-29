@@ -32,6 +32,10 @@ docs/RestTommy/specifiche.txt
 
 # Ignore the following conf files with sensible data (public ips, users and psswd even masked)
 conf/emma_psswd.conf
+conf/tommy_refs.conf
+
+# Ignore the following scripts
+scripts/test/mysql/psswd.txt
 
 # Ignore eclipse files
 .settings
