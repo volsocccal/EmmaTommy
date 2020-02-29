@@ -1,10 +1,12 @@
 package emmaTommy.TommyDataModel;
 
-import org.apache.logging.log4j.LogManager;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.apache.logging.log4j.LogManager;
+
 
 @Entity
 @Table(name="servizi")
