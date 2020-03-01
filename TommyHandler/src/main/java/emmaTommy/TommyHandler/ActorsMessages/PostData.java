@@ -8,6 +8,18 @@ public class PostData {
 	protected ArrayList<Integer> codiciServizi;
 	protected String jsonServizi;
 	
+	public PostData(String codiceMezzo, int codiceServizio, String jsonServizi) {
+		this(codiceMezzo, 
+			 new ArrayList<Integer>() {
+					private static final long serialVersionUID = 1L;
+					{ 
+			            add(codiceServizio); 
+			        } 
+		    	}, 
+			 jsonServizi);
+		
+	}
+	
 	public PostData(String codiceMezzo, ArrayList<Integer> codiciServizi, String jsonServizi) {
 		String method_name = "::PostData(): ";
 		
