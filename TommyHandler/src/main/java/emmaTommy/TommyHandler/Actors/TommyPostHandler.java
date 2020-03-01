@@ -4,23 +4,30 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 
 import akka.actor.AbstractActor;
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
 import akka.actor.Props;
-import akka.actor.AbstractActor.Receive;
 import akka.actor.typed.PostStop;
 import emmaTommy.TommyHandler.ActorsMessages.PostData;
 import emmaTommy.TommyHandler.ActorsMessages.startPosting;
@@ -102,48 +109,100 @@ public class TommyPostHandler extends AbstractActor {
 		String method_name = "::consume(): ";
 		logger.trace(method_name + "Received a post msg");
 		
-		String json = "";
+		String json = postData.getJsonServizi();
 		
 		// Build url
 		String restUrl = tommyURL 
 				+ "/" + associazione 
 				+ "/" + servizioRestName + "/" + "run.php?" 
-				+ "user=" + username 
+				+ "&user=" + username 
 				+ "&pwd=" + psswd 
-				+ "&json" + json;
+				+ "&json=" + json;
 		
 		try {
-			
-			String response = this.post(restUrl, json);
-			
-		} catch (IOException e) {
-			logger.error("Failed to post the following servizi for automezzo " + postData.getCodiceMezzo());
-		}
-		
-		
-		
+            URI uri = new URI(restUrl);
+            logger.trace(method_name + "URI created: " + uri.toString());
+            try {    			
+            	String response = this.post(uri, json);
+     			logger.info(method_name + "Rest Service Answer: " + response);  
+            } catch (MalformedURLException e) {
+            	logger.error(method_name + "Url Malformed Error: " + e.getMessage());
+    		} catch (IOException e) {
+    			logger.error("Failed to post the following servizi for automezzo " + postData.getCodiceMezzo());
+    			logger.error(method_name + e.getMessage());
+    		}
+           
+        }
+        catch (URISyntaxException e) {
+        	logger.error(method_name + "URI Syntax Error: " + e.getMessage());
+        }
 		
 	}	
 	
-	protected String post(String restUrl, String jsonServizi) throws IOException {
-		URL url = new URL(restUrl);
-		URLConnection connection = url.openConnection();
-		connection.setDoOutput(true);
+	protected String post(URI restUri, String jsonServizi) throws MalformedURLException, IOException {
+		String method_name = "::post(): ";
+        try {
+            URL restUrl = restUri.toURL();
+            logger.trace(method_name + "URL from URI: " + restUrl);
+            return this.post(restUrl, jsonServizi);
+        }
+        catch (MalformedURLException e) {
+            throw e;
+        }
+		
+	}
+	
+	protected String post(URL restUrl, String jsonServizi) throws IOException {
+		
+		String method_name = "::post(): ";
+		logger.trace(method_name + "Posting to " + this.tommyURL);
+		logger.trace(restUrl);
+		
+		// Create Connection
+		URLConnection connection = restUrl.openConnection();
+		connection.setDoOutput(true); // Triggers POST action
 		connection.setRequestProperty("Content-Type", "application/json");
-		connection.setConnectTimeout(5000);
-		connection.setReadTimeout(5000);
-		OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-		out.write(jsonServizi);
-		out.close();
-
-		String response = "";
-		BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-		while (in.readLine() != null) {
+		// connection.setConnectTimeout(5000);
+		// connection.setReadTimeout(5000);
+		try (OutputStream output = connection.getOutputStream()) {
+			OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
+			out.write(jsonServizi);
+			out.close();
 		}
-		System.out.println("\nREST Service Invoked Successfully..");
-		in.close();
-		return response;
+		
+		// Connect
+		logger.info(method_name + "Sending POST Request");
+		connection.connect();
+		
+		// Analize Response		
+		HttpURLConnection httpConnection = (HttpURLConnection) connection;
+		int responseCode = httpConnection.getResponseCode();
+		if (responseCode == HttpURLConnection.HTTP_OK) {
+			logger.info(method_name + "Http Request Status: " + responseCode);
+		} else {
+			logger.error(method_name + "Http Request Status: " + responseCode);
+		}
+		/**
+		logger.trace(method_name + "Loggin Headers");
+		
+		for (Entry<String, List<String>> header : connection.getHeaderFields().entrySet()) {
+		    logger.info(method_name + header.getKey() + "=" + header.getValue());
+		}
+		*/
+		
+		// Build Response String
+		InputStream responseInputStream = connection.getInputStream();
+		InputStreamReader responseInputStreamReader = new InputStreamReader(responseInputStream);
+		BufferedReader responseInputStreamBufferReader = new BufferedReader(responseInputStreamReader);
+	    StringBuffer responseStringBuffer = new StringBuffer();
+	    String str;
+        while((str = responseInputStreamBufferReader.readLine())!= null){
+        	responseStringBuffer.append(str);
+        }
+		return responseStringBuffer.toString();
+		
+		// Error: "tipo":"ERR"
+		
 	}
 	
 	protected void onPostStop() {
@@ -155,17 +214,38 @@ public class TommyPostHandler extends AbstractActor {
 	
 	public static void main(String[] args) {
 		
-		String json = "";
+		// Logger
+		String method_name = "::main(): ";
+		org.apache.logging.log4j.Logger logger = LogManager.getLogger("TommyPostHandler");
 		
+		// Create Actor System
+		logger.info(method_name + "Creating ActorSystem ...");
+		ActorSystem system = ActorSystem.create("test-system");
+		logger.info(method_name + system.name() + " ActorSystem is Active");
+		
+		// Create TommyPostHandler Actor
+		logger.info(method_name + "Creating TommyPostHandler Actor ...");
+		ActorRef tommyPoster = system.actorOf(Props.create(TommyPostHandler.class, "../conf/tommy_refs.conf"), "TommyPostHandler");
+		logger.info(method_name + " TommyPostHandler Actor is Active");
+		
+		// Send Start to TommyPostHandler
+		logger.info(method_name + "Sending TommyPostHandler Actor the Start Posting Msg ...");
+		tommyPoster.tell(new startPosting(), ActorRef.noSender());
+		logger.info(method_name + "Sent :)");
+				
 		try {
 			
 			//Path path = Paths.get("../docs/RestTommy/test.json");
-			Path path = Paths.get("../data_xml_test/213003231.json");
-			json = Files.readString(path, StandardCharsets.US_ASCII);
+			// int servizioCode = 213000000;
+			int servizioCode = 213003231;
+			String codiceMezzo = "VOLCAL_106";
+			Path path = Paths.get("../data_json_test/" + servizioCode + ".json");
+			String json = Files.readString(path, StandardCharsets.US_ASCII);
+			tommyPoster.tell(new PostData(codiceMezzo, servizioCode, json), ActorRef.noSender());
+			
 			
 		} catch (Exception e) {
-			System.out.println("\nError while calling REST Service");
-			System.out.println(e);
+			logger.error(method_name + "Error while Posting: " + e.getMessage());
 		}
  
 			
