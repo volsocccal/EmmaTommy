@@ -8,12 +8,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,6 +32,7 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.actor.typed.PostStop;
 import emmaTommy.TommyHandler.ActorsMessages.PostData;
+import emmaTommy.TommyHandler.ActorsMessages.PostDataResponse;
 import emmaTommy.TommyHandler.ActorsMessages.startPosting;
 
 
@@ -111,39 +114,54 @@ public class TommyPostHandler extends AbstractActor {
 		
 		String json = postData.getJsonServizi();
 		
-		// Build url
-		String restUrl = tommyURL 
-				+ "/" + associazione 
-				+ "/" + servizioRestName + "/" + "run.php?" 
-				+ "&user=" + username 
-				+ "&pwd=" + psswd 
-				+ "&json=" + json;
+		PostDataResponse respData = null;
 		
 		try {
-            URI uri = new URI(restUrl);
-            logger.trace(method_name + "URI created: " + uri.toString());
+			String restUrl = tommyURL 
+							+ "/" + associazione 
+							+ "/" + servizioRestName + "/" + "run.php?" 
+							+ "&user=" + username 
+							+ "&pwd=" + psswd
+							+ "&json=" + URLEncoder.encode(json, "UTF-8");			
+            URI uri = new URI(restUrl);            
             try {    			
             	String response = this.post(uri, json);
      			logger.info(method_name + "Rest Service Answer: " + response);  
+     			respData = new PostDataResponse(postData, true, response);
             } catch (MalformedURLException e) {
-            	logger.error(method_name + "Url Malformed Error: " + e.getMessage());
+            	String errorMsg = "Url Malformed Error: " + e.getMessage();
+            	logger.error(method_name + errorMsg);
+            	respData = new PostDataResponse(postData, false, errorMsg);
     		} catch (IOException e) {
-    			logger.error("Failed to post the following servizi for automezzo " + postData.getCodiceMezzo());
-    			logger.error(method_name + e.getMessage());
+    			String errorMsg = "Failed to post the following servizi for automezzo " + postData.getCodiceMezzo()+ "\n" + e.getMessage();
+    			logger.error(errorMsg);
+    			respData = new PostDataResponse(postData, false, errorMsg);
     		}
            
-        }
-        catch (URISyntaxException e) {
-        	logger.error(method_name + "URI Syntax Error: " + e.getMessage());
-        }
+        } catch (URISyntaxException e) {
+        	String errorMsg = "URI Syntax Error: " + e.getMessage();
+        	logger.error(method_name + errorMsg);
+        	respData = new PostDataResponse(postData, false, errorMsg);
+        } catch (UnsupportedEncodingException e) {
+        	String errorMsg = "URL Encoder UnsupportedEncoding Error: " + e.getMessage();
+        	logger.error(method_name + errorMsg);
+        	respData = new PostDataResponse(postData, false, errorMsg);
+		} catch (Exception e) {
+			String errorMsg = "Unknown Error: " + e.getMessage();
+			logger.error(method_name + errorMsg);
+			respData = new PostDataResponse(postData, false, errorMsg);
+		}
+		
+		// Send response
+		if (respData != null) {
+			
+		}
 		
 	}	
 	
 	protected String post(URI restUri, String jsonServizi) throws MalformedURLException, IOException {
-		String method_name = "::post(): ";
-        try {
+		try {
             URL restUrl = restUri.toURL();
-            logger.trace(method_name + "URL from URI: " + restUrl);
             return this.post(restUrl, jsonServizi);
         }
         catch (MalformedURLException e) {
@@ -156,12 +174,11 @@ public class TommyPostHandler extends AbstractActor {
 		
 		String method_name = "::post(): ";
 		logger.trace(method_name + "Posting to " + this.tommyURL);
-		logger.trace(restUrl);
 		
 		// Create Connection
 		URLConnection connection = restUrl.openConnection();
 		connection.setDoOutput(true); // Triggers POST action
-		connection.setRequestProperty("Content-Type", "application/json");
+		connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
 		// connection.setConnectTimeout(5000);
 		// connection.setReadTimeout(5000);
 		try (OutputStream output = connection.getOutputStream()) {
@@ -201,7 +218,10 @@ public class TommyPostHandler extends AbstractActor {
         }
 		return responseStringBuffer.toString();
 		
-		// Error: "tipo":"ERR"
+		// Err: [{"tipo":"ERR","codice":-999,"messaggio":"ERR: Mismatch TAG_IDAUTOMEZZO: VOLCAL%2B105 - look at codice_servizio: 213003231","note":"Ops!!!"}]
+		// Ok: [{"tipo":"OK","codice":1,"messaggio":"Importazione effettuata con successo","note":"[]"}]
+		// [{"tipo":"OK","codice":2,"messaggio":"Importazione effettuata con successo","note":"[{\"codice_servizio\":\"213003232\",\"warning\":\"Mismatch TAG_IDQUALIFICA: SO\"}]"}]
+
 		
 	}
 	
@@ -237,8 +257,9 @@ public class TommyPostHandler extends AbstractActor {
 			
 			//Path path = Paths.get("../docs/RestTommy/test.json");
 			// int servizioCode = 213000000;
-			int servizioCode = 213003231;
-			String codiceMezzo = "VOLCAL_106";
+			// int servizioCode = 213003231;
+			int servizioCode = 213003233;
+			String codiceMezzo = "VOLCAL+105";
 			Path path = Paths.get("../data_json_test/" + servizioCode + ".json");
 			String json = Files.readString(path, StandardCharsets.US_ASCII);
 			tommyPoster.tell(new PostData(codiceMezzo, servizioCode, json), ActorRef.noSender());
