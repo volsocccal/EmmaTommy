@@ -218,10 +218,7 @@ public class TommyPostHandler extends AbstractActor {
         }
 		return responseStringBuffer.toString();
 		
-		// Err: [{"tipo":"ERR","codice":-999,"messaggio":"ERR: Mismatch TAG_IDAUTOMEZZO: VOLCAL%2B105 - look at codice_servizio: 213003231","note":"Ops!!!"}]
-		// Ok: [{"tipo":"OK","codice":1,"messaggio":"Importazione effettuata con successo","note":"[]"}]
-		// [{"tipo":"OK","codice":2,"messaggio":"Importazione effettuata con successo","note":"[{\"codice_servizio\":\"213003232\",\"warning\":\"Mismatch TAG_IDQUALIFICA: SO\"}]"}]
-
+		
 		
 	}
 	
