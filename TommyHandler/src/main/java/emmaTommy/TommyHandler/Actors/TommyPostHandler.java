@@ -20,8 +20,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
@@ -46,7 +44,9 @@ public class TommyPostHandler extends AbstractActor {
 	protected String username;
 	protected String psswd;
 	protected int startingServizioCode;
-	protected Boolean POST;
+	protected Boolean postServiceActive;
+	protected Boolean POSTflag;
+	
 	
 	public static Props props(String text, String confPath) {
         return Props.create(TommyPostHandler.class, text, confPath);
@@ -80,9 +80,10 @@ public class TommyPostHandler extends AbstractActor {
 		this.username = props.getProperty("username");
 		this.psswd = props.getProperty("psswd");
 		this.startingServizioCode = Integer.parseInt(props.getProperty("startingServizioCode"));
+		this.postServiceActive = (Integer.parseInt(props.getProperty("postServiceActive")) == 1) ? (true) : (false);
 		
 		// Set Conversion cycle to false
-		this.POST = false;
+		this.POSTflag = false;
 		
 	}
 	
@@ -105,6 +106,8 @@ public class TommyPostHandler extends AbstractActor {
 		String method_name = "::onStart(): ";
 		logger.info(method_name + "Received Start Posting Event");
 		
+		this.POSTflag = this.postServiceActive;
+		
 		
 	}
 	
@@ -112,22 +115,54 @@ public class TommyPostHandler extends AbstractActor {
 		String method_name = "::consume(): ";
 		logger.trace(method_name + "Received a post msg");
 		
-		String json = postData.getJsonServizi();
-		
 		PostDataResponse respData = null;
 		
 		try {
+			
+			// Analyze Servizi Arraylist
+			if (postData.getCodiciServizi() == null) {
+				throw new NullPointerException("Got a null codiciServizi arraylist");
+			}
+			if (postData.getCodiciServizi().isEmpty()) {
+				throw new IllegalArgumentException("Got an empty codiciServizi arraylist");
+			}
+			for (Integer codiceServizio: postData.getCodiciServizi()) {
+				if (codiceServizio <= this.startingServizioCode) {
+					throw new IllegalArgumentException("Got " + codiceServizio + " as one of the codiciServizio, but the configuration minumum was " + this.startingServizioCode);
+				}
+			}
+			
+			// Analyze input Json
+			String json = postData.getJsonServizi();
+			if (json == null) {
+				throw new NullPointerException("Got a null json arraylist");
+			}
+			if (json.isEmpty()) {
+				throw new NullPointerException("Got an empty json arraylist");
+			}
+			
+			// Build Url
 			String restUrl = tommyURL 
 							+ "/" + associazione 
 							+ "/" + servizioRestName + "/" + "run.php?" 
 							+ "&user=" + username 
 							+ "&pwd=" + psswd
 							+ "&json=" + URLEncoder.encode(json, "UTF-8");			
-            URI uri = new URI(restUrl);            
+            URI uri = new URI(restUrl);  
+            
+            // Post
             try {    			
-            	String response = this.post(uri, json);
-     			logger.info(method_name + "Rest Service Answer: " + response);  
-     			respData = new PostDataResponse(postData, true, response);
+            	if (this.POSTflag) {
+	            	String response = this.post(uri, json);
+	     			logger.info(method_name + "Rest Service Answer: " + response);  
+	     			respData = new PostDataResponse(postData, true, response);
+            	} else {
+            		if (this.postServiceActive) {
+            			respData = new PostDataResponse(postData, false, "Posting is disabled by configuration");
+            		} else {
+            			respData = new PostDataResponse(postData, false, "Posting is disabled (maybe I never received a startPosting msg)");
+            		}
+            	}
             } catch (MalformedURLException e) {
             	String errorMsg = "Url Malformed Error: " + e.getMessage();
             	logger.error(method_name + errorMsg);
@@ -144,6 +179,14 @@ public class TommyPostHandler extends AbstractActor {
         	respData = new PostDataResponse(postData, false, errorMsg);
         } catch (UnsupportedEncodingException e) {
         	String errorMsg = "URL Encoder UnsupportedEncoding Error: " + e.getMessage();
+        	logger.error(method_name + errorMsg);
+        	respData = new PostDataResponse(postData, false, errorMsg);
+        } catch (IllegalArgumentException e) {
+        	String errorMsg = "Illegal Argument Error: " + e.getMessage();
+        	logger.error(method_name + errorMsg);
+        	respData = new PostDataResponse(postData, false, errorMsg);
+        } catch (NullPointerException e) {
+        	String errorMsg = "Null Pointer Error: " + e.getMessage();
         	logger.error(method_name + errorMsg);
         	respData = new PostDataResponse(postData, false, errorMsg);
 		} catch (Exception e) {
