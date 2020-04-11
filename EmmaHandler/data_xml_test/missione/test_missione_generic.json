@@ -1,0 +1,98 @@
+{
+   "missione" : {
+      "type" : "Missione",
+      "validState" : true,
+      "tratte" : {
+         "type" : "Tratte",
+         "validState" : true,
+         "tratta" : [ {
+            "type" : "Tratta",
+            "validState" : true,
+            "tr-id-tratta" : 70036,
+            "tr-dt-partenza" : "2019-12-31T21:18:10Z",
+            "tr-dt-arrivo" : "2019-12-31T21:02:25Z",
+            "tr-ds-lg-dest" : "H PAP"
+         }, {
+            "type" : "Tratta",
+            "validState" : true,
+            "tr-id-tratta" : 70035,
+            "tr-dt-partenza" : "2019-12-31T20:50:22Z",
+            "tr-dt-arrivo" : "2019-12-31T20:34:25Z",
+            "tr-ds-lg-dest" : ""
+         } ]
+      },
+      "membri" : {
+         "type" : "Membri",
+         "validState" : true,
+         "membro" : [ {
+            "type" : "Membro",
+            "validState" : true,
+            "me-ds-cognome" : "DUCK",
+            "me-ds-nome" : "DONALD",
+            "me-ds-tp-equip" : "AUTISTA"
+         }, {
+            "type" : "Membro",
+            "validState" : true,
+            "me-ds-cognome" : "DUCK",
+            "me-ds-nome" : "DAISY",
+            "me-ds-tp-equip" : "SOCCORRITORE"
+         }, {
+            "type" : "Membro",
+            "validState" : true,
+            "me-ds-cognome" : "MCDUCK",
+            "me-ds-nome" : "SCROOGE",
+            "me-ds-tp-equip" : "SOCCORRITORE IN ADD"
+         }, {
+            "type" : "Membro",
+            "validState" : true,
+            "me-ds-cognome" : "GANDER",
+            "me-ds-nome" : "GLADSTONE",
+            "me-ds-tp-equip" : "CAPO SERVIZIO"
+         } ]
+      },
+      "pazienti" : {
+         "type" : "Pazienti",
+         "validState" : true,
+         "paziente" : [ {
+            "type" : "Paziente",
+            "validState" : true,
+            "pz-ds-cognome" : "VON DRAKE",
+            "pz-ds-nome" : "LUDWIG",
+            "pz-ac-sesso" : "M",
+            "pz-dt-nascita" : "1980-02-21",
+            "pz-vl-eta" : 39,
+            "pz-fl-pz-pediatrico" : "N",
+            "pz-ds-esito" : "REGOLARE",
+            "pz-id-codice-r" : "",
+            "pz-id-polso" : 0,
+            "pz-id-respiro" : 1,
+            "pz-cd-coscienza" : "A",
+            "pz-ds-loc-res" : "PAPEROPOLI"
+         } ]
+      },
+      "lg-ds-luogo" : "CASA",
+      "mi-ac-ente" : "VOLPAP",
+      "mi-cd-mezzo" : "VOLPAP+101",
+      "mi-ds-convenz" : "H24_ECG_3",
+      "mi-ds-esito" : "REGOLARE",
+      "mi-ds-lg-dest" : "PAPEROPOLI VOLPAP",
+      "mi-ds-punsta" : "PAPEROPOLI VOLPAP",
+      "mi-dt-fine-mi" : "2019-12-31T22:27:03+01:00",
+      "mi-dt-inizio-r" : "2019-12-31T22:18:28+01:00",
+      "mi-dt-missione" : "2019-12-31T21:23:58+01:00",
+      "mi-dt-partenza" : "2019-12-31T21:25:23+01:00",
+      "mi-id-codice-e" : "G",
+      "mi-id-codice-t" : "V",
+      "mi-id-miss-int" : 0,
+      "mi-id-missione" : 203100001,
+      "mi-vl-totkm" : 23,
+      "sc-ds-det-mot" : "DIGERENTE",
+      "sc-ds-riferimen" : "P4 CIT DE PAPERIS",
+      "sc-ds-tp-via-1" : "VIA",
+      "sc-ds-via-1" : "DEL CACCIAVITE",
+      "sc-ds-via-2" : "",
+      "sc-vl-civico-v1" : "12",
+      "sc-vl-barra-v1" : "",
+      "mi-ds-loc-part" : "PAPEROPOLI"
+   }
+}

@@ -1,1 +1,15 @@
+# TommyDataHandler Folder .gitIgnore
+#$ cat .gitignore
+
+# Ignore the target folder
 /target/
+
+# Ignore every *.class file
+*.class
+
+# Ignore the logs
+logs/*
+logs_test/*
+
+# Ignore the following conf files with sensible data (public ips, users and psswd even masked)
+conf/tommy_refs.conf

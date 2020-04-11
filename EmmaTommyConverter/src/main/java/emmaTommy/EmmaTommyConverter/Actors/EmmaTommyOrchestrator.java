@@ -168,7 +168,7 @@ public class EmmaTommyOrchestrator extends AbstractActor {
 		
 		// Create EmmaOrchestrator Actor
 		logger.info(method_name + "Creating EmmaTommyOrchestrator Actor ...");
-		ActorRef orchestrator = system.actorOf(Props.create(EmmaTommyOrchestrator.class, "../conf/emmatommy_orchestrator.conf"), "EmmaTommyOrchestrator");
+		ActorRef orchestrator = system.actorOf(Props.create(EmmaTommyOrchestrator.class, "conf/emmatommy_orchestrator.conf"), "EmmaTommyOrchestrator");
 		logger.info(method_name + " EmmaTommyOrchestrator Actor is Active");
 		
 		// Send Start to EmmaOrchestrator

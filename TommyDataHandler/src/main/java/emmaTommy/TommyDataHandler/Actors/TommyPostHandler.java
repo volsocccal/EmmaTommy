@@ -289,7 +289,7 @@ public class TommyPostHandler extends AbstractActor {
 		
 		// Create TommyPostHandler Actor
 		logger.info(method_name + "Creating TommyPostHandler Actor ...");
-		ActorRef tommyPoster = system.actorOf(Props.create(TommyPostHandler.class, "../conf/tommy_refs.conf"), "TommyPostHandler");
+		ActorRef tommyPoster = system.actorOf(Props.create(TommyPostHandler.class, "conf/tommy_refs.conf"), "TommyPostHandler");
 		logger.info(method_name + " TommyPostHandler Actor is Active");
 		
 		// Send Start to TommyPostHandler

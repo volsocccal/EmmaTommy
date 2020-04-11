@@ -1,26 +1,43 @@
-$ cat .gitignore
+# EmmaTommy repository .gitIgnore
+# $ cat .gitignore
+
+# Ignore the target folder for every projects
+DataModel/target/
+EmmaHandler/target/
+EmmaTommyConverter/target/
+TommyDataHandler/target/
+TommyDataPoster/target/
 
 # Ignore every *.class file
 *.class
 
-# For every project, ignore the target folder
-DataModel/target/
-emmaREST/target
-
 # Ignore the logs
 logs/*
+logs_test/*
+DataModel/logs/*
+DataModel/logs_test/*
+EmmaHandler/logs/*
+EmmaHandler/logs_test/*
+EmmaTommyConverter/logs/*
+EmmaTommyConverter/logs_test/*
+TommyDataHandler/logs/*
+TommyDataHandler/logs_test/*
+TommyDataPoster/logs/*
+TommyDataPoster/logs_test/*
 
 # Ignore the folder for full xml downloads (since it may contains sensible patient information)
-data_xml_download/
+EmmaHandler/data_xml_download/*
 
 # Ignore the folder for jsons produced files (since it may contains sensible patient information)
-data_json_missioni_download/
+EmmaHandler/data_json_missioni_download/*
 
 # Ignore the folder for jsons produced files (since it may contains sensible patient information)
-data_json_servizi_download/
+EmmaTommyConverter/data_json_servizi_download/*
 
 # Ignore the folder for jsons test files (since it may contains sensible patient/emt information)
-data_json_test/
+EmmaHandler/data_json_missioni_download/*
+EmmaTommyConverter/data_json_missioni_test/*
+TommyPoster/data_json_test/*
 
 # Ignore the docs/xml 
 docs/xmlParsing_REST_MISSIONI
@@ -34,8 +51,9 @@ docs/xmlParsing_REST_MISSIONI/*.xlsx
 docs/RestTommy/specifiche.txt
 
 # Ignore the following conf files with sensible data (public ips, users and psswd even masked)
-conf/emma_psswd.conf
-conf/tommy_refs.conf
+EmmaHandler/conf/emma_psswd.conf
+TommyDataHandler/conf/tommy_refs.conf
+TommyDataPoster/conf/tommy_refs.conf
 
 # Ignore the following scripts
 scripts/test/mysql/psswd.txt

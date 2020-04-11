@@ -5,8 +5,8 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
-        <!--RollingFile name="EmmaRESTActor" fileName="../logs/Emma/EmmaRESTActor.log" filePattern="../logs/$${date:yyyy-MM}/Emma/EmmaRESTActor-%d{MM-dd-yyyy}-%i.log"-->
-        <RollingFile name="EmmaRESTActor" fileName="../logs/Emma/EmmaRESTActor.log" filePattern="../logs/Emma/EmmaRESTActor-%i.log">
+        <!--RollingFile name="EmmaRESTActor" fileName="logs/EmmaRESTActor.log" filePattern="logs/$${date:yyyy-MM}/Emma/EmmaRESTActor-%d{MM-dd-yyyy}-%i.log"-->
+        <RollingFile name="EmmaRESTActor" fileName="logs/EmmaRESTActor.log" filePattern="logs/EmmaRESTActor-%i.log">
             <PatternLayout>
                 <Pattern>%d [%t] %-5p %c%m%n</Pattern>
             </PatternLayout>
@@ -15,7 +15,7 @@
                 <SizeBasedTriggeringPolicy size="100 MB"/>
             </Policies>
         </RollingFile>
-        <RollingFile name="EmmaDataModel" fileName="../logs/Emma/EmmaDataModel.log" filePattern="../logs/Emma/EmmaDataModel-%i.log">
+        <RollingFile name="EmmaDataModel" fileName="logs/EmmaDataModel.log" filePattern="logs/EmmaDataModel-%i.log">
             <PatternLayout>
                 <Pattern>%d [%t] %-5p %c%m%n</Pattern>
             </PatternLayout>
@@ -24,7 +24,7 @@
                 <SizeBasedTriggeringPolicy size="100 MB"/>
             </Policies>
         </RollingFile>
-        <RollingFile name="EmmaXMLParserActor" fileName="../logs/Emma/EmmaXMLParserActor.log" filePattern="../logs/Emma/EmmaXMLParserActor-%i.log">
+        <RollingFile name="EmmaXMLParserActor" fileName="logs/EmmaXMLParserActor.log" filePattern="logs/EmmaXMLParserActor-%i.log">
             <PatternLayout>
                 <Pattern>%d [%t] %-5p %c%m%n</Pattern>
             </PatternLayout>
@@ -33,8 +33,8 @@
                 <SizeBasedTriggeringPolicy size="100 MB"/>
             </Policies>
         </RollingFile>
-        <!--RollingFile name="EmmaJSONProducer" fileName="../logs/Emma/EmmaJSONProducer.log" filePattern="../logs/$${date:yyyy-MM}/Emma/EmmaJSONProducer-%d{MM-dd-yyyy}-%i.log"-->
-        <RollingFile name="EmmaJSONProducer" fileName="../logs/Emma/EmmaJSONProducer.log" filePattern="../logs/Emma/EmmaJSONProducer-%i.log">
+        <!--RollingFile name="EmmaJSONProducer" fileName="logs/EmmaJSONProducer.log" filePattern="logs/$${date:yyyy-MM}/Emma/EmmaJSONProducer-%d{MM-dd-yyyy}-%i.log"-->
+        <RollingFile name="EmmaJSONProducer" fileName="logs/EmmaJSONProducer.log" filePattern="logs/EmmaJSONProducer-%i.log">
             <PatternLayout>
                 <Pattern>%d [%t] %-5p %c%m%n</Pattern>
             </PatternLayout>
@@ -43,8 +43,8 @@
                 <SizeBasedTriggeringPolicy size="100 MB"/>
             </Policies>
         </RollingFile>
-        <!--RollingFile name="EmmaOrchestrator" fileName="../logs/Emma/EmmaOrchestrator.log" filePattern="../logs/$${date:yyyy-MM}/Emma/EmmaOrchestrator-%d{MM-dd-yyyy}-%i.log"-->
-        <RollingFile name="EmmaOrchestrator" fileName="../logs/Emma/EmmaOrchestrator.log" filePattern="../logs/Emma/EmmaOrchestrator-%i.log">
+        <!--RollingFile name="EmmaOrchestrator" fileName="logs/EmmaOrchestrator.log" filePattern="logs/$${date:yyyy-MM}/Emma/EmmaOrchestrator-%d{MM-dd-yyyy}-%i.log"-->
+        <RollingFile name="EmmaOrchestrator" fileName="logs/EmmaOrchestrator.log" filePattern="logs/EmmaOrchestrator-%i.log">
             <PatternLayout>
                 <Pattern>%d [%t] %-5p %c%m%n</Pattern>
             </PatternLayout>

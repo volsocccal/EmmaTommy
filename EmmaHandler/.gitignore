@@ -1,1 +1,21 @@
+# EmmaHandler Folder .gitIgnore
+#$ cat .gitignore
+
+# Ignore the target folder
 /target/
+
+# Ignore every *.class file
+*.class
+
+# Ignore the logs
+logs/*
+logs_test/*
+
+# Ignore the following conf files with sensible data (public ips, users and psswd even masked)
+conf/emma_psswd.conf
+
+# Ignore the folder for full xml downloads (since it may contains sensible patient information)
+data_xml_download/*
+
+# Ignore the folder for jsons produced files (since it may contains sensible patient information)
+data_json_missioni_download/*
