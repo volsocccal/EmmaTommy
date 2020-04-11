@@ -1,5 +1,5 @@
 package emmaTommy.TommyHandler.ActorsMessages;
 
-public class startPosting {
+public class StartPosting {
 
 }

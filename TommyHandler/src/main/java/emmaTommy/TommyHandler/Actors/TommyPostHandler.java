@@ -31,7 +31,7 @@ import akka.actor.Props;
 import akka.actor.typed.PostStop;
 import emmaTommy.TommyHandler.ActorsMessages.PostData;
 import emmaTommy.TommyHandler.ActorsMessages.PostDataResponse;
-import emmaTommy.TommyHandler.ActorsMessages.startPosting;
+import emmaTommy.TommyHandler.ActorsMessages.StartPosting;
 
 
 public class TommyPostHandler extends AbstractActor {
@@ -90,7 +90,7 @@ public class TommyPostHandler extends AbstractActor {
 	@Override
 	public Receive createReceive() {
 		return receiveBuilder()
-				.match(startPosting.class, this::onStart)
+				.match(StartPosting.class, this::onStart)
 				.match(PostData.class, this::postElaborator)
 				.match(PostStop.class, signal -> onPostStop())
 				.match(String.class, s -> {
@@ -100,7 +100,7 @@ public class TommyPostHandler extends AbstractActor {
 				.build();
 	}
 	
-	protected void onStart(startPosting startPost) {
+	protected void onStart(StartPosting startPost) {
 		
 		// Logger Method Name
 		String method_name = "::onStart(): ";
@@ -155,7 +155,11 @@ public class TommyPostHandler extends AbstractActor {
             	if (this.POSTflag) {
 	            	String response = this.post(uri, json);
 	     			logger.info(method_name + "Rest Service Answer: " + response);  
-	     			respData = new PostDataResponse(postData, true, response);
+	     			if (response.contains("ERR")) {
+	     				respData = new PostDataResponse(postData, false, response);
+	     			} else {
+	     				respData = new PostDataResponse(postData, true, response);
+	     			}
             	} else {
             		if (this.postServiceActive) {
             			respData = new PostDataResponse(postData, false, "Posting is disabled by configuration");
@@ -197,7 +201,7 @@ public class TommyPostHandler extends AbstractActor {
 		
 		// Send response
 		if (respData != null) {
-			
+			this.getSender().tell(respData, this.getSelf());
 		}
 		
 	}	
@@ -290,7 +294,7 @@ public class TommyPostHandler extends AbstractActor {
 		
 		// Send Start to TommyPostHandler
 		logger.info(method_name + "Sending TommyPostHandler Actor the Start Posting Msg ...");
-		tommyPoster.tell(new startPosting(), ActorRef.noSender());
+		tommyPoster.tell(new StartPosting(), ActorRef.noSender());
 		logger.info(method_name + "Sent :)");
 				
 		try {
