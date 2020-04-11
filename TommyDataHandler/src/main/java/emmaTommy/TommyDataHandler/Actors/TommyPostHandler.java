@@ -1,4 +1,4 @@
-package emmaTommy.TommyHandler.Actors;
+package emmaTommy.TommyDataHandler.Actors;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -29,9 +29,9 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.actor.typed.PostStop;
-import emmaTommy.TommyHandler.ActorsMessages.PostData;
-import emmaTommy.TommyHandler.ActorsMessages.PostDataResponse;
-import emmaTommy.TommyHandler.ActorsMessages.StartPosting;
+import emmaTommy.TommyDataHandler.ActorsMessages.PostData;
+import emmaTommy.TommyDataHandler.ActorsMessages.PostDataResponse;
+import emmaTommy.TommyDataHandler.ActorsMessages.StartPosting;
 
 
 public class TommyPostHandler extends AbstractActor {

@@ -1,4 +1,4 @@
-package emmaTommy.TommyHandler.Actors;
+package emmaTommy.TommyDataHandler.Actors;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -14,8 +14,8 @@ import akka.actor.ActorSystem;
 import akka.actor.Cancellable;
 import akka.actor.Props;
 import akka.actor.typed.PostStop;
-import emmaTommy.TommyHandler.ActorsMessages.StartConsuming;
-import emmaTommy.TommyHandler.ActorsMessages.StartPosting;
+import emmaTommy.TommyDataHandler.ActorsMessages.StartConsuming;
+import emmaTommy.TommyDataHandler.ActorsMessages.StartPosting;
 import scala.concurrent.duration.Duration;
 import java.util.concurrent.TimeUnit;
 

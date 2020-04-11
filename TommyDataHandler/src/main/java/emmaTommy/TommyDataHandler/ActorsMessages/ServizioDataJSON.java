@@ -1,4 +1,4 @@
-package emmaTommy.TommyHandler.ActorsMessages;
+package emmaTommy.TommyDataHandler.ActorsMessages;
 
 import java.util.ArrayList;
 

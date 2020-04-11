@@ -1,9 +1,9 @@
-package emmaTommy.TommyHandler.Actors;
+package emmaTommy.TommyDataHandler.Actors;
 
 import akka.actor.typed.PostStop;
-import emmaTommy.TommyHandler.ActorsMessages.Consume;
-import emmaTommy.TommyHandler.ActorsMessages.ServizioDataJSON;
-import emmaTommy.TommyHandler.ActorsMessages.StartConsuming;
+import emmaTommy.TommyDataHandler.ActorsMessages.Consume;
+import emmaTommy.TommyDataHandler.ActorsMessages.ServizioDataJSON;
+import emmaTommy.TommyDataHandler.ActorsMessages.StartConsuming;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
