@@ -2,9 +2,9 @@ package emmaTommy.DBapi.Queries;
 
 public abstract class moveServizioByID extends Query {
 	protected String ID;
-	protected String oldSection;
-	protected String newSection;
-	public moveServizioByID(String ID, String oldSection, String newSection) {
+	protected String oldCollection;
+	protected String newCollection;
+	public moveServizioByID(String ID, String oldCollection, String newCollection) {
 		super();
 		if (ID == null) {
 			throw new NullPointerException("Received ID was null");
@@ -13,30 +13,30 @@ public abstract class moveServizioByID extends Query {
 			throw new IllegalArgumentException("Received ID was blanck");
 		}
 		this.ID = ID;
-		if (oldSection == null) {
-			throw new NullPointerException("Received oldSection was null");
+		if (oldCollection == null) {
+			throw new NullPointerException("Received oldCollection was null");
 		}
-		if (oldSection.isBlank()) {
-			throw new IllegalArgumentException("Received oldSection was blanck");
+		if (oldCollection.isBlank()) {
+			throw new IllegalArgumentException("Received oldCollection was blanck");
 		}
-		this.oldSection = oldSection;
-		if (newSection == null) {
-			throw new NullPointerException("Received newSection was null");
+		this.oldCollection = oldCollection;
+		if (newCollection == null) {
+			throw new NullPointerException("Received newCollection was null");
 		}
-		if (newSection.isBlank()) {
-			throw new IllegalArgumentException("Received newSection was blanck");
+		if (newCollection.isBlank()) {
+			throw new IllegalArgumentException("Received newCollection was blanck");
 		}
-		this.newSection = newSection;
+		this.newCollection = newCollection;
 	}
 	public String getID() {
 		return this.ID;
 	}
-	protected String GetOldSection() {
-		return this.oldSection;
+	protected String GetOldCollection() {
+		return this.newCollection;
 	}
 
-	public String GetNewSection() {
-		return this.newSection;
+	public String GetNewCollection() {
+		return this.newCollection;
 	}
 
 }

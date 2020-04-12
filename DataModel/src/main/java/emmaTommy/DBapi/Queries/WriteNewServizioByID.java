@@ -5,7 +5,8 @@ import emmaTommy.TommyDataModel.TommyEnrichedJSON;
 public class WriteNewServizioByID extends Query {
 	protected String ID;
 	protected TommyEnrichedJSON newServizio;
-	public WriteNewServizioByID(String ID, TommyEnrichedJSON newServizio) {
+	protected String collection;
+	public WriteNewServizioByID(String ID, TommyEnrichedJSON newServizio, String collection) {
 		super();
 		if (ID == null) {
 			throw new NullPointerException("Received ID was null");
@@ -18,11 +19,21 @@ public class WriteNewServizioByID extends Query {
 			throw new NullPointerException("Received newServizio was null");
 		}
 		this.newServizio = newServizio;
+		if (collection == null) {
+			throw new NullPointerException("Received collection was null");
+		}
+		if (collection.isBlank()) {
+			throw new IllegalArgumentException("Received collection was blanck");
+		}
+		this.collection = collection;
 	}
 	public String getID() {
 		return this.ID;
 	}
 	public TommyEnrichedJSON getNewServizio() {
 		return this.newServizio;
+	}
+	public String getCollection() {
+		return this.collection;
 	}
 }
