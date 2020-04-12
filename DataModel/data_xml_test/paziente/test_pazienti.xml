@@ -18,7 +18,7 @@
         <pz-ds-cognome>Duck</pz-ds-cognome>
         <pz-ds-nome>Huey</pz-ds-nome>
         <pz-ac-sesso>M</pz-ac-sesso>
-        <pz-dt-nascita type="date">2019-10-17</pz-dt-nascita>
+        <pz-dt-nascita type="date">2010-10-17</pz-dt-nascita>
         <pz-vl-eta>9</pz-vl-eta>
         <pz-fl-pz-pediatrico>S</pz-fl-pz-pediatrico>
         <pz-ds-esito>REGOLARE</pz-ds-esito>
@@ -32,7 +32,7 @@
         <pz-ds-cognome>Duck</pz-ds-cognome>
         <pz-ds-nome>Dewey</pz-ds-nome>
         <pz-ac-sesso>M</pz-ac-sesso>
-        <pz-dt-nascita type="date">2019-10-17</pz-dt-nascita>
+        <pz-dt-nascita type="date">2010-10-17</pz-dt-nascita>
         <pz-vl-eta>9</pz-vl-eta>
         <pz-fl-pz-pediatrico>S</pz-fl-pz-pediatrico>
         <pz-ds-esito>REGOLARE</pz-ds-esito>
@@ -46,7 +46,7 @@
         <pz-ds-cognome>Duck</pz-ds-cognome>
         <pz-ds-nome>Louie</pz-ds-nome>
         <pz-ac-sesso>M</pz-ac-sesso>
-        <pz-dt-nascita type="date">2019-10-17</pz-dt-nascita>
+        <pz-dt-nascita type="date">2010-10-17</pz-dt-nascita>
         <pz-vl-eta>9</pz-vl-eta>
         <pz-fl-pz-pediatrico>S</pz-fl-pz-pediatrico>
         <pz-ds-esito>REGOLARE</pz-ds-esito>

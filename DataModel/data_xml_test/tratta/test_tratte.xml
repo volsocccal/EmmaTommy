@@ -2,14 +2,14 @@
 <tratte type="array">
     <tratta type="Tratta">
     <tr-id-tratta type="integer">1</tr-id-tratta>
-    <tr-dt-partenza type="dateTime">2019-10-07T07:16:44Z</tr-dt-partenza>
-    <tr-dt-arrivo type="dateTime">2019-10-07T08:01:05Z</tr-dt-arrivo>
+    <tr-dt-arrivo type="dateTime">2019-10-07T07:16:44Z</tr-dt-arrivo>
+    <tr-dt-partenza type="dateTime">2019-10-07T08:01:05Z</tr-dt-partenza>
     <tr-ds-lg-dest></tr-ds-lg-dest>
     </tratta>
     <tratta type="Tratta">
     <tr-id-tratta type="integer">2</tr-id-tratta>
-    <tr-dt-partenza type="dateTime">2019-10-07T08:34:02Z</tr-dt-partenza>
-    <tr-dt-arrivo type="dateTime">2019-10-07T08:49:01Z</tr-dt-arrivo>
+    <tr-dt-arrivo type="dateTime">2019-10-07T08:34:02Z</tr-dt-arrivo>
+    <tr-dt-partenza type="dateTime">2019-10-07T08:49:01Z</tr-dt-partenza>
     <tr-ds-lg-dest>H LECCO</tr-ds-lg-dest>
     </tratta>
 </tratte>
