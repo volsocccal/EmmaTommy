@@ -14,14 +14,14 @@ import emmaTommy.EmmaDataModel.Missione;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-public class XMLParserTestMissione extends XMLParserTest {
+public class XMLParserMissioneTest extends XMLParserTest {
 
 	/**
      * Create the test case
      *
      * @param testName name of the test case
      */
-    public XMLParserTestMissione( String testName )
+    public XMLParserMissioneTest( String testName )
     {
         super( testName );
     }
@@ -31,7 +31,7 @@ public class XMLParserTestMissione extends XMLParserTest {
      */
     public static Test suite()
     {
-        return new TestSuite( XMLParserTestMissione.class );
+        return new TestSuite( XMLParserMissioneTest.class );
     }
 
   

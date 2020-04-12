@@ -12,7 +12,7 @@ import emmaTommy.EmmaDataModel.Tratte;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-public class XMLParserTestTratta extends XMLParserTest {
+public class XMLParserTrattaTest extends XMLParserTest {
 	
 	
     /**
@@ -20,7 +20,7 @@ public class XMLParserTestTratta extends XMLParserTest {
      *
      * @param testName name of the test case
      */
-    public XMLParserTestTratta( String testName )
+    public XMLParserTrattaTest( String testName )
     {
         super( testName );
     }
@@ -30,7 +30,7 @@ public class XMLParserTestTratta extends XMLParserTest {
      */
     public static Test suite()
     {
-        return new TestSuite( XMLParserTestTratta.class );
+        return new TestSuite( XMLParserTrattaTest.class );
     }
 
   
@@ -43,7 +43,7 @@ public class XMLParserTestTratta extends XMLParserTest {
 		  logger.trace(this.getName());
 		  
 		  @SuppressWarnings("deprecation")
-		  Tratta tratta = new Tratta (1, new Date(119, 9, 7, 7, 16, 44), new Date(119, 9, 7, 8, 01, 05), "H LECCO");
+		  Tratta tratta = new Tratta (1, new Date(119, 9, 7, 8, 01, 05), new Date(119, 9, 7, 7, 16, 44), "H LECCO");
 		  
 			String test_file = "test_tratta_generic.xml";
 			JAXBContext jaxbContext = JAXBContext.newInstance(Tratta.class);
@@ -110,7 +110,7 @@ public class XMLParserTestTratta extends XMLParserTest {
 		  JAXBContext jaxbContext = JAXBContext.newInstance(Tratta.class);
 		  Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		  Tratta t = (Tratta) jaxbUnmarshaller.unmarshal( new File(test_data_folder_tratta + "/" + test_file) );
-		  assertFalse( t.validateObject() );
+		  assertTrue( t.validateObject() );
 	  }
 	  
 	  /** Test Membro Unmarshalling - Tratta Data Partenza Missing
@@ -123,7 +123,7 @@ public class XMLParserTestTratta extends XMLParserTest {
 		  JAXBContext jaxbContext = JAXBContext.newInstance(Tratta.class);
 		  Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		  Tratta t = (Tratta) jaxbUnmarshaller.unmarshal( new File(test_data_folder_tratta + "/" + test_file) );
-		  assertFalse( t.validateObject() );
+		  assertTrue( t.validateObject() );
 	  }
 	  
 	  /** Test Membro Unmarshalling - Tratta Data Partenza Null
@@ -136,7 +136,7 @@ public class XMLParserTestTratta extends XMLParserTest {
 		  JAXBContext jaxbContext = JAXBContext.newInstance(Tratta.class);
 		  Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		  Tratta t = (Tratta) jaxbUnmarshaller.unmarshal( new File(test_data_folder_tratta + "/" + test_file) );
-		  assertFalse( t.validateObject() );
+		  assertTrue( t.validateObject() );
 	  }
 	  
 	  
@@ -150,7 +150,7 @@ public class XMLParserTestTratta extends XMLParserTest {
 		  JAXBContext jaxbContext = JAXBContext.newInstance(Tratta.class);
 		  Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		  Tratta t = (Tratta) jaxbUnmarshaller.unmarshal( new File(test_data_folder_tratta + "/" + test_file) );
-		  assertTrue( t.validateObject() );
+		  assertFalse( t.validateObject() );
 	  }
 	  
 	  /** Test Membro Unmarshalling - Tratta Data Arrivo Missing
@@ -163,7 +163,7 @@ public class XMLParserTestTratta extends XMLParserTest {
 		  JAXBContext jaxbContext = JAXBContext.newInstance(Tratta.class);
 		  Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		  Tratta t = (Tratta) jaxbUnmarshaller.unmarshal( new File(test_data_folder_tratta + "/" + test_file) );
-		  assertTrue( t.validateObject() );
+		  assertFalse( t.validateObject() );
 	  }
 	  
 	  /** Test Membro Unmarshalling - Tratta Data Arrivo Null
@@ -176,17 +176,17 @@ public class XMLParserTestTratta extends XMLParserTest {
 		  JAXBContext jaxbContext = JAXBContext.newInstance(Tratta.class);
 		  Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		  Tratta t = (Tratta) jaxbUnmarshaller.unmarshal( new File(test_data_folder_tratta + "/" + test_file) );
-		  assertTrue( t.validateObject() );
+		  assertFalse( t.validateObject() );
 	  }
 	  
 	  
-	  /** Test Membro Unmarshalling - Tratta Data Arrivo Before Partenza
+	  /** Test Membro Unmarshalling - Tratta Data Partenza Before Arrivo
 	   * @throws JAXBException */
-	  public void testTrattaUnmarshallingTrattaDataArrivoBeforePartenza() throws JAXBException
+	  public void testTrattaUnmarshallingTrattaDataPartenzaBeforeArrivo() throws JAXBException
 	  {
 		  logger.trace(this.getName());
 		  
-		  String test_file = "test_tratta_data_arrivo_before_partenza.xml";
+		  String test_file = "test_tratta_data_partenza_before_arrivo.xml";
 		  JAXBContext jaxbContext = JAXBContext.newInstance(Tratta.class);
 		  Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		  Tratta t = (Tratta) jaxbUnmarshaller.unmarshal( new File(test_data_folder_tratta + "/" + test_file) );

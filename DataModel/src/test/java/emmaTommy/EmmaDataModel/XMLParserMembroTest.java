@@ -12,14 +12,14 @@ import emmaTommy.EmmaDataModel.Membro;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-public class XMLParserTestMembro extends XMLParserTest {
+public class XMLParserMembroTest extends XMLParserTest {
 	
     /**
      * Create the test case
      *
      * @param testName name of the test case
      */
-    public XMLParserTestMembro( String testName )
+    public XMLParserMembroTest( String testName )
     {
         super( testName );
     }
@@ -29,7 +29,7 @@ public class XMLParserTestMembro extends XMLParserTest {
      */
     public static Test suite()
     {
-        return new TestSuite( XMLParserTestMembro.class );
+        return new TestSuite( XMLParserMembroTest.class );
     }
     
     

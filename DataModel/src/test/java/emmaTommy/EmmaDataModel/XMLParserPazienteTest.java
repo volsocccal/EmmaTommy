@@ -14,7 +14,7 @@ import emmaTommy.EmmaDataModel.Pazienti;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-public class XMLParserTestPaziente extends XMLParserTest {
+public class XMLParserPazienteTest extends XMLParserTest {
 	
 	
 	
@@ -23,7 +23,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
      *
      * @param testName name of the test case
      */
-    public XMLParserTestPaziente( String testName )
+    public XMLParserPazienteTest( String testName )
     {
         super( testName );
     }
@@ -33,7 +33,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
      */
     public static Test suite()
     {
-        return new TestSuite( XMLParserTestPaziente.class );
+        return new TestSuite( XMLParserPazienteTest.class );
     }
 
   
@@ -57,7 +57,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.codicePazienteArrivo.compareTo(paperino.codicePazienteArrivo) == 0);
   		assertTrue (p.cognome.compareTo(paperino.cognome) == 0);
@@ -95,7 +94,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.codicePazienteArrivo.compareTo(minnie.codicePazienteArrivo) == 0);
   		assertTrue (p.cognome.compareTo(minnie.cognome) == 0);
@@ -124,7 +122,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.esitoTrasporto.compareTo(minimal.esitoTrasporto) == 0);
   }
@@ -141,7 +138,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.codicePazienteArrivo.compareTo(EmmaDataModelEnums.CODES_ROSSO) == 0);
   }
@@ -156,7 +152,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.codicePazienteArrivo.compareTo(EmmaDataModelEnums.CODES_GIALLO) == 0);
   }
@@ -171,7 +166,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.codicePazienteArrivo.compareTo(EmmaDataModelEnums.CODES_VERDE) == 0);
   }
@@ -186,7 +180,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertFalse( p.validateObject() );
   		assertTrue (p.codicePazienteArrivo.compareTo("B") == 0);
   }
@@ -201,7 +194,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.codicePazienteArrivo == "");
   }
@@ -216,7 +208,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.codicePazienteArrivo == null);
   }
@@ -231,7 +222,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.codicePazienteArrivo == "");
   }
@@ -248,7 +238,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.cognome == "");
   }
@@ -263,7 +252,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.cognome == null);
   }
@@ -278,7 +266,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.cognome == "");
   }
@@ -295,7 +282,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.comuneResidenza == "");
   }
@@ -310,7 +296,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.comuneResidenza == null);
   }
@@ -325,7 +310,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.comuneResidenza == "");
   }
@@ -342,7 +326,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.coscienza.compareTo(EmmaDataModelEnums.COSCIENCE_NOT_SET) == 0);
   }
@@ -357,7 +340,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.coscienza.compareTo(EmmaDataModelEnums.COSCIENCE_ALERT) == 0);
   }
@@ -372,7 +354,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.coscienza.compareTo(EmmaDataModelEnums.COSCIENCE_VERBAL) == 0);
   }
@@ -387,7 +368,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.coscienza.compareTo(EmmaDataModelEnums.COSCIENCE_PAIN) == 0);
   }
@@ -402,7 +382,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.coscienza.compareTo(EmmaDataModelEnums.COSCIENCE_UNRESPONSIVE) == 0);
   }
@@ -417,7 +396,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.coscienza == "");
   }
@@ -432,7 +410,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.coscienza == null);
   }
@@ -447,7 +424,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.coscienza == "");
   }
@@ -581,7 +557,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertFalse( p.validateObject() );
   		assertTrue (p.esitoTrasporto == "");
   }
@@ -596,7 +571,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertFalse( p.validateObject() );
   		assertTrue (p.esitoTrasporto == null);
   }
@@ -611,7 +585,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertFalse( p.validateObject() );
   		assertTrue (p.esitoTrasporto == "");
   }
@@ -633,7 +606,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.eta == 0);
   }
@@ -648,7 +620,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertFalse( p.validateObject() );
   		assertTrue (p.eta < 0);
   }
@@ -663,7 +634,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.eta == 0);
   }
@@ -678,7 +648,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.eta == 0);
   }
@@ -693,7 +662,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.eta == 0);
   }
@@ -710,7 +678,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.FR == EmmaDataModelEnums.FR_NOT_SET);
   }
@@ -725,7 +692,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.FR == EmmaDataModelEnums.FR_NORMALE);
   }
@@ -740,7 +706,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.FR == EmmaDataModelEnums.FR_DIFFICOLTOSO);
   }
@@ -755,7 +720,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.FR == EmmaDataModelEnums.FR_ASSENTE);
   }
@@ -770,7 +734,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.FR == EmmaDataModelEnums.FR_NOT_SET);
   }
@@ -785,7 +748,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertFalse( p.validateObject() );
   		assertTrue (p.FR < 0);
   }
@@ -800,7 +762,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertFalse( p.validateObject() );
   		assertTrue (p.FR > 3);
   }
@@ -815,7 +776,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.FR == 0);
   }
@@ -830,7 +790,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.FR == 0);
   }
@@ -845,7 +804,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.FR == 0);
   }
@@ -862,7 +820,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.nome == "");
   }
@@ -877,7 +834,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.nome == null);
   }
@@ -892,7 +848,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.nome == "");
   }
@@ -909,7 +864,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.pediatrico.compareTo(EmmaDataModelEnums.PEDIATRIC_SI) == 0);
   }
@@ -924,7 +878,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.pediatrico.compareTo(EmmaDataModelEnums.PEDIATRIC_NO) == 0);
   }
@@ -939,7 +892,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.pediatrico == "");
   }
@@ -954,7 +906,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.pediatrico == null);
   }
@@ -969,7 +920,6 @@ public class XMLParserTestPaziente extends XMLParserTest {
   		JAXBContext jaxbContext = JAXBContext.newInstance(Paziente.class);
   		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
   		Paziente p = (Paziente) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-  		p.toXML_print();
   		assertTrue( p.validateObject() );
   		assertTrue (p.pediatrico == null);
   }
@@ -996,7 +946,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
 				EmmaDataModelEnums.PEDIATRIC_SI,
 				EmmaDataModelEnums.OUTCOME_TRASPORTO_PAZIENTE_REGOLARE,
 				EmmaDataModelEnums.CODES_GIALLO,
-				60, EmmaDataModelEnums.FR_NORMALE,
+				87, EmmaDataModelEnums.FR_NORMALE,
 				EmmaDataModelEnums.COSCIENCE_VERBAL,
 				"Paperopoli");
 	  	
@@ -1005,7 +955,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
 				EmmaDataModelEnums.PEDIATRIC_SI,
 				EmmaDataModelEnums.OUTCOME_TRASPORTO_PAZIENTE_REGOLARE,
 				EmmaDataModelEnums.CODES_VERDE,
-				60, EmmaDataModelEnums.FR_NORMALE,
+				78, EmmaDataModelEnums.FR_NORMALE,
 				EmmaDataModelEnums.COSCIENCE_ALERT,
 				"Paperopoli");
 	  	
@@ -1014,7 +964,7 @@ public class XMLParserTestPaziente extends XMLParserTest {
 				EmmaDataModelEnums.PEDIATRIC_SI,
 				EmmaDataModelEnums.OUTCOME_TRASPORTO_PAZIENTE_REGOLARE,
 				EmmaDataModelEnums.CODES_VERDE,
-				60, EmmaDataModelEnums.FR_NORMALE,
+				80, EmmaDataModelEnums.FR_NORMALE,
 				EmmaDataModelEnums.COSCIENCE_ALERT,
 				"Paperopoli");
 	  	
@@ -1031,12 +981,11 @@ public class XMLParserTestPaziente extends XMLParserTest {
 		JAXBContext jaxbContext = JAXBContext.newInstance(Pazienti.class);
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		Pazienti pazienti = (Pazienti) jaxbUnmarshaller.unmarshal( new File(test_data_folder_paziente + "/" + test_file) );
-		pazienti.getPazienti().get(0).equals(paperino);
-		pazienti.getPazienti().get(1).equals(qui);
-		pazienti.getPazienti().get(2).equals(quo);
-		pazienti.getPazienti().get(3).equals(qua);
-		pazienti.getPazienti().get(4).equals(paperina);
-		pazienti.toJSON_print();
+		assertTrue(pazienti.getPazienti().get(0).equals(paperino));
+		assertTrue(pazienti.getPazienti().get(1).equals(qui));
+		assertTrue(pazienti.getPazienti().get(2).equals(quo));
+		assertTrue(pazienti.getPazienti().get(3).equals(qua));
+		assertTrue(pazienti.getPazienti().get(4).equals(paperina));
   }
   
   /** Test Paziente Unmarshalling - Pazienti Singleton List
