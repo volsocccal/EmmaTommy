@@ -20,7 +20,7 @@ import akka.actor.Props;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.clients.consumer.Consumer;
 
-public class TommyKafkaConsumer extends AbstractActor {
+public class TommyDataHandlerKafkaConsumer extends AbstractActor {
 	
 	protected org.apache.logging.log4j.Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
 	
@@ -29,14 +29,14 @@ public class TommyKafkaConsumer extends AbstractActor {
 	protected Properties KafkaConsumerProps;
 	protected Consumer<Integer, String> kafkaConsumer;
 	
-	protected ActorRef mySqlHandlerActor;
-	protected Boolean sendJSONOverMySql;
+	protected ActorRef DataWriterRef;
+	protected Boolean sendToDataWriter;
 	
 	public static Props props(String text, String confPath) {
-        return Props.create(TommyKafkaConsumer.class, text, confPath);
+        return Props.create(TommyDataHandlerKafkaConsumer.class, text, confPath);
     }
 
-	private TommyKafkaConsumer(String confPath) {
+	private TommyDataHandlerKafkaConsumer(String confPath) {
 		
 		// Logger Method Name
 		String method_name = "::TommyKafkaConsumer(): ";
@@ -62,8 +62,8 @@ public class TommyKafkaConsumer extends AbstractActor {
 		this.KafkaConsumerProps.remove("topic");
 		this.kafkaPollingTime = Integer.parseInt(KafkaConsumerProps.getProperty("kafkaPollingTime"));
 		this.KafkaConsumerProps.remove("kafkaPollingTime");
-		this.sendJSONOverMySql = (Integer.parseInt(KafkaConsumerProps.getProperty("sendJSONOverMySql")) == 1) ? (true) : (false);
-		this.KafkaConsumerProps.remove("sendJSONOverMySql");
+		this.sendToDataWriter = (Integer.parseInt(KafkaConsumerProps.getProperty("sendToDataWriter")) == 1) ? (true) : (false);
+		this.KafkaConsumerProps.remove("sendToDataWriter");
 		
 	    // Create the kafka consumer using props.
 		try {
@@ -95,9 +95,9 @@ public class TommyKafkaConsumer extends AbstractActor {
 		String method_name = "::onStart(): ";
 		logger.info(method_name + "Received Start Consuming Event");
 		
-		// Mongo Handler
-		this.mySqlHandlerActor = startCons.getMySqlHandlerActor();
-		this.sendJSONOverMySql = this.sendJSONOverMySql && startCons.getSendOverMySql();
+		// Data Writer
+		this.DataWriterRef = startCons.getDataWriterActorRef();
+		this.sendToDataWriter = this.sendToDataWriter && startCons.getSendToDataWriter();
 		
 		try {
 			this.kafkaConsumer.subscribe(Collections.singletonList(this.topic));
@@ -115,10 +115,15 @@ public class TommyKafkaConsumer extends AbstractActor {
 		@SuppressWarnings("deprecation")
 		final ConsumerRecords<Integer, String> consumerRecords = this.kafkaConsumer.poll(kafkaPollingTime);      	
 		consumerRecords.forEach(record -> {
-			logger.info(method_name + "Received new Missione: " + record.key());
-			if (this.sendJSONOverMySql) {
-				this.mySqlHandlerActor.tell(new MongoDBWriteData(record.key().intValue(), this.missioniCollectionName, record.value()), this.getSelf());
-				logger.info(method_name + "Sent Servizio " + record.key() + " to " + this.mySqlHandlerActor.path().name());	
+			logger.info(method_name + "Received new Servizio: " + record.key());
+			if (this.sendToDataWriter) {
+				ServizioDataJSON servizio = new ServizioDataJSON(record.key().intValue(), record.value());
+				if (servizio.getValidData()) {
+					this.DataWriterRef.tell(servizio, this.getSelf());
+					logger.info(method_name + "Sent Servizio " + record.key() + " to " + this.DataWriterRef.path().name());	
+				} else {
+					logger.error(method_name + "Servizio " + record.key() + " wasn't valid: " + servizio.getErrorMsg());	
+				}
 			}
     	});
     	this.kafkaConsumer.commitAsync();            
@@ -130,7 +135,6 @@ public class TommyKafkaConsumer extends AbstractActor {
 		logger.info(method_name + "Received Stop Event");		
 		logger.info(method_name + "Closing Kafka Consumer");
 		this.kafkaConsumer.close();
-		this.convert = false; 		
 		
 	}
 

@@ -2,18 +2,19 @@ package emmaTommy.TommyDataHandler.ActorsMessages;
 
 import akka.actor.ActorRef;
 
-public class StartConsuming {    
-    protected ActorRef mySqlHandlerActor;
-    protected Boolean sendOverMySql;
-	public StartConsuming(ActorRef mySqlHandlerActor, Boolean sendOverMySql) {
-    	super();
-    	this.mySqlHandlerActor = mySqlHandlerActor;
-    	this.sendOverMySql = sendOverMySql;
+public class StartConsuming {
+	private ActorRef dataWriterRef;
+	private Boolean sendToDataWriter;
+	public StartConsuming(ActorRef DataWriter, Boolean sendToDataWriter) {
+		if (DataWriter == null)
+			throw new NullPointerException("StartConsuming(): Received null DataWriter Actor Ref");
+		this.dataWriterRef = DataWriter;
+		this.sendToDataWriter = sendToDataWriter;
     }
-	public ActorRef getMySqlHandlerActor( ) {
-		return this.mySqlHandlerActor;
+	public ActorRef getDataWriterActorRef() {
+		return this.dataWriterRef;
 	}
-	public Boolean getSendOverMySql() {
-		return this.sendOverMySql;
+	public Boolean getSendToDataWriter() {
+		return this.sendToDataWriter;
 	}
 }
