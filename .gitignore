@@ -20,6 +20,8 @@ EmmaHandler/logs/*
 EmmaHandler/logs_test/*
 EmmaTommyConverter/logs/*
 EmmaTommyConverter/logs_test/*
+StagingDB/logs/*
+StagingDB/logs_test/*
 TommyDataHandler/logs/*
 TommyDataHandler/logs_test/*
 TommyDataPoster/logs/*
