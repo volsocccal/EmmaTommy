@@ -47,7 +47,7 @@ public class Tratta extends EmmaDataModel {
 	 * 
 	 * @return true if the object is valid, false otherwise
 	 */
-	@XmlTransient
+	@SuppressWarnings("deprecation")
 	public Boolean validateObject() {
 		String errorMsg = this.getClass().getSimpleName() + ": ";
 		

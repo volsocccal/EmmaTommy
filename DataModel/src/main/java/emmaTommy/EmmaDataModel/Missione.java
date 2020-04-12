@@ -6,7 +6,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.persistence.oxm.annotations.XmlDiscriminatorNode;
 
-import emmaTommy.DataModel.DateAdapterYYMMDD;
 import emmaTommy.DataModel.DateTimeAdapterYYYYMMDDTHHmmssZ;
 import emmaTommy.EmmaDataModel.Membri;
 import emmaTommy.EmmaDataModel.Pazienti;
@@ -26,7 +25,6 @@ public class Missione extends EmmaDataModel {
 	 * 
 	 * @return true if the object is valid, false otherwise
 	 */
-	@XmlTransient
 	public Boolean validateObject() {
 		String errorMsg = this.getClass().getSimpleName() + ": ";
 		
@@ -60,10 +58,7 @@ public class Missione extends EmmaDataModel {
 			logger.warn(errorMsg);
 			errorMsg = this.getClass().getSimpleName() + ": ";
 		}
-		
-		// ID
-		int ID = 203100001;
-		
+				
 		// Pazienti
 		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.pazienti == null) {

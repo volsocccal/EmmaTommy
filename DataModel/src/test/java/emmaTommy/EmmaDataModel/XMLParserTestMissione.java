@@ -2,7 +2,6 @@ package emmaTommy.EmmaDataModel;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

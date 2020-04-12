@@ -41,11 +41,9 @@ public class Membri extends EmmaDataModel
 	 * 
 	 * @return true if the object is valid, false otherwise
 	 */
-	@XmlTransient
 	public Boolean validateObject() {
 		String errorMsg = this.getClass().getSimpleName() + ": ";
-		Boolean validState = true;
-		
+				
 		// Check Type
 		if (this.type == null) {
 			this.validState = false;
