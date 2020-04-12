@@ -5,8 +5,10 @@
 DataModel/target/
 EmmaHandler/target/
 EmmaTommyConverter/target/
+PersistenceDB/target/
+StagingDB/target/
 TommyDataHandler/target/
-TommyDataPoster/target/
+TommyPoster/target/
 
 # Ignore every *.class file
 *.class
@@ -20,6 +22,8 @@ EmmaHandler/logs/*
 EmmaHandler/logs_test/*
 EmmaTommyConverter/logs/*
 EmmaTommyConverter/logs_test/*
+PersistenceDB/logs/*
+PersistenceDB/logs_test/*
 StagingDB/logs/*
 StagingDB/logs_test/*
 TommyDataHandler/logs/*
