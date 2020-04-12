@@ -4,8 +4,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.xml.bind.JAXBException;
 
 import org.apache.logging.log4j.LogManager;
+
+import emmaTommy.TommyDataModel.Factories.ServizioFactory;
 
 
 @Entity
@@ -19,12 +22,33 @@ public class TommyEnrichedJSON {
 	public String getJsonServizio() {
 		return this.jsonServizio;	
 	}
-	public void setJsonServizio(String jsonServizio) {
+	public void setJsonServizio(String jsonServizio) throws IllegalArgumentException {
 		String method_name = "::setJsonServizio(): ";
 		if (jsonServizio == null) {
 			throw new NullPointerException(method_name + "Input Servizio was nullptr");
 		}
-		this.jsonServizio = jsonServizio;
+		String oldJsonServizio = this.jsonServizio;
+		try {
+			this.jsonServizio = jsonServizio;
+			Servizio s = this.buildServizio();
+			this.codiceMezzo = s.getTagIdAutomezzo();
+			this.setKm(s.getKM());
+			if (this.codiceServizio.compareTo(s.getCodiceServizio()) != 0) {
+				throw new IllegalArgumentException("Given Codice Servizio was " + this.codiceServizio
+													+ " but in the input JSON the CodiceServizio was " + s.getCodiceServizio());
+			}
+			this.initializedFlag = true;
+		} catch (JAXBException e) {
+			this.jsonServizio = oldJsonServizio;
+			throw new IllegalArgumentException("Failed to Unmarshall the given JSON: " + e.getMessage());			
+		} catch (IllegalArgumentException e) {
+			this.jsonServizio = oldJsonServizio;
+			throw e;		
+		} catch (Exception e) {
+			this.jsonServizio = oldJsonServizio;
+			throw e;		
+		}
+		
 	}
 	
 	/** Number of KM for the Servizio */
@@ -35,7 +59,7 @@ public class TommyEnrichedJSON {
 	public void setKm(int km) {
 		String method_name = "::setKm(): ";
 		if (km < 0) {
-			throw new IllegalArgumentException(method_name + "Input Servizio was nullptr");
+			throw new IllegalArgumentException(method_name + "Input km was nullptr");
 		}
 		this.km = km;
 	}
@@ -78,6 +102,12 @@ public class TommyEnrichedJSON {
 	public TommyEnrichedJSON (String jsonServizio) {
 		this();
 		this.setJsonServizio(jsonServizio);
+	}
+	
+	public Servizio buildServizio() throws JAXBException {
+		ServizioFactory sFact = new ServizioFactory();
+		Servizio s = sFact.buildServizioUnmarshallJSON(jsonServizio);
+		return s;
 	}
 
 	
