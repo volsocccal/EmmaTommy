@@ -95,6 +95,7 @@ public class EmmaXMLParserActor extends AbstractActor {
 			this.parseXML(parseData.xml, parseData.producerJSONKAFKA);			
 		} catch (Exception e) {
 			logger.error(method_name + e.getClass().getSimpleName() + " - " + e.getMessage());
+			e.printStackTrace();
 		}
 		
 	}
@@ -162,6 +163,7 @@ public class EmmaXMLParserActor extends AbstractActor {
 				}
 			} catch (Exception e) {
 				logger.error(method_name + e.getClass().getSimpleName() + " - " + e.getMessage());
+				e.printStackTrace();
 			}
 			
 		}

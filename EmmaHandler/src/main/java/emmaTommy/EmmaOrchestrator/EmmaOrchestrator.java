@@ -1,6 +1,7 @@
 package emmaTommy.EmmaOrchestrator;
 
 import java.io.FileInputStream;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
@@ -70,7 +71,7 @@ public class EmmaOrchestrator extends AbstractActor {
  			logger.fatal(method_name + e.getMessage());
  		}
  		
- 		// Read Propertiers
+ 		// Read Properties
  		this.emma_rest_conf = prop.getProperty("emma_rest_conf");
  		this.emma_psswd_conf = prop.getProperty("emma_psswd_conf");
  		this.emma_orchestrator_conf = prop.getProperty("emma_orchestrator_conf");

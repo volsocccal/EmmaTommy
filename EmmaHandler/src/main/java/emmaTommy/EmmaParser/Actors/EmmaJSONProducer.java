@@ -21,6 +21,7 @@ public class EmmaJSONProducer extends AbstractActor {
 	protected Properties KafkaProducerProps;
 	protected String topic;
 	protected KafkaProducer<Integer, String> kafkaProducer;
+	protected Boolean sendOverToKafka;
 	
 	
 	public static Props props(String text, String confPath) {
@@ -52,7 +53,9 @@ public class EmmaJSONProducer extends AbstractActor {
 		
 		// Read Topic Property
 		this.topic = this.KafkaProducerProps.getProperty("topic");
+		this.sendOverToKafka = (Integer.parseInt(this.KafkaProducerProps.getProperty("sendOverToKafka")) == 1) ? (true) : (false);
 		this.KafkaProducerProps.remove("topic");
+		this.KafkaProducerProps.remove("sendOverToKafka");
 		
 		// Create Kafka Producer
 		this.kafkaProducer = new KafkaProducer<Integer, String> (this.KafkaProducerProps);
@@ -83,9 +86,13 @@ public class EmmaJSONProducer extends AbstractActor {
 		
 		// Send Over Kafka
 		try {
-			logger.info(method_name + "Writing missione with ID= " + jsonData.getID() + " over topic " + this.topic);	
-			ProducerRecord<Integer, String> kafkaProducerRecord = new ProducerRecord<Integer, String>(this.topic, jsonData.getID(), jsonData.getJSON());
-			this.kafkaProducer.send(kafkaProducerRecord);		
+			if (this.sendOverToKafka) {
+				logger.info(method_name + "Writing missione with ID= " + jsonData.getID() + " over topic " + this.topic);	
+				ProducerRecord<Integer, String> kafkaProducerRecord = new ProducerRecord<Integer, String>(this.topic, jsonData.getID(), jsonData.getJSON());
+				this.kafkaProducer.send(kafkaProducerRecord);		
+			} else {
+				logger.info(method_name + "Writing disable for missione with ID= " + jsonData.getID() + " over topic " + this.topic);	
+			}
 		} catch (Exception e) {
 			logger.error(method_name + e.getClass().getSimpleName() + " - " + e.getMessage());
 		}
