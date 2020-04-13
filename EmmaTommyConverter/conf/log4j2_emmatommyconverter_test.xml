@@ -5,16 +5,6 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
-        <!--RollingFile name="MongoHandler" fileName="logs_test/MongoHandler.log" filePattern="../logs/$${date:yyyy-MM}/EmmaTommy/MongoHandler-%d{MM-dd-yyyy}-%i.log"-->
-        <RollingFile name="MongoHandler" fileName="logs_test/MongoHandler.log" filePattern="logs_test/MongoHandler-%i.log">
-            <PatternLayout>
-                <Pattern>%d [%t] %-5p %c%m%n</Pattern>
-            </PatternLayout>
-            <Policies>
-                <!--TimeBasedTriggeringPolicy interval="24" modulate="true"/-->
-                <SizeBasedTriggeringPolicy size="100 MB"/>
-            </Policies>
-        </RollingFile>
         <RollingFile name="EmmaTommyJsonConverter" fileName="logs_test/EmmaTommyJsonConverter.log" filePattern="logs_test/EmmaTommyJsonConverter-%i.log">
             <PatternLayout>
                 <Pattern>%d [%t] %-5p %c%m%n</Pattern>
@@ -55,9 +45,6 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Logger name="MongoHandler" level="trace">
-            <AppenderRef ref="MongoHandler"/>
-        </Logger>
         <Logger name="EmmaTommyJsonConverter" level="trace">
             <AppenderRef ref="EmmaTommyJsonConverter"/>
         </Logger>

@@ -1,6 +1,7 @@
 package emmaTommy.EmmaTommyConverter.Actors;
 
 import akka.actor.typed.PostStop;
+import emmaTommy.EmmaTommyDataConverter.ActorsMessages.ServizioDataJSON;
 import emmaTommy.EmmaTommyDataConverter.ActorsMessages.StartProducing;
 
 import java.io.FileInputStream;
@@ -15,6 +16,7 @@ import akka.actor.Props;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 
 public class EmmaTommyKafkaProducer extends AbstractActor {
 	
@@ -26,6 +28,7 @@ public class EmmaTommyKafkaProducer extends AbstractActor {
 	protected Producer<Integer, String> kafkaProducer;
 	
 	protected Boolean produce;
+	protected Boolean sendOverToKafka;
 	
 	public static Props props(String text, String confPath) {
         return Props.create(EmmaTommyKafkaProducer.class, text, confPath);
@@ -56,7 +59,9 @@ public class EmmaTommyKafkaProducer extends AbstractActor {
 		
 		// Read Topic Property
 		this.topic = this.KafkaProducerProps.getProperty("topic");
+		this.sendOverToKafka = (Integer.parseInt(this.KafkaProducerProps.getProperty("sendOverToKafka")) == 1) ? (true) : (false);
 		this.KafkaProducerProps.remove("topic");
+		this.KafkaProducerProps.remove("sendOverToKafka");
 		
 		// Create Kafka Producer
 		this.kafkaProducer = new KafkaProducer<Integer, String> (this.KafkaProducerProps);
@@ -70,6 +75,7 @@ public class EmmaTommyKafkaProducer extends AbstractActor {
 	public Receive createReceive() {
 		return receiveBuilder()
 				.match(StartProducing.class, this::onStart)
+				.match(ServizioDataJSON.class, this::onProduce)
 				.match(PostStop.class, signal -> onPostStop())
 				.match(String.class, s -> {
 					logger.info(this.getClass().getSimpleName() + " Received String message: {}", s);
@@ -86,6 +92,36 @@ public class EmmaTommyKafkaProducer extends AbstractActor {
 		
 		// Set Producer Flag to True
 		this.produce = true;			
+		
+	}
+	
+	protected void onProduce(ServizioDataJSON jsonData) {
+	    
+		// Logger Method Name
+		String method_name = "::onProduce(): ";
+		
+		if (!this.produce) {
+			logger.error("I didn't receive yet the StartProducingMessage, discarding servizio " + jsonData.getID());
+		}
+		
+		// Check if the received data is valid
+		logger.info(method_name + "Got new Servizio JSON - ID=" + jsonData.getID());
+		if (!jsonData.validateData()) {
+			logger.error(method_name + "Something is wrong in the received data - " + jsonData.getErrorMsgList());	
+		}
+		
+		// Send Over Kafka
+		try {
+			if (this.sendOverToKafka) {
+				logger.info(method_name + "Writing missione with ID= " + jsonData.getID() + " over topic " + this.topic);	
+				ProducerRecord<Integer, String> kafkaProducerRecord = new ProducerRecord<Integer, String>(this.topic, jsonData.getID(), jsonData.getJSON());
+				this.kafkaProducer.send(kafkaProducerRecord);		
+			} else {
+				logger.error(method_name + "Writing disabled by conf for missione with ID= " + jsonData.getID() + " over topic " + this.topic);	
+			}
+		} catch (Exception e) {
+			logger.error(method_name + e.getClass().getSimpleName() + " - " + e.getMessage());
+		}
 		
 	}
 	
