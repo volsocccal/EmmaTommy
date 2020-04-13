@@ -95,7 +95,6 @@ public class TommyDataHandlerOrchestrator extends AbstractActor {
 				.build();
     }
 
-    @SuppressWarnings("deprecation")
 	protected void onStart(Start command) {
     	
     	// Logger Method Name
