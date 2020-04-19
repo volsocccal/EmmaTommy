@@ -1,7 +1,5 @@
 package emmaTommy.DBAbstraction.ActorsMessages.Queries;
 
-import emmaTommy.TommyDataModel.TommyEnrichedJSON;
-
 public class WriteNewServizioByID extends Query {
 	protected String ID;
 	protected String newServizioJSON;
