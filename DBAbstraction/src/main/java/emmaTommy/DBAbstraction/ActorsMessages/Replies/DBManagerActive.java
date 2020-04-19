@@ -1,9 +1,9 @@
 package emmaTommy.DBAbstraction.ActorsMessages.Replies;
 
-public class DBManagerActive extends Reply {
+public class DBManagerActive extends DBManagerStatus {
 
-	public DBManagerActive() {
-		// TODO Auto-generated constructor stub
+	DBManagerActive() {
+		super("Active");
 	}
 
 }

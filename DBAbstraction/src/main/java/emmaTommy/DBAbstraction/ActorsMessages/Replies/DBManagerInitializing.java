@@ -1,9 +1,9 @@
 package emmaTommy.DBAbstraction.ActorsMessages.Replies;
 
-public class DBManagerInitializing extends Reply {
+public class DBManagerInitializing extends DBManagerStatus {
 
-	public DBManagerInitializing() {
-		// TODO Auto-generated constructor stub
+	DBManagerInitializing() {
+		super("Initializing");
 	}
 
 }

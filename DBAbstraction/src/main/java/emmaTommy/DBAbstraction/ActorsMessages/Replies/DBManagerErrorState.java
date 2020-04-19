@@ -1,9 +1,9 @@
 package emmaTommy.DBAbstraction.ActorsMessages.Replies;
 
-public class DBManagerErrorState extends Reply {
+public class DBManagerErrorState extends DBManagerStatus {
 
-	public DBManagerErrorState() {
-		// TODO Auto-generated constructor stub
+	DBManagerErrorState() {
+		super("Error");
 	}
 
 }
