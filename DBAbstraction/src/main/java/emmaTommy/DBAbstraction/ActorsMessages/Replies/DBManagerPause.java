@@ -2,7 +2,7 @@ package emmaTommy.DBAbstraction.ActorsMessages.Replies;
 
 public class DBManagerPause extends DBManagerStatus {
 
-	DBManagerPause() {
+	public DBManagerPause() {
 		super("Pause");
 	}
 

@@ -2,7 +2,7 @@ package emmaTommy.DBAbstraction.ActorsMessages.Replies;
 
 public class DBManagerErrorState extends DBManagerStatus {
 
-	DBManagerErrorState() {
+	public DBManagerErrorState() {
 		super("Error");
 	}
 

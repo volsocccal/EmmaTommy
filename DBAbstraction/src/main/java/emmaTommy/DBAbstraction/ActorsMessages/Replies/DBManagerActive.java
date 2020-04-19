@@ -2,7 +2,7 @@ package emmaTommy.DBAbstraction.ActorsMessages.Replies;
 
 public class DBManagerActive extends DBManagerStatus {
 
-	DBManagerActive() {
+	public DBManagerActive() {
 		super("Active");
 	}
 

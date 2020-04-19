@@ -3,7 +3,7 @@ package emmaTommy.DBAbstraction.ActorsMessages.Replies;
 public class DBIsAlreadyLocked extends DBFailedToBeLocked {
 
 	protected String lockOwner;
-	DBIsAlreadyLocked(String lockOwner) {
+	public DBIsAlreadyLocked(String lockOwner) {
 		super("The DB was already locked");
 		if (lockOwner == null) {
 			throw new NullPointerException("Received lockOwner was nullptr");
