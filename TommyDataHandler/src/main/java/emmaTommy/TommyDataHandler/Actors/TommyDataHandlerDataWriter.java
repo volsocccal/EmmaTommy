@@ -14,19 +14,19 @@ import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.typed.PostStop;
 import akka.pattern.Patterns;
-import emmaTommy.DBapi.Queries.AcquireDBLock;
-import emmaTommy.DBapi.Queries.GetServizioByID;
-import emmaTommy.DBapi.Queries.ReleaseDBLock;
-import emmaTommy.DBapi.Queries.UpdateServizioByID;
-import emmaTommy.DBapi.Queries.WriteNewServizioByID;
-import emmaTommy.DBapi.Replies.DBFailedToBeLocked;
-import emmaTommy.DBapi.Replies.DBIsAlreadyLocked;
-import emmaTommy.DBapi.Replies.DBLockAcquired;
-import emmaTommy.DBapi.Replies.Reply;
-import emmaTommy.DBapi.Replies.ReplyServizioById;
-import emmaTommy.DBapi.Replies.ServizioByIDNotFound;
-import emmaTommy.DBapi.Replies.UpdateFailed;
-import emmaTommy.DBapi.Replies.UpdateSuccess;
+import emmaTommy.DBAbstraction.ActorsMessages.Queries.AcquireDBLock;
+import emmaTommy.DBAbstraction.ActorsMessages.Queries.GetServizioByID;
+import emmaTommy.DBAbstraction.ActorsMessages.Queries.ReleaseDBLock;
+import emmaTommy.DBAbstraction.ActorsMessages.Queries.UpdateServizioByID;
+import emmaTommy.DBAbstraction.ActorsMessages.Queries.WriteNewServizioByID;
+import emmaTommy.DBAbstraction.ActorsMessages.Replies.DBFailedToBeLocked;
+import emmaTommy.DBAbstraction.ActorsMessages.Replies.DBIsAlreadyLocked;
+import emmaTommy.DBAbstraction.ActorsMessages.Replies.DBLockAcquired;
+import emmaTommy.DBAbstraction.ActorsMessages.Replies.Reply;
+import emmaTommy.DBAbstraction.ActorsMessages.Replies.ReplyServizioById;
+import emmaTommy.DBAbstraction.ActorsMessages.Replies.ServizioByIDNotFound;
+import emmaTommy.DBAbstraction.ActorsMessages.Replies.UpdateServizioByIDFaillure;
+import emmaTommy.DBAbstraction.ActorsMessages.Replies.UpdateServizioByIDSuccess;
 import emmaTommy.TommyDataHandler.ActorsMessages.ServizioDataJSON;
 import emmaTommy.TommyDataHandler.ActorsMessages.StartDataWriting;
 import emmaTommy.TommyDataHandler.ActorsMessages.StopDataWriting;
@@ -248,10 +248,10 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 																								new UpdateServizioByID(servzioIDStr, new TommyEnrichedJSON(servizio.getJSON()), this.stagingDBErrorTableName), 
 																								1000);
 									Reply replyStagingUpdateServizio = (Reply) Await.result(futureStagingUpdateServizio, Duration.create(stagingDBAskTimeOutSecs, TimeUnit.SECONDS));
-									if (replyStagingUpdateServizio instanceof UpdateSuccess) {
+									if (replyStagingUpdateServizio instanceof UpdateServizioByIDSuccess) {
 										logger.info(method_name + "Servizio " + servizio.getID() + " Updated successfully in the staging DB - error section");
-									} else if (replyStagingUpdateServizio instanceof UpdateFailed) {
-										throw new IllegalArgumentException(((UpdateFailed) replyStagingUpdateServizio).getCause());
+									} else if (replyStagingUpdateServizio instanceof UpdateServizioByIDFaillure) {
+										throw new IllegalArgumentException(((UpdateServizioByIDFaillure) replyStagingUpdateServizio).getCause());
 									} else {
 										throw new IllegalArgumentException("Unknown reply " + replyStagingUpdateServizio.getReplyTypeName());
 									}								
@@ -281,10 +281,10 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 																										new UpdateServizioByID(servzioIDStr, new TommyEnrichedJSON(servizio.getJSON()), this.stagingDBPostingTableName), 
 																										1000);
 											Reply replyStagingUpdateServizio = (Reply) Await.result(futureStagingUpdateServizio, Duration.create(stagingDBAskTimeOutSecs, TimeUnit.SECONDS));
-											if (replyStagingUpdateServizio instanceof UpdateSuccess) {
+											if (replyStagingUpdateServizio instanceof UpdateServizioByIDSuccess) {
 												logger.info(method_name + "Servizio " + servizio.getID() + " Updated successfully in the staging DB - posting section");
-											} else if (replyStagingUpdateServizio instanceof UpdateFailed) {
-												throw new IllegalArgumentException(((UpdateFailed) replyStagingUpdateServizio).getCause());
+											} else if (replyStagingUpdateServizio instanceof UpdateServizioByIDFaillure) {
+												throw new IllegalArgumentException(((UpdateServizioByIDFaillure) replyStagingUpdateServizio).getCause());
 											} else {
 												throw new IllegalArgumentException("Unknown reply " + replyStagingUpdateServizio.getReplyTypeName());
 											}								
@@ -301,10 +301,10 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 																									new WriteNewServizioByID(servzioIDStr, new TommyEnrichedJSON(servizio.getJSON()), this.stagingDBPostingTableName), 
 																									1000);
 										Reply replyStagingWriteServizio = (Reply) Await.result(futureStagingWriteServizio, Duration.create(stagingDBAskTimeOutSecs, TimeUnit.SECONDS));
-										if (replyStagingWriteServizio instanceof UpdateSuccess) {
+										if (replyStagingWriteServizio instanceof UpdateServizioByIDSuccess) {
 											logger.info(method_name + "Servizio " + servizio.getID() + " Written successfully in the staging DB - posting section");
-										} else if (replyStagingWriteServizio instanceof UpdateFailed) {
-											throw new IllegalArgumentException(((UpdateFailed) replyStagingWriteServizio).getCause());
+										} else if (replyStagingWriteServizio instanceof UpdateServizioByIDFaillure) {
+											throw new IllegalArgumentException(((UpdateServizioByIDFaillure) replyStagingWriteServizio).getCause());
 										} else {
 											throw new IllegalArgumentException("Unknown reply " + replyStagingWriteServizio.getReplyTypeName());
 										}								
