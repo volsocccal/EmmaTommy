@@ -14,6 +14,7 @@ import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.typed.PostStop;
 import akka.pattern.Patterns;
+import emmaTommy.DBAbstraction.Actors.DBClientAPI;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.AcquireDBLock;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.GetServizioByID;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.ReleaseDBLock;
@@ -30,6 +31,7 @@ import emmaTommy.DBAbstraction.ActorsMessages.Replies.UpdateServizioByIDSuccess;
 import emmaTommy.TommyDataHandler.ActorsMessages.ServizioDataJSON;
 import emmaTommy.TommyDataHandler.ActorsMessages.StartDataWriting;
 import emmaTommy.TommyDataHandler.ActorsMessages.StopDataWriting;
+import emmaTommy.TommyDataModel.Servizio;
 import emmaTommy.TommyDataModel.TommyEnrichedJSON;
 import scala.concurrent.Await;
 import scala.concurrent.Future;
@@ -51,6 +53,8 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 	protected String stagingDBPostingTableName;
 	protected String stagingDBErrorTableName;
 	protected String persistenceDBServiziCollectionName;
+	
+	protected DBClientAPI dbClient = new DBClientAPI(this.getClass().getSimpleName());
 	
 	
 	
@@ -91,7 +95,6 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
  		this.stagingDBErrorTableName = prop.getProperty("stagingDBErrorTableName");
  		this.persistenceDBServiziCollectionName = prop.getProperty("persistenceDBServiziCollectionName");
  		
- 		
  		// Set Active Status to false
  		this.activeStatus = false;
  		
@@ -124,240 +127,127 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 		
 	}
 	
-	protected void writeToDB (ServizioDataJSON servizio) {
+	protected void writeToDB (ServizioDataJSON servizioData) {
 		String method_name = "::writeToDB(): ";
-		logger.trace(method_name + "Received a new servizio msg");
-		logger.info(method_name + "Received new Servizio: " + servizio.getID());
+		logger.info(method_name + "Received new Servizio: " + servizioData.getID());
 			
-		if (servizio.getValidData()) {
+		if (servizioData.getValidData()) {
 			
-			// Get the Lock for the Persistence DB
-			int trialNumsLockPersistenceDB = 0;
-			Boolean lockAcquiredPersistenceDB = false;
-			while (!lockAcquiredPersistenceDB) {
-				trialNumsLockPersistenceDB += 1;
-				Future<Object> futurePersistenceLock = Patterns.ask(this.persistenceDBActorRef, new AcquireDBLock() , 1000);
+			// Create Enriched Servizio
+			TommyEnrichedJSON servizioEnriched = new TommyEnrichedJSON(servizioData.getJSON());
+			
+			// Get servizio ID as String
+			String servzioIDStr = Integer.toString(servizioData.getID());	
+			
+			try {
+				
+				// Create a Servizio Object from the Received JSON
+				Servizio servizio = servizioEnriched.buildServizio();
+			
+				// Start Write/Update Operation
+				Boolean lockAcquiredPersistenceDB = false;
 			    try {
-					Reply replyPersistenceLock = (Reply) Await.result(futurePersistenceLock, Duration.create(persistenceDBAskTimeOutSecs, TimeUnit.SECONDS));
-					if (replyPersistenceLock instanceof DBLockAcquired) {
-						lockAcquiredPersistenceDB = true;
-						logger.trace(method_name + "Acquired Persistence DB Lock (Tentative " + trialNumsLockPersistenceDB + ")");	
-					} else if (replyPersistenceLock instanceof DBIsAlreadyLocked) {
-						throw new IllegalArgumentException("DB was already locked by " + ((DBIsAlreadyLocked) replyPersistenceLock).getLockOwner());
-					} else if (replyPersistenceLock instanceof DBFailedToBeLocked) {
-						throw new IllegalArgumentException(((DBFailedToBeLocked) replyPersistenceLock).getCause());
-					} else if (replyPersistenceLock instanceof DBIsAlreadyLocked) {
-						throw new IllegalArgumentException("DB was already locked by " + ((DBIsAlreadyLocked) replyPersistenceLock).getLockOwner());
-					} else {
-						throw new IllegalArgumentException("Unknown reply " + replyPersistenceLock.getReplyTypeName());
-					}
-				} catch (TimeoutException | InterruptedException | IllegalArgumentException  e) {
-					logger.error(method_name + "Servizio " + servizio.getID() 
-								+ " failed to Acquire persistence DB Lock (Tentative " + trialNumsLockPersistenceDB + "): " 
-								+ e.getMessage());
-					try {
-						logger.error(method_name + "Will sleep for " + this.persistenceDBLockTimeOutSecs + " seconds");
-						Thread.sleep(this.persistenceDBLockTimeOutSecs * 1000);
-					} catch (InterruptedException e1) {
-						logger.error(method_name + "Servizio " + servizio.getID() 
-						+ " Interrupted my sleep : " 
-						+ e1.getMessage());	
-					}
-				}
-			}
-			
-			
-			// Once the lock is acquired try to load the new JSON in the DB
-		    try {
-		    	
-		    	// Get servizio ID as String
-				String servzioIDStr = Integer.toString(servizio.getID());
-				
-				// Try to read the servizio from the Persistence DB		
-				Future<Object> futurePersistenceGetServizio = Patterns.ask(this.persistenceDBActorRef, 
-																			new GetServizioByID(servzioIDStr, this.persistenceDBServiziCollectionName), 
-																			1000);
-				Reply replyPersistenceGetServizio = (Reply) Await.result(futurePersistenceGetServizio, Duration.create(persistenceDBAskTimeOutSecs, TimeUnit.SECONDS));
-				
-				if (replyPersistenceGetServizio instanceof ReplyServizioById) { // Servizio was already in the Persistence DB
-					logger.info(method_name + "Servizio " + servizio.getID() + " was already present in the persistence DB");
-					String jsonDB = ((ReplyServizioById) replyPersistenceGetServizio).getServizio().getJsonServizio();
-					if (jsonDB.compareTo(servizio.getJSON()) == 0) { // Equals, Discard the New Data
-						logger.info(method_name + "Servizio " + servizio.getID() + " was already updated in the persistence DB");
-					} else // Log Error, for manual update of the new data
-					{
-						logger.error(method_name + "Servizio " + servizio.getID() + " was not updated in the persistence DB" + "\n"
-								 	+ servizio.getJSON());
-					}
-				} else if (replyPersistenceGetServizio instanceof ServizioByIDNotFound) {
+			    	
+			    	// Get the Lock for the Persistence DB
+					this.dbClient.acquireDBLockInfiniteLoop(this.getSelf(), this.persistenceDBActorRef, 
+															this.persistenceDBAskTimeOutSecs, this.persistenceDBLockTimeOutSecs);
+					lockAcquiredPersistenceDB = true;
 					
-					// Get the Lock for the Persistence DB
-					int trialNumsLockStagingDB = 0;
-					Boolean lockAcquiredStagingDB = false;
-					while (!lockAcquiredStagingDB) {
-						trialNumsLockPersistenceDB += 1;
-						Future<Object> futureStagingLock = Patterns.ask(this.stagingDBActorRef, new AcquireDBLock() , 1000);
-					    try {
-							Reply replyStagingLock = (Reply) Await.result(futureStagingLock, Duration.create(stagingDBAskTimeOutSecs, TimeUnit.SECONDS));
-							if (replyStagingLock instanceof DBLockAcquired) {
-								lockAcquiredStagingDB = true;
-								logger.trace(method_name + "Acquired Staging DB Lock (Tentative " + trialNumsLockStagingDB + ")");	
-							} else if (replyStagingLock instanceof DBIsAlreadyLocked) {
-								throw new IllegalArgumentException("DB was already locked by " + ((DBIsAlreadyLocked) replyStagingLock).getLockOwner());
-							} else if (replyStagingLock instanceof DBFailedToBeLocked) {
-								throw new IllegalArgumentException(((DBFailedToBeLocked) replyStagingLock).getCause());
-							} else if (replyStagingLock instanceof DBIsAlreadyLocked) {
-								throw new IllegalArgumentException("DB was already locked by " + ((DBIsAlreadyLocked) replyStagingLock).getLockOwner());
-							} else {
-								throw new IllegalArgumentException("Unknown reply " + replyStagingLock.getReplyTypeName());
-							}
-						} catch (TimeoutException | InterruptedException | IllegalArgumentException  e) {
-							logger.error(method_name + "Servizio " + servizio.getID() 
-										+ " failed to Acquire staging DB Lock (Tentative " + trialNumsLockStagingDB + "): " 
-										+ e.getMessage());
-							try {
-								logger.error(method_name + "Will sleep for " + this.stagingDBLockTimeOutSecs + " seconds");
-								Thread.sleep(this.persistenceDBLockTimeOutSecs * 1000);
-							} catch (InterruptedException e1) {
-								logger.error(method_name + "Servizio " + servizio.getID() 
-								+ " Interrupted my sleep : " 
-								+ e1.getMessage());	
-							}
-						}
-					}
-					
-					// Once the lock is acquired try to load the new JSON in the DB
-				    try {
+					// Try to read the servizio from the Persistence DB		
+					TommyEnrichedJSON servizioEnrichedDBPersistence = this.dbClient.getServizioByID(this.getSelf(), this.persistenceDBActorRef, 
+																						  this.persistenceDBAskTimeOutSecs, 
+																						  servzioIDStr, 
+																						  this.persistenceDBServiziCollectionName);
+					if (servizioEnrichedDBPersistence != null) { // Servizio was already in the Persistence DB
 						
-						// Try to read the servizio from the Staging DB - Error Section		
-						Future<Object> futureStagingErrorGetServizio = Patterns.ask(this.stagingDBActorRef, 
-																				new GetServizioByID(servzioIDStr, this.stagingDBErrorTableName), 
-																				1000);
-						Reply replyStagingErrorGetServizio = (Reply) Await.result(futureStagingErrorGetServizio, Duration.create(stagingDBAskTimeOutSecs, TimeUnit.SECONDS));
-						if (replyStagingErrorGetServizio instanceof ReplyServizioById) { // Servizio was already in the Staging DB - Error Section
-							logger.info(method_name + "Servizio " + servizio.getID() + " was already present in the staging DB - error section");
-							String jsonDB = ((ReplyServizioById) replyStagingErrorGetServizio).getServizio().getJsonServizio();
-							if (jsonDB.compareTo(servizio.getJSON()) == 0) { // Equals, Discard the New Data
-								logger.info(method_name + "Servizio " + servizio.getID() + " was already updated in the staging DB - error section");
-							} else // Update
-							{
-								logger.info(method_name + "Servizio " + servizio.getID() + " was not updated in the staging DB - error section");
-								try
-								{
-									Future<Object> futureStagingUpdateServizio = Patterns.ask(this.stagingDBActorRef, 
-																								new UpdateServizioByID(servzioIDStr, new TommyEnrichedJSON(servizio.getJSON()), this.stagingDBErrorTableName), 
-																								1000);
-									Reply replyStagingUpdateServizio = (Reply) Await.result(futureStagingUpdateServizio, Duration.create(stagingDBAskTimeOutSecs, TimeUnit.SECONDS));
-									if (replyStagingUpdateServizio instanceof UpdateServizioByIDSuccess) {
-										logger.info(method_name + "Servizio " + servizio.getID() + " Updated successfully in the staging DB - error section");
-									} else if (replyStagingUpdateServizio instanceof UpdateServizioByIDFaillure) {
-										throw new IllegalArgumentException(((UpdateServizioByIDFaillure) replyStagingUpdateServizio).getCause());
-									} else {
-										throw new IllegalArgumentException("Unknown reply " + replyStagingUpdateServizio.getReplyTypeName());
-									}								
-								} catch (TimeoutException | InterruptedException | IllegalArgumentException e) {
-									logger.error(method_name + "Servizio " + servizio.getID() 
-												+ " failed to update the servizio in the staging DB - error section: " + e.getMessage());	
+						logger.info(method_name + "Servizio " + servizioData.getID() + " was already present in the persistence DB");
+						Servizio servizioDB = servizioEnrichedDBPersistence.buildServizio();
+						if (servizioDB.equals(servizio)) { // Equals, Discard the New Data
+							logger.info(method_name + "Servizio " + servizioData.getID() + " was already updated in the persistence DB");
+						} else // Log Error, for manual update of the new data
+						{
+							logger.error(method_name + "Servizio " + servizioData.getID() + " was not updated in the persistence DB" + "\n"
+									 	+ servizioData.getJSON());
+						}
+						
+					} else { // Servizio wasn't in the Persistence DB
+						Boolean lockAcquiredStagingDB = false;
+						try {
+						
+							// Get the Lock for the Staging DB
+							this.dbClient.acquireDBLockInfiniteLoop(this.getSelf(), this.stagingDBActorRef, 
+																	this.stagingDBAskTimeOutSecs, this.stagingDBLockTimeOutSecs);	
+							lockAcquiredStagingDB = true;
+							
+							// Try to read the servizio from the Staging DB - Error Section				
+							TommyEnrichedJSON servizioEnrichedDBStagingError = this.dbClient.getServizioByID(this.getSelf(), this.stagingDBActorRef, 
+																								 this.stagingDBAskTimeOutSecs, 
+																								 servzioIDStr, this.stagingDBErrorTableName);
+							if (servizioEnrichedDBStagingError != null) { // Servizio was already in the Staging DB - Error Section
+								
+								logger.info(method_name + "Servizio " + servizioData.getID() + " was already present in the staging DB - error section");
+								Servizio servizioDB = servizioEnrichedDBStagingError.buildServizio();
+								if (servizioDB.equals(servizio)) { // Equals, Discard the New Data
+									logger.info(method_name + "Servizio " + servizioData.getID() + " was already updated in the staging DB - error section");
+								} else { // Update the Servizio in the Staging DB - Error Serction
+									logger.info(method_name + "Servizio " + servizioData.getID() + " was not updated in the staging DB - error section");
+									this.dbClient.updateServizioByID(this.getSelf(), this.stagingDBActorRef, 
+											this.stagingDBAskTimeOutSecs, 
+											servzioIDStr, servizioEnriched.getJsonServizio(), this.stagingDBErrorTableName);
+									logger.info(method_name + "Servizio " + servizioData.getID() + " Updated successfully in the staging DB - error section");
 								}
+								
+							} else { // Servizio wasn't in the Staging DB - Error Section, will try the Posting Section
+								
+								// Try to read the servizio from the Staging DB - Posting Section				
+								TommyEnrichedJSON servizioEnrichedDBStagingPosting = this.dbClient.getServizioByID(this.getSelf(), this.stagingDBActorRef, 
+																									 this.stagingDBAskTimeOutSecs, 
+																									 servzioIDStr, this.stagingDBPostingTableName);
+								if (servizioEnrichedDBStagingPosting != null) { // Servizio was already in the Staging DB - Posting Section
+									logger.info(method_name + "Servizio " + servizioData.getID() + " was already present in the staging DB - posting section");
+									Servizio servizioDB = servizioEnrichedDBStagingPosting.buildServizio();
+									if (servizioDB.equals(servizio)) { // Equals, Discard the New Data
+										logger.info(method_name + "Servizio " + servizioData.getID() + " was already updated in the staging DB - posting section");
+									} else { // Update the Servizio in the Staging DB - Error Serction
+										logger.info(method_name + "Servizio " + servizioData.getID() + " was not updated in the staging DB - posting section");
+										this.dbClient.updateServizioByID(this.getSelf(), this.stagingDBActorRef, 
+												this.stagingDBAskTimeOutSecs, 
+												servzioIDStr, servizioEnriched.getJsonServizio(), this.stagingDBPostingTableName);
+										logger.info(method_name + "Servizio " + servizioData.getID() + " Updated successfully in the staging DB - posting section");
+									}						
+								} else { // Servizio wasn't in the Staging DB - Posting Section
+									logger.info(method_name + "Servizio " + servizioData.getID() + " wasn't present in the staging DB - posting section");
+									this.dbClient.writeNewServizioByID(this.getSelf(), this.stagingDBActorRef, 
+																		 this.stagingDBAskTimeOutSecs, 
+																		 servzioIDStr, servizioEnriched.getJsonServizio(), 
+																		 this.stagingDBPostingTableName);
+									logger.info(method_name + "Servizio " + servizioData.getID() + " Written successfully in the staging DB - posting section");
+								}
+								
 							}
-						} else if (replyStagingErrorGetServizio instanceof ServizioByIDNotFound) { // Servizio wasn't in the Staging DB - Error Section, will try the PostingSectionsection
-							try {
-						
-								// Try to read the servizio from the Staging DB - Posting Section		
-								Future<Object> futureStagingPostingGetServizio = Patterns.ask(this.stagingDBActorRef, 
-																								new GetServizioByID(servzioIDStr, this.stagingDBPostingTableName), 
-																								1000);
-								Reply replyStagingPostingGetServizio = (Reply) Await.result(futureStagingPostingGetServizio, Duration.create(stagingDBAskTimeOutSecs, TimeUnit.SECONDS));
-								if (replyStagingPostingGetServizio instanceof ReplyServizioById) { // Servizio was already in the Staging DB - Posting Section
-									logger.info(method_name + "Servizio " + servizio.getID() + " was already present in the staging DB - posting section");
-									String jsonDB = ((ReplyServizioById) replyStagingPostingGetServizio).getServizio().getJsonServizio();
-									if (jsonDB.compareTo(servizio.getJSON()) == 0) { // Equals, Discard the New Data
-										logger.info(method_name + "Servizio " + servizio.getID() + " was already updated in the staging DB - posting section");
-									} else { // Update
-										logger.info(method_name + "Servizio " + servizio.getID() + " was not updated in the staging DB - posting section");
-										try
-										{
-											Future<Object> futureStagingUpdateServizio = Patterns.ask(this.stagingDBActorRef, 
-																										new UpdateServizioByID(servzioIDStr, new TommyEnrichedJSON(servizio.getJSON()), this.stagingDBPostingTableName), 
-																										1000);
-											Reply replyStagingUpdateServizio = (Reply) Await.result(futureStagingUpdateServizio, Duration.create(stagingDBAskTimeOutSecs, TimeUnit.SECONDS));
-											if (replyStagingUpdateServizio instanceof UpdateServizioByIDSuccess) {
-												logger.info(method_name + "Servizio " + servizio.getID() + " Updated successfully in the staging DB - posting section");
-											} else if (replyStagingUpdateServizio instanceof UpdateServizioByIDFaillure) {
-												throw new IllegalArgumentException(((UpdateServizioByIDFaillure) replyStagingUpdateServizio).getCause());
-											} else {
-												throw new IllegalArgumentException("Unknown reply " + replyStagingUpdateServizio.getReplyTypeName());
-											}								
-										} catch (TimeoutException | InterruptedException | IllegalArgumentException e) {
-											logger.error(method_name + "Servizio " + servizio.getID() 
-														+ " failed to update the servizio in the staging DB - posting section: " + e.getMessage());	
-										}
-									}
-								} else if (replyStagingPostingGetServizio instanceof ServizioByIDNotFound) { // Servizio wasn't in the Staging DB - Posting Section
-									
-									try
-									{
-										Future<Object> futureStagingWriteServizio = Patterns.ask(this.stagingDBActorRef, 
-																									new WriteNewServizioByID(servzioIDStr, new TommyEnrichedJSON(servizio.getJSON()), this.stagingDBPostingTableName), 
-																									1000);
-										Reply replyStagingWriteServizio = (Reply) Await.result(futureStagingWriteServizio, Duration.create(stagingDBAskTimeOutSecs, TimeUnit.SECONDS));
-										if (replyStagingWriteServizio instanceof UpdateServizioByIDSuccess) {
-											logger.info(method_name + "Servizio " + servizio.getID() + " Written successfully in the staging DB - posting section");
-										} else if (replyStagingWriteServizio instanceof UpdateServizioByIDFaillure) {
-											throw new IllegalArgumentException(((UpdateServizioByIDFaillure) replyStagingWriteServizio).getCause());
-										} else {
-											throw new IllegalArgumentException("Unknown reply " + replyStagingWriteServizio.getReplyTypeName());
-										}								
-									} catch (TimeoutException | InterruptedException | IllegalArgumentException e) {
-										logger.error(method_name + "Servizio " + servizio.getID() 
-													+ " failed to write the servizio in the staging DB - posting section: " + e.getMessage());	
-									}
-								} else {
-									throw new IllegalArgumentException("Unknown reply " + replyStagingPostingGetServizio.getReplyTypeName());
-								}	
-							} catch (TimeoutException | InterruptedException | IllegalArgumentException e) {
-								logger.error(method_name + "Servizio " + servizio.getID() 
-											+ " failed to  check if its present in the staging DB - posting section: " + e.getMessage());	
-							}								
-						} else {
-							throw new IllegalArgumentException("Unknown reply " + replyStagingErrorGetServizio.getReplyTypeName());
-						}	
-				    } catch (TimeoutException | InterruptedException | IllegalArgumentException e) {
-						logger.error(method_name + "Servizio " + servizio.getID() 
-									+ " failed to check if its present in the staging DB - error section: " + e.getMessage());	
-					} finally {
-						if (lockAcquiredStagingDB) {
-							Future<Object> futureReleaseStagingLock = Patterns.ask(this.stagingDBActorRef, new ReleaseDBLock() , 1000);
-						    try {
-								Reply replyReleaseStagingLock = (Reply) Await.result(futureReleaseStagingLock, Duration.create(stagingDBAskTimeOutSecs, TimeUnit.SECONDS));
-						    } catch (TimeoutException | InterruptedException | IllegalArgumentException e) {
-								logger.error(method_name + "Servizio " + servizio.getID() 
-											+ " failed to release lock for the staging DB: " + e.getMessage());
-						    }
+							
+						} catch (Exception e) {
+							logger.error(method_name + "Servizio " + servizioData.getID() + " failed operating on the staging DB: " + e.getMessage());	
+						} finally {
+							if (lockAcquiredStagingDB) 
+								this.dbClient.releaseDBLock(this.getSelf(), this.stagingDBActorRef, this.stagingDBAskTimeOutSecs);
 						}
-					}
 						
-				} else {
-					throw new IllegalArgumentException ("Unknown reply type: " + replyPersistenceGetServizio.getReplyTypeName());
-				}				
-				
-			} catch (TimeoutException | InterruptedException | IllegalArgumentException e) {
-				logger.error(method_name + "Servizio " + servizio.getID() 
-							+ " failed to if its present in the persistence DB: " + e.getMessage());	
-			} finally {
-				if (lockAcquiredPersistenceDB) {
-					Future<Object> futureReleasePersistenceLock = Patterns.ask(this.persistenceDBActorRef, new ReleaseDBLock() , 1000);
-				    try {
-						Reply replyReleasePersistenceLock = (Reply) Await.result(futureReleasePersistenceLock, Duration.create(persistenceDBAskTimeOutSecs, TimeUnit.SECONDS));
-				    } catch (TimeoutException | InterruptedException | IllegalArgumentException e) {
-						logger.error(method_name + "Servizio " + servizio.getID() 
-									+ " failed to release lock for the persistence DB: " + e.getMessage());
-				    }
+					}
+					
+			    } catch (Exception e) {
+					logger.error(method_name + "Servizio " + servizioData.getID() + " failed operating on the persistence DB: " + e.getMessage());
+				}  finally {
+					if (lockAcquiredPersistenceDB) 
+						this.dbClient.releaseDBLock(this.getSelf(), this.persistenceDBActorRef, this.persistenceDBAskTimeOutSecs);
 				}
+			    
+			} catch (Exception e) {
+				logger.error(method_name + "Servizio " + servizioData.getID() + " failed to parse servizio JSON: " + e.getMessage());
 			}
 			
 		} else {
-			logger.error(method_name + "Servizio " + servizio.getID() + " wasn't valid: " + servizio.getErrorMsg());	
+			logger.error(method_name + "Servizio " + servizioData.getID() + " wasn't valid: " + servizioData.getErrorMsg());	
 		}	
 	}	
 	
