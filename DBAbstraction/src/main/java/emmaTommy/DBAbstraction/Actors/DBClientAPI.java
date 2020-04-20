@@ -26,7 +26,6 @@ import emmaTommy.DBAbstraction.ActorsMessages.Replies.DBLockAcquired;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.DBLockReleased;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.DBManagerActive;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.DBManagerErrorState;
-import emmaTommy.DBAbstraction.ActorsMessages.Replies.DBManagerInitializing;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.DBManagerStatus;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.DBOperationFaillure;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.MoveServizioByIDSuccess;
