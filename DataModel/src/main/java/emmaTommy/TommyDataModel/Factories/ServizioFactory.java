@@ -42,7 +42,7 @@ public class ServizioFactory {
 		Servizio s = new Servizio();
 		
 		// "data" : "type:YYYYMMDD:required"
-		s.setData(m.getInizioMissione());
+		s.setData(m.getInizioMissione().toLocalDate());
 		
 		// "codice_servizio" : "type:String:required"
 		s.setCodiceServizio(Integer.toString(m.getCodiceMissione()));

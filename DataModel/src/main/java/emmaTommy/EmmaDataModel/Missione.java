@@ -1,6 +1,6 @@
 package emmaTommy.EmmaDataModel;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -256,44 +256,44 @@ public class Missione extends EmmaDataModel {
 	/** Data di Fine Missione */
 	@XmlElement(name = "mi-dt-fine-mi", required = true)	
 	@XmlJavaTypeAdapter(DateTimeAdapterYYYYMMDDTHHmmssZ.class)
-	protected Date fineMissione;	
-	public void setFineMissione (Date fineMissione) {
+	protected LocalDateTime fineMissione;	
+	public void setFineMissione (LocalDateTime fineMissione) {
 		this.fineMissione = fineMissione;
 	}
-	public Date getFineMissione() {
+	public LocalDateTime getFineMissione() {
 		return this.fineMissione;
 	}
 	
 	/** Data di Inizio Rientro */
 	@XmlElement(name = "mi-dt-inizio-r", required = true)	
 	@XmlJavaTypeAdapter(DateTimeAdapterYYYYMMDDTHHmmssZ.class)
-	protected Date inizioRientro;
-	public void setInizioRientro(Date inizioRientro) {
+	protected LocalDateTime inizioRientro;
+	public void setInizioRientro(LocalDateTime inizioRientro) {
 		this.inizioRientro = inizioRientro;
 	}
-	public Date getInizioRientro() {
+	public LocalDateTime getInizioRientro() {
 		return this.inizioRientro;
 	}
 	
 	/** Data di Inizio Missione (Creazione Scheda) */
 	@XmlElement(name = "mi-dt-missione", required = true)
 	@XmlJavaTypeAdapter(DateTimeAdapterYYYYMMDDTHHmmssZ.class)
-	protected Date inizioMissione;
-	public void setInizioMissione(Date inizioMissione) {
+	protected LocalDateTime inizioMissione;
+	public void setInizioMissione(LocalDateTime inizioMissione) {
 		this.inizioMissione = inizioMissione;
 	}
-	public Date getInizioMissione() {
+	public LocalDateTime getInizioMissione() {
 		return this.inizioMissione;
 	}
 	
 	/** Data di Partenza del Mezzo */
 	@XmlElement(name = "mi-dt-partenza", required = true)
 	@XmlJavaTypeAdapter(DateTimeAdapterYYYYMMDDTHHmmssZ.class)
-	protected Date partenzaMezzo;
-	public void setPartenzaMezzo (Date partenzaMezzo) {
+	protected LocalDateTime partenzaMezzo;
+	public void setPartenzaMezzo (LocalDateTime partenzaMezzo) {
 		this.partenzaMezzo = partenzaMezzo;
 	}
-	public Date getPartenzaMezzo() {
+	public LocalDateTime getPartenzaMezzo() {
 		return this.partenzaMezzo;
 	}
 	
@@ -476,8 +476,8 @@ public class Missione extends EmmaDataModel {
 				+ ", codiceMezzo=" + codiceMezzo + ", convenzioneEnte=" + convenzioneEnte + ", esitoMissione="
 				+ esitoMissione + ", stazionamentoFineMissione=" + stazionamentoFineMissione
 				+ ", stazionamentoFineMissionePosMezzo=" + stazionamentoFineMissionePosMezzo + ", fineMissione="
-				+ fineMissione + ", inizioRientro=" + inizioRientro + ", inizioMissione=" + inizioMissione
-				+ ", partenzaMezzo=" + partenzaMezzo + ", codiceEvento=" + codiceEvento + ", codiceTrasporto="
+				+ fineMissione.toString() + ", inizioRientro=" + inizioRientro.toString() + ", inizioMissione=" + inizioMissione.toString()
+				+ ", partenzaMezzo=" + partenzaMezzo.toString() + ", codiceEvento=" + codiceEvento + ", codiceTrasporto="
 				+ codiceTrasporto + ", codiceMissionePrecedente=" + codiceMissionePrecedente + ", codiceMissione="
 				+ codiceMissione + ", totKMPercorsi=" + totKMPercorsi + ", comuneIntervento=" + comuneIntervento
 				+ ", motivoChiamata=" + motivoChiamata + ", motivoChiamataDettaglio=" + motivoChiamataDettaglio

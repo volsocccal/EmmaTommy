@@ -1,7 +1,8 @@
 package emmaTommy.EmmaDataModel;
 
 import java.io.File;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -40,10 +41,14 @@ public class XMLParserTrattaTest extends XMLParserTest {
 	   * @throws JAXBException */
 	  public void testTrattaUnmarshallingTrattaGeneric() throws JAXBException
 	  {
-		  logger.trace(this.getName());
 		  
-		  @SuppressWarnings("deprecation")
-		  Tratta tratta = new Tratta (1, new Date(119, 9, 7, 8, 01, 05), new Date(119, 9, 7, 7, 16, 44), "H LECCO");
+		  logger.trace(this.getName());
+		  Tratta tratta = new Tratta (1, 
+				  						LocalDateTime.parse("2019-10-07 08:01:05", 
+				  											DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss")), 
+				  						LocalDateTime.parse("2019-10-07 07:16:44", 
+				  											DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss")), 
+				  						"H LECCO");
 		  
 			String test_file = "test_tratta_generic.xml";
 			JAXBContext jaxbContext = JAXBContext.newInstance(Tratta.class);
@@ -202,10 +207,18 @@ public class XMLParserTrattaTest extends XMLParserTest {
 	  {
 		  	logger.trace(this.getName());
 		  
-		  	@SuppressWarnings("deprecation")
-			Tratta tratta_1 = new Tratta (1, new Date(119, 9, 7, 7, 16, 44), new Date(119, 9, 7, 8, 01, 05), "");
-		  	@SuppressWarnings("deprecation")
-			Tratta tratta_2 = new Tratta (2, new Date(119, 9, 7, 8, 34, 2), new Date(119, 9, 7, 8, 49, 1), "H LECCO");
+		  	Tratta tratta_1 = new Tratta(1, 
+											LocalDateTime.parse("2019-09-07 07:16:44",
+																DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss")),
+											LocalDateTime.parse("2019-09-07 08:01:05",
+																DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss")), 
+											"");
+		  	Tratta tratta_2 = new Tratta(2, 
+											LocalDateTime.parse("2019-09-07 08:34:02",
+																DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss")),
+											LocalDateTime.parse("2019-09-07 08:49:01",
+																DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss")),
+											"");	
 			
 			String test_file = "test_tratte.xml";
 			JAXBContext jaxbContext = JAXBContext.newInstance(Tratte.class);

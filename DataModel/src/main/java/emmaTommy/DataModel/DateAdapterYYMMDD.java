@@ -1,32 +1,33 @@
 package emmaTommy.DataModel;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-public class DateAdapterYYMMDD extends XmlAdapter<String, Date> {
+public class DateAdapterYYMMDD extends XmlAdapter<String, LocalDate> {
  
     private static final String DATE_FORMAT_STRING = "yyyyMMdd";
  
     @Override
-    public String marshal(Date date) {
+    public String marshal(LocalDate date) {
     	String date_str;
     	if (date == null) {
     		date_str =  "";
     	} else {
-    		date_str = (new SimpleDateFormat(DATE_FORMAT_STRING)).format(date);
+    		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(DATE_FORMAT_STRING); 
+    		date_str = dtf.format(date);
     	}
         return date_str;
     }
  
     @Override
-    public Date unmarshal(String v) {   
-    	Date d = null;
+    public LocalDate unmarshal(String v) {   
+    	LocalDate d = null;
         try {
-			d = new SimpleDateFormat(DATE_FORMAT_STRING).parse(v);
-		} catch (ParseException e) {
+        	DateTimeFormatter dtf = DateTimeFormatter.ofPattern(DATE_FORMAT_STRING); 
+        	d = LocalDate.parse(v, dtf);
+		} catch (java.time.format.DateTimeParseException e) {
 		}
         return d;
     }

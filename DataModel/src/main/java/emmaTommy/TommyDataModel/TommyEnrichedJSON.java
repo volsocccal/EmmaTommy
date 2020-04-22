@@ -6,6 +6,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.xml.bind.JAXBException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.apache.logging.log4j.LogManager;
 
 import emmaTommy.TommyDataModel.Factories.ServizioFactory;
@@ -16,6 +20,9 @@ import emmaTommy.TommyDataModel.Factories.ServizioFactory;
 public class TommyEnrichedJSON {
 
 	static org.apache.logging.log4j.Logger logger = LogManager.getLogger("TommyDataModel");
+	static String dataFormatDate = "yyyyMMdd"; 
+	static String dataFormatTime = "HH:mm"; 
+	static String dataFormatDateTime = "yyyy/MM/dd HH:mm:ss"; 
 	
 	/** JSON Service Field */
 	protected String jsonServizio;
@@ -30,14 +37,18 @@ public class TommyEnrichedJSON {
 		String oldJsonServizio = this.jsonServizio;
 		try {
 			this.jsonServizio = jsonServizio;
-			Servizio s = this.buildServizio();
-			this.codiceMezzo = s.getTagIdAutomezzo();
-			this.setKm(s.getKM());
+			Servizio s = this.buildServizio();						
 			if (this.codiceServizio.compareTo(s.getCodiceServizio()) != 0) {
 				throw new IllegalArgumentException("Given Codice Servizio was " + this.codiceServizio
 													+ " but in the input JSON the CodiceServizio was " + s.getCodiceServizio());
-			}
-			this.initializedFlag = true;
+			} else {
+				this.setCodiceMezzo(s.getTagIdAutomezzo());
+				this.setKm(s.getKM());
+				this.setMissioneStartDate(s.getMissioneDate());
+				this.setMissioneStartTime(s.getOrarioInizioServizio());
+				this.setTimeStamp(LocalDateTime.now());
+				this.initializedFlag = true;				
+			}			
 		} catch (JAXBException e) {
 			this.jsonServizio = oldJsonServizio;
 			throw new IllegalArgumentException("Failed to Unmarshall the given JSON: " + e.getMessage());			
@@ -85,6 +96,48 @@ public class TommyEnrichedJSON {
 		this.codiceMezzo = codiceMezzo;
 	}
 	
+	/** Missione StartDate */
+	@Column(name="start_date")
+	protected LocalDate missioneStartDate;
+	public LocalDate getMissioneStartDate() {
+		return this.missioneStartDate;
+	}
+	public String getMissioneStartDateStr() {
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(dataFormatDate); 
+		return dtf.format(this.missioneStartDate);
+	}
+	public void setMissioneStartDate(LocalDate localDate) {
+		this.missioneStartDate = localDate;
+	}
+	
+	/** Missione StartTime */
+	@Column(name="start_time")
+	protected LocalDateTime missioneStartTime;
+	public LocalDateTime getMissioneStartTime() {
+		return this.missioneStartTime;
+	}
+	public String getMissioneStartTimeStr() {
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(dataFormatTime); 
+		return dtf.format(this.missioneStartTime);
+	}
+	public void setMissioneStartTime(LocalDateTime localDate) {
+		this.missioneStartTime = localDate;
+	}
+	
+	/** Object TimeStamp */
+	@Column(name="timeStamp")
+	protected LocalDateTime timeStamp;
+	public LocalDateTime getTimeStamp() {
+		return this.timeStamp;
+	}
+	public String getTimeStampStr() {
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(dataFormatDateTime); 
+		return dtf.format(this.timeStamp);
+	}
+	public void setTimeStamp(LocalDateTime timeStamp) {
+		this.timeStamp = timeStamp;
+	}
+	
 	/** Initialized Flag */
 	protected Boolean initializedFlag; 
 	public Boolean isInitialized() {
@@ -96,6 +149,8 @@ public class TommyEnrichedJSON {
 		this.codiceMezzo = null;
 		this.codiceServizio = null;
 		this.km = -1;
+		this.missioneStartDate = null; 
+		this.timeStamp = LocalDateTime.now(); 
 		this.initializedFlag = false;
 	}
 	

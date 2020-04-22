@@ -1,7 +1,8 @@
 package emmaTommy.TommyDataModel;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -25,12 +26,12 @@ public class Servizio extends TommyDataModel {
 	// "data" : "type:YYYYMMDD:required"
 	@XmlElement(name = "data", required = true)	
 	@XmlJavaTypeAdapter(DateAdapterYYMMDD.class)
-	protected Date data;
-	public void setData(Date data) {
-		this.data = data;
+	protected LocalDate missioneDate;
+	public void setData(LocalDate missioneDate) {
+		this.missioneDate = missioneDate;
 	}
-	public Date getData() {
-		return this.data;
+	public LocalDate getMissioneDate() {
+		return this.missioneDate;
 	}
 	
 	// "codice_servizio" : "type:String:required"
@@ -46,66 +47,66 @@ public class Servizio extends TommyDataModel {
 	// orario_inizio_servizio" : "type:HH:II:required"
 	@XmlElement(name = "orario_inizio_servizio", required = true)	
 	@XmlJavaTypeAdapter(DateTimeAdapterHHmm.class)
-	protected Date orario_inizio_servizio;
-	public void setOrarioInizioServizio (Date orario_inizio_servizio) {
+	protected LocalDateTime orario_inizio_servizio;
+	public void setOrarioInizioServizio (LocalDateTime orario_inizio_servizio) {
 		this.orario_inizio_servizio = orario_inizio_servizio;
 	}
-	protected Date getOrarioInizioServizio() {
+	protected LocalDateTime getOrarioInizioServizio() {
 		return this.orario_inizio_servizio;
 	}
 	
 	// orario_arrivo_posto" : "type:HH:II"
 	@XmlElement(name = "orario_arrivo_posto", required = false)	
 	@XmlJavaTypeAdapter(DateTimeAdapterHHmm.class)
-	protected Date orario_arrivo_posto;
-	public void setOrarioArrivoPosto (Date orario_arrivo_posto) {
+	protected LocalDateTime orario_arrivo_posto;
+	public void setOrarioArrivoPosto (LocalDateTime orario_arrivo_posto) {
 		this.orario_arrivo_posto = orario_arrivo_posto;
 	}
-	public Date getOrarioArrivoPosto() {
+	public LocalDateTime getOrarioArrivoPosto() {
 		return this.orario_arrivo_posto;
 	}
 	
 	// orario_partenza_posto" : "type:HH:II"
 	@XmlElement(name = "orario_partenza_posto", required = false)	
 	@XmlJavaTypeAdapter(DateTimeAdapterHHmm.class)
-	protected Date orario_partenza_posto;
-	public void setOrarioPartenzaPosto (Date orario_partenza_posto) {
+	protected LocalDateTime orario_partenza_posto;
+	public void setOrarioPartenzaPosto (LocalDateTime orario_partenza_posto) {
 		this.orario_partenza_posto = orario_partenza_posto;
 	}
-	public Date getOrarioPartenzaPosto() {
+	public LocalDateTime getOrarioPartenzaPosto() {
 		return this.orario_partenza_posto;
 	}
 	
 	// orario_arrivo_ospedale" : "type:HH:II"
 	@XmlElement(name = "orario_arrivo_ospedale", required = false)
 	@XmlJavaTypeAdapter(DateTimeAdapterHHmm.class)
-	protected Date orario_arrivo_ospedale; 
-	public void setOrarioArrivoOspedale (Date orario_arrivo_ospedale) {
+	protected LocalDateTime orario_arrivo_ospedale; 
+	public void setOrarioArrivoOspedale (LocalDateTime orario_arrivo_ospedale) {
 		this.orario_arrivo_ospedale = orario_arrivo_ospedale;
 	}
-	public Date getOrarioArrivoOspedale() {
+	public LocalDateTime getOrarioArrivoOspedale() {
 		return this.orario_arrivo_ospedale;
 	}
 	
 	// orario_partenza_ospedale" : "type:HH:II"
 	@XmlElement(name = "orario_partenza_ospedale", required = false)
 	@XmlJavaTypeAdapter(DateTimeAdapterHHmm.class)
-	protected Date orario_partenza_ospedale;
-	public void setOrarioPartenzaOspedale (Date orario_partenza_ospedale) {
+	protected LocalDateTime orario_partenza_ospedale;
+	public void setOrarioPartenzaOspedale (LocalDateTime orario_partenza_ospedale) {
 		this.orario_partenza_ospedale = orario_partenza_ospedale;
 	}
-	public Date getOrarioPartenzaOspedale() {
+	public LocalDateTime getOrarioPartenzaOspedale() {
 		return this.orario_partenza_ospedale;
 	}
 	
 	// orario_fine_servizio" : "type:HH:II:required"
 	@XmlElement(name = "orario_fine_servizio", required = true)	
 	@XmlJavaTypeAdapter(DateTimeAdapterHHmm.class)
-	protected Date orario_fine_servizio;
-	public void setOrarioFineServizio (Date orario_fine_servizio) {
+	protected LocalDateTime orario_fine_servizio;
+	public void setOrarioFineServizio (LocalDateTime orario_fine_servizio) {
 		this.orario_fine_servizio = orario_fine_servizio;
 	}
-	public Date getOrarioFineServizio() {
+	public LocalDateTime getOrarioFineServizio() {
 		return this.orario_fine_servizio;
 	}
 	    	

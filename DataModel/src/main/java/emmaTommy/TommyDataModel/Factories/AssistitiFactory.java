@@ -23,7 +23,6 @@ public class AssistitiFactory {
 		return new Assistiti();
 	}
 	
-	@SuppressWarnings("deprecation")
 	public ArrayList<emmaTommy.TommyDataModel.Assistito> buildAssistiti(emmaTommy.EmmaDataModel.Pazienti pazienti) {
 		
 		// Build new Empty Assistiti list
@@ -53,19 +52,8 @@ public class AssistitiFactory {
 				if (p.getNome() != null && p.getCognome() != null) {						
 					String codiceFiscale = p.getCognome() + "_" + p.getNome();
 					if (p.getDataNascita() != null) {
-						int correctYear = p.getDataNascita().getYear() + 1900;
-						codiceFiscale += "_" + correctYear;
-						int month = p.getDataNascita().getMonth();
-						if (month < 10) {
-							codiceFiscale += "0" + p.getDataNascita().getMonth();
-						} else {
-							codiceFiscale += p.getDataNascita().getMonth();
-						}
-						int day = p.getDataNascita().getDay();
-						if (day < 10) {
-							codiceFiscale += "0" + p.getDataNascita().getDay();
-						} else {
-							codiceFiscale += p.getDataNascita().getDay();
+						if (p.getDataNascitaStr() != null) {
+							codiceFiscale += "_" + p.getDataNascitaStr();
 						}
 					}					
 					newAssistito = new emmaTommy.TommyDataModel.Assistito();

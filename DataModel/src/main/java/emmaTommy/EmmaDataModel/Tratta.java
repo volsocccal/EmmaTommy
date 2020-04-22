@@ -1,6 +1,7 @@
 package emmaTommy.EmmaDataModel;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -19,19 +20,19 @@ public class Tratta extends EmmaDataModel {
 		super();
 	}
 	
-	public Tratta(int id, Date dataPartenza) {
+	public Tratta(int id, LocalDateTime dataPartenza) {
 		this(id, dataPartenza, null, null);
 	}
 	
-	public Tratta(int id, Date dataPartenza, Date dataArrivo) {
+	public Tratta(int id, LocalDateTime dataPartenza, LocalDateTime dataArrivo) {
 		this(id, dataPartenza, dataArrivo, null);
 	}
 	
-	public Tratta(int id, Date dataPartenza, String destinazione) {
+	public Tratta(int id, LocalDateTime dataPartenza, String destinazione) {
 		this(id, dataPartenza, null, destinazione);
 	}
 	
-	public Tratta(int id, Date dataPartenza, Date dataArrivo, String destinazione) {
+	public Tratta(int id, LocalDateTime dataPartenza, LocalDateTime dataArrivo, String destinazione) {
 		super();
 		this.setId(id);
 		this.setDataPartenza(dataPartenza);
@@ -47,7 +48,6 @@ public class Tratta extends EmmaDataModel {
 	 * 
 	 * @return true if the object is valid, false otherwise
 	 */
-	@SuppressWarnings("deprecation")
 	public Boolean validateObject() {
 		String errorMsg = this.getClass().getSimpleName() + ": ";
 		
@@ -93,10 +93,10 @@ public class Tratta extends EmmaDataModel {
 		// Check DateTimes
 		if (this.dataPartenza != null) {
 			if (this.dataArrivo != null) {
-				if (this.dataArrivo.after(this.dataPartenza)) { // Check timeline
+				if (this.dataArrivo.isAfter(this.dataPartenza)) { // Check timeline
 					this.validState = false;
-					errorMsg += "arrivo " + this.dataArrivo.toGMTString() 
-							 + " was afer partenza " + this.dataPartenza.toGMTString();
+					errorMsg += "arrivo " + this.getDataArrivoStr() 
+							 + " was afer partenza " + this.getDataPartenzaStr() ;
 					this.errorList.add(errorMsg);
 					logger.warn(errorMsg);
 				}
@@ -111,6 +111,7 @@ public class Tratta extends EmmaDataModel {
 		// Return validState
 		return this.validState;
 	}
+	
 	
 	/** type Attribute */
 	@XmlAttribute(name = "type")
@@ -136,24 +137,35 @@ public class Tratta extends EmmaDataModel {
 	/** Data di Partenza */
 	@XmlElement(name = "tr-dt-partenza", required = true)	
 	@XmlJavaTypeAdapter(DateTimeAdapterYYYYMMDDTHHmmssZ.class)
-	protected Date dataPartenza;	
-	public void setDataPartenza(Date dataPartenza) {
+	protected LocalDateTime dataPartenza;	
+	public void setDataPartenza(LocalDateTime dataPartenza) {
 		this.dataPartenza = dataPartenza;
 	}
-	public Date getDataPartenza() {
+	public LocalDateTime getDataPartenza() {
 		return this.dataPartenza; 
+	}
+	private String getDataPartenzaStr() {
+		String DATE_FORMAT_STRING = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(DATE_FORMAT_STRING); 
+		return dtf.format(this.dataPartenza);
 	}
 	
 	/** Data di Arrivo */	
 	@XmlElement(name = "tr-dt-arrivo", required = true)	
 	@XmlJavaTypeAdapter(DateTimeAdapterYYYYMMDDTHHmmssZ.class)
-	protected Date dataArrivo;	
-	public void setDataArrivo(Date dataArrivo) {
+	protected LocalDateTime dataArrivo;	
+	public void setDataArrivo(LocalDateTime dataArrivo) {
 		this.dataArrivo = dataArrivo;
 	}
-	public Date getDataArrivo() {
+	public LocalDateTime getDataArrivo() {
 		return this.dataArrivo; 
 	}
+	private String getDataArrivoStr() {
+		String DATE_FORMAT_STRING = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(DATE_FORMAT_STRING); 
+		return dtf.format(this.dataArrivo);
+	}
+
 	
 	/** Luogo di Destinazione */
 	@XmlElement(name = "tr-ds-lg-dest", required = false)	

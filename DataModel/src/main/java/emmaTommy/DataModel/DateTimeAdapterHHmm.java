@@ -1,32 +1,33 @@
 package emmaTommy.DataModel;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-public class DateTimeAdapterHHmm extends XmlAdapter<String, Date> {
+public class DateTimeAdapterHHmm extends XmlAdapter<String, LocalDateTime> {
  
     private static final String DATE_FORMAT_STRING = "HH:mm";
  
     @Override
-    public String marshal(Date date) {
+    public String marshal(LocalDateTime date) {
     	String date_str;
     	if (date == null) {
     		date_str =  "";
     	} else {
-    		date_str = (new SimpleDateFormat(DATE_FORMAT_STRING)).format(date);
+    		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(DATE_FORMAT_STRING); 
+    		date_str = dtf.format(date);
     	}
         return date_str;
     }
  
     @Override
-    public Date unmarshal(String v) {   
-    	Date d = null;
+    public LocalDateTime unmarshal(String v) {   
+    	LocalDateTime d = null;
         try {
-			d = new SimpleDateFormat(DATE_FORMAT_STRING).parse(v);
-		} catch (ParseException e) {
+        	DateTimeFormatter dtf = DateTimeFormatter.ofPattern(DATE_FORMAT_STRING); 
+        	d = LocalDateTime.parse(v, dtf);
+		} catch (java.time.format.DateTimeParseException e) {
 		}
         return d;
     }

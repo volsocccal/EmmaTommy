@@ -1,6 +1,7 @@
 package emmaTommy.EmmaDataModel;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -44,7 +45,7 @@ public class Paziente extends EmmaDataModel {
 	public Paziente(String nome, 
 					String cognome, 
 					String sesso, 
-					Date dataNascita, 
+					LocalDate dataNascita, 
 					int eta, 
 					String esitoTrasportoPaziente) {
 		super();
@@ -60,7 +61,7 @@ public class Paziente extends EmmaDataModel {
 	public Paziente(String nome, 
 					String cognome, 
 					String sesso, 
-					Date dataNascita, 
+					LocalDate dataNascita, 
 					int eta, 
 					String pediatrico, 
 					String esitoTrasportoPaziente) {
@@ -78,7 +79,7 @@ public class Paziente extends EmmaDataModel {
 	public Paziente(String nome, 
 			String cognome, 
 			String sesso, 
-			Date dataNascita, 
+			LocalDate dataNascita, 
 			int eta, 
 			String pediatrico, 
 			String esitoTrasportoPaziente,
@@ -98,7 +99,7 @@ public class Paziente extends EmmaDataModel {
 	public Paziente(String nome, 
 			String cognome, 
 			String sesso, 
-			Date dataNascita, 
+			LocalDate dataNascita, 
 			int eta, 
 			String pediatrico, 
 			String esitoTrasportoPaziente,
@@ -328,12 +329,17 @@ public class Paziente extends EmmaDataModel {
 	/** Data di Nascita del Paziente */	
 	@XmlElement(name = "pz-dt-nascita", required = false)
 	@XmlJavaTypeAdapter(DateAdapterYYMMDDdash.class)
-	protected Date dataNascita;
-	public void setDataNascita(Date dataNascita) {
+	protected LocalDate dataNascita;
+	public void setDataNascita(LocalDate dataNascita) {
 		this.dataNascita = dataNascita;
 	}
-	public Date getDataNascita() {
+	public LocalDate getDataNascita() {
 		return this.dataNascita; 
+	}
+	public String getDataNascitaStr() {
+		String DATE_FORMAT_STRING = "yyyyMMdd";
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(DATE_FORMAT_STRING); 
+		return dtf.format(this.dataNascita);
 	}
 	
 	/** Eta del Paziente */	

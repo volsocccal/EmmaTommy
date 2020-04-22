@@ -1,6 +1,7 @@
 package emmaTommy.TommyDataModel;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -20,7 +21,7 @@ public class Assistito extends TommyDataModel {
 					String nome, 
 					String cognome, 
 					String sesso, 
-					Date dataNascita, 
+					LocalDate dataNascita, 
 					String residenza) {
 		super();
 		this.setCodiceFiscale(codiceFiscale);
@@ -116,14 +117,18 @@ public class Assistito extends TommyDataModel {
 	/** datanascita" : "type:YYYYMMDD"*/	
 	@XmlElement(name = "datanascita", required = false)
 	@XmlJavaTypeAdapter(DateAdapterYYMMDD.class)
-	protected Date dataNascita;
-	public void setDataNascita(Date dataNascita) {
+	protected LocalDate dataNascita;
+	public void setDataNascita(LocalDate dataNascita) {
 		this.dataNascita = dataNascita;
 	}
-	public Date getDataNascita() {
+	public LocalDate getDataNascita() {
 		return this.dataNascita; 
 	}
-	
+	public String getDataNascitaStr() {
+		String DATE_FORMAT_STRING = "yyyyMMdd";
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(DATE_FORMAT_STRING); 
+		return dtf.format(this.dataNascita);
+	}
 	
 	/** residenza" : "type:String" */	
 	@XmlElement(name = "residenza", required = false)	

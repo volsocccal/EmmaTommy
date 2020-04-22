@@ -1,8 +1,7 @@
 package emmaTommy.EmmaDataModel;
 
 import java.io.File;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.time.LocalDate;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -45,7 +44,8 @@ public class XMLParserPazienteTest extends XMLParserTest {
 	  logger.trace(this.getName());
 	  
 	   Paziente paperino = new Paziente("Donald", "Duck", EmmaDataModelEnums.MALE_GENDER,
-			    (new GregorianCalendar(1980, Calendar.FEBRUARY, 11).getTime()), 39, 
+			    LocalDate.parse("1980-02-11"),
+			    39, 
 				EmmaDataModelEnums.PEDIATRIC_NO,
 				EmmaDataModelEnums.OUTCOME_TRASPORTO_PAZIENTE_REGOLARE,
 				EmmaDataModelEnums.CODES_VERDE,
@@ -82,7 +82,8 @@ public class XMLParserPazienteTest extends XMLParserTest {
 	  logger.trace(this.getName());
 	  
 	   Paziente minnie = new Paziente("Minnie", "Mouse", EmmaDataModelEnums.FEMALE_GENDER,
-			    (new GregorianCalendar(1950, Calendar.JUNE, 3).getTime()), 69, 
+			    LocalDate.parse("1950-06-03"),
+			    69, 
 				EmmaDataModelEnums.PEDIATRIC_NO,
 				EmmaDataModelEnums.OUTCOME_TRASPORTO_PAZIENTE_RIFIUTO_TRASPORTO,
 				EmmaDataModelEnums.CODES_GIALLO,
@@ -933,7 +934,8 @@ public class XMLParserPazienteTest extends XMLParserTest {
 	  	logger.trace(this.getName());
 	  
 	  	Paziente paperino = new Paziente("Donald", "Duck", EmmaDataModelEnums.MALE_GENDER,
-			    (new GregorianCalendar(1980, Calendar.FEBRUARY, 11).getTime()), 39, 
+	  			LocalDate.parse("1980-02-11"),
+			    39, 
 				EmmaDataModelEnums.PEDIATRIC_NO,
 				EmmaDataModelEnums.OUTCOME_TRASPORTO_PAZIENTE_REGOLARE,
 				EmmaDataModelEnums.CODES_VERDE,
@@ -942,7 +944,8 @@ public class XMLParserPazienteTest extends XMLParserTest {
 				"Paperopoli");
 	  	
 	  	Paziente qui = new Paziente("Huey", "Duck", EmmaDataModelEnums.MALE_GENDER,
-			    (new GregorianCalendar(2010, Calendar.OCTOBER, 17).getTime()), 9, 
+	  			LocalDate.parse("2010-10-17"),
+	  			9, 
 				EmmaDataModelEnums.PEDIATRIC_SI,
 				EmmaDataModelEnums.OUTCOME_TRASPORTO_PAZIENTE_REGOLARE,
 				EmmaDataModelEnums.CODES_GIALLO,
@@ -951,7 +954,7 @@ public class XMLParserPazienteTest extends XMLParserTest {
 				"Paperopoli");
 	  	
 	  	Paziente quo = new Paziente("Dewey", "Duck", EmmaDataModelEnums.MALE_GENDER,
-			    (new GregorianCalendar(2010, Calendar.OCTOBER, 17).getTime()), 9, 
+	  			LocalDate.parse("2010-10-17"), 9, 
 				EmmaDataModelEnums.PEDIATRIC_SI,
 				EmmaDataModelEnums.OUTCOME_TRASPORTO_PAZIENTE_REGOLARE,
 				EmmaDataModelEnums.CODES_VERDE,
@@ -960,7 +963,7 @@ public class XMLParserPazienteTest extends XMLParserTest {
 				"Paperopoli");
 	  	
 	  	Paziente qua = new Paziente("Louie", "Duck", EmmaDataModelEnums.MALE_GENDER,
-			    (new GregorianCalendar(2010, Calendar.OCTOBER, 17).getTime()), 9, 
+	  			LocalDate.parse("2010-10-17"), 9, 
 				EmmaDataModelEnums.PEDIATRIC_SI,
 				EmmaDataModelEnums.OUTCOME_TRASPORTO_PAZIENTE_REGOLARE,
 				EmmaDataModelEnums.CODES_VERDE,
@@ -969,7 +972,8 @@ public class XMLParserPazienteTest extends XMLParserTest {
 				"Paperopoli");
 	  	
 	  	Paziente paperina = new Paziente("Daisy", "Duck", EmmaDataModelEnums.FEMALE_GENDER,
-			    (new GregorianCalendar(1979, Calendar.JUNE, 28).getTime()), 40, 
+	  			LocalDate.parse("1979-06-28"),
+	  			40, 
 				EmmaDataModelEnums.PEDIATRIC_NO,
 				EmmaDataModelEnums.OUTCOME_TRASPORTO_PAZIENTE_REGOLARE,
 				EmmaDataModelEnums.CODES_VERDE,
@@ -995,7 +999,8 @@ public class XMLParserPazienteTest extends XMLParserTest {
 	  	logger.trace(this.getName());
 	  
 	  	Paziente paperino = new Paziente("Donald", "Duck", EmmaDataModelEnums.MALE_GENDER,
-			    (new GregorianCalendar(1980, Calendar.FEBRUARY, 11).getTime()), 39, 
+	  			LocalDate.parse("1980-02-11"),
+	  			39, 
 				EmmaDataModelEnums.PEDIATRIC_NO,
 				EmmaDataModelEnums.OUTCOME_TRASPORTO_PAZIENTE_REGOLARE,
 				EmmaDataModelEnums.CODES_VERDE,
