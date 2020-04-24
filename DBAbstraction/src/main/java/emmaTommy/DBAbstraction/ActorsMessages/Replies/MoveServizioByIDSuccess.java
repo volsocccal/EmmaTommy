@@ -1,7 +1,7 @@
 package emmaTommy.DBAbstraction.ActorsMessages.Replies;
 
 
-public abstract class MoveServizioByIDSuccess extends Reply {
+public class MoveServizioByIDSuccess extends Reply {
 	protected String ID;
 	protected String oldCollectionName;
 	protected String newCollectionName;

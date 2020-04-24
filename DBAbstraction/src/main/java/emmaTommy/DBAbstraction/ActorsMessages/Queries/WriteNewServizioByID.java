@@ -31,7 +31,7 @@ public class WriteNewServizioByID extends Query {
 	public String getNewServizioJSON() {
 		return this.newServizioJSON;
 	}
-	public String getCollection() {
+	public String getCollectionName() {
 		return this.collectionName;
 	}
 }

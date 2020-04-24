@@ -31,7 +31,7 @@ public class MoveServizioByID extends Query {
 	public String getID() {
 		return this.ID;
 	}
-	protected String GetOldCollectionName() {
+	public String GetOldCollectionName() {
 		return this.oldCollectionName;
 	}
 
