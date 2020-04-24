@@ -1,13 +1,9 @@
 package emmaTommy.DBAbstraction.Actors;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Properties;
-
 import org.apache.logging.log4j.LogManager;
 
 import akka.actor.AbstractActor;
+import akka.actor.ActorRef;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.AcquireDBLock;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.GetCollectionList;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.GetServizioByID;
@@ -34,7 +30,7 @@ import emmaTommy.DBAbstraction.ActorsMessages.Replies.DBManagerStatus;
 
 public abstract class AbstractDBServer extends AbstractActor {
 
-	protected org.apache.logging.log4j.Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
+	protected org.apache.logging.log4j.Logger logger;
 	
 	protected String DBName; 
 	protected String DBTech;	
@@ -52,37 +48,62 @@ public abstract class AbstractDBServer extends AbstractActor {
 	} 
 	protected DBState state;
 
-	protected AbstractDBServer(String confPath) {
+	protected AbstractDBServer(String DBName, String DBTech, String DBType, Boolean DBMock, Boolean supportEnrichedJSON) {
 		
 		// Logger Method Name
 		String method_name = "::AbstractDBServer(): ";
 		this.state = DBState.INITIALIZING;
 		
-		// Define and Load Configuration File
-		Properties prop = new Properties();
-		logger.trace(method_name + "Loading Properties FileName: " + confPath);
-		FileInputStream fileStream = null;
-		try {
-			fileStream = new FileInputStream(confPath);
-		} catch (FileNotFoundException e) {
-			logger.fatal(method_name + e.getMessage());
+		// Check Input Data
+		if (DBName == null) {
+			throw new NullPointerException("Reveived Null DBName");
 		}
-		try {
-		    prop.load(fileStream);
-		    logger.trace(method_name + prop.toString());
-		} catch (IOException e) {
-			logger.fatal(method_name + e.getMessage());
-			this.state = DBState.ERROR;
+		if (DBName.isBlank()) {
+			throw new NullPointerException("Reveived Blank DBName");
+		}
+		if (DBTech == null) {
+			throw new NullPointerException("Reveived Null DBTech");
+		}
+		if (DBTech.isBlank()) {
+			throw new NullPointerException("Reveived Blank DBTech");
+		}
+		if (DBType == null) {
+			throw new NullPointerException("Reveived Null DBType");
+		}
+		if (DBType.isBlank()) {
+			throw new NullPointerException("Reveived Blank DBType");
 		}
 		
-		// Load Configuration Data
-		this.DBName = prop.getProperty("DBName");		
-		this.DBTech = prop.getProperty("DBTech");		
-		this.DBType = prop.getProperty("DBType");
-		this.DBMock = (Integer.parseInt(prop.getProperty("DBMock")) == 1) ? (true) : (false);
-		this.supportEnrichedJSON = (Integer.parseInt(prop.getProperty("supportEnrichedJSON")) == 1) ? (true) : (false);
+		// Save Configuration Data
+		this.DBName = DBName;		
+		this.DBTech = DBTech;		
+		this.DBType = DBType;
+		this.DBMock = DBMock;
+		this.supportEnrichedJSON = supportEnrichedJSON;
+		this.logger = LogManager.getLogger(DBName);
 		this.state = DBState.ACTIVE;
 		
+		// Log Start
+		logger.info(method_name + "Starting DB");
+		logger.info(method_name + "DB Name: " + DBName);
+		logger.info(method_name + "DB Tech: " + DBTech);
+		logger.info(method_name + "DB Type: " + DBType);
+		logger.info(method_name + "DB Mock: " + DBMock);
+		logger.info(method_name + "DB Supports Enriched JSON: " + supportEnrichedJSON);
+		logger.info(method_name + "DB State: " + this.state.name());
+		
+		
+	}
+	
+	public Boolean checkValidLock(ActorRef client) {
+		if (this.lock.isLocked()) {
+			String lockOwner = this.lock.getLockOwner();
+			if (lockOwner.compareTo(client.path().name()) != 0) {
+				client.tell(new DBIsAlreadyLocked(lockOwner), this.getSelf());
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	@Override
@@ -110,7 +131,7 @@ public abstract class AbstractDBServer extends AbstractActor {
 	
 	protected void onAquireDBLockQuery(AcquireDBLock queryObj) {
 		String method_name = "::onAquireDBLockQuery(): ";
-		logger.trace(method_name + "Received new AcquireDBLock Query from " + this.getSender().path().name());
+		logger.trace("Received new AcquireDBLock Query from " + this.getSender().path().name());
 		if (this.lock.isLocked()) {
 			if (this.lock.getLockOwner().compareTo(this.getSender().path().name()) == 0) {
 				logger.warn(method_name + "DB is already locked by " + this.lock.getLockOwner());
@@ -140,7 +161,7 @@ public abstract class AbstractDBServer extends AbstractActor {
 	
 	protected void onIsDBLockedQuery(IsDBLocked queryObj) {
 		String method_name = "::onIsDBLockedQuery(): ";
-		logger.trace(method_name + "Received new IsDBLocked Query from " + this.getSender().path().name());
+		logger.trace("Received IsDBLocked Query from " + this.getSender().path().name());
 		if (this.lock.isLocked()) {
 			if (this.lock.getLockOwner().compareTo(this.getSender().path().name()) == 0) {
 				logger.trace(method_name + "DB is already locked by " + this.lock.getLockOwner());
@@ -160,7 +181,7 @@ public abstract class AbstractDBServer extends AbstractActor {
 	
 	protected void onIsDBManagerActiveQuery(IsDBManagerActive queryObj) {
 		String method_name = "::onIsDBManagerActiveQuery(): ";
-		logger.trace(method_name + "Received new IsDBManagerActive Query from " + this.getSender().path().name());
+		logger.trace("Received IsDBManagerActive Query from " + this.getSender().path().name());
 		logger.trace(method_name + "Current state is: " + this.state.name());
 		DBManagerStatus st;
 		if (this.state == DBState.ACTIVE) 
@@ -184,7 +205,7 @@ public abstract class AbstractDBServer extends AbstractActor {
 	
 	protected void onReleaseDBLockQuery(ReleaseDBLock queryObj) {		
 		String method_name = "::onReleaseDBLockQuery(): ";
-		logger.trace(method_name + "Received new ReleaseDBLock Query from " + this.getSender().path().name());
+		logger.trace("Received ReleaseDBLock Query from " + this.getSender().path().name());
 		if (this.lock.isLocked()) {
 			if (this.lock.getLockOwner().compareTo(this.getSender().path().name()) == 0) {
 				logger.warn(method_name + "DB is locked by someone else" + this.lock.getLockOwner());
