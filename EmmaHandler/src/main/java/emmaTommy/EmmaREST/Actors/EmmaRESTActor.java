@@ -28,7 +28,7 @@ public class EmmaRESTActor extends AbstractActor {
 		
 	protected String PROTOCOL;
 	protected String MISSIONI_URL;
-	protected String soreu_BERGAMO_NAME="bergamo";
+	protected String soreu_BERGAMO_NAME;
 	protected int soreu_BERGAMO_NUM;
 	protected String soreu_COMO_NAME;
 	protected int soreu_COMO_NUM;
