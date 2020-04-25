@@ -1,6 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    
     <modelVersion>4.0.0</modelVersion>
     <groupId>emmaTommy</groupId>
     <artifactId>EmmaHandler</artifactId>
@@ -8,13 +7,11 @@
     <packaging>jar</packaging>
     <name>EmmaHandler</name>
     <url>http://maven.apache.org</url>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>emmaTommy</groupId>
@@ -47,15 +44,68 @@
             <version>2.4.0</version>
         </dependency>
     </dependencies>
-
     <build>
-    
+        <!--directory>../build/${project.artifactId}</directory-->
         <resources>
             <resource>
                 <directory>conf</directory>
+                <targetPath>${project.build.directory}/conf</targetPath>
+                <includes>
+                    <include>emma_JSON_kafka_producer.conf</include>
+                    <include>emma_orchestrator.conf</include>
+                    <include>emma_parser_actor.conf</include>
+                    <include>emma_psswd.conf</include>
+                    <include>emma_rest.conf</include>
+                    <include>log4j2_emmahandler.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>logs</directory>
+                <targetPath>${project.build.directory}/logs</targetPath>
+            </resource>
+            <resource>
+                <directory>data_xml_download</directory>
+                <targetPath>${project.build.directory}/data_xml_download</targetPath>
+            </resource>
+            <resource>
+                <directory>data_json_missioni_download</directory>
+                <targetPath>${project.build.directory}/data_json_missioni_download</targetPath>
             </resource>
         </resources>
-
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>reference.conf</resource>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>emmaTommy.EmmaOrchestrator.EmmaOrchestrator</mainClass>
+                                </transformer>
+                            </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
-
 </project>

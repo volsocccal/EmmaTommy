@@ -51,13 +51,59 @@
   </dependencies>
 
   <build>
-
+    <!--directory>../build/${project.artifactId}</directory-->
     <resources>
-      <resource>
-        <directory>conf</directory>
-      </resource>
+        <resource>
+            <directory>conf</directory>
+            <targetPath>${project.build.directory}/conf</targetPath>
+            <includes>
+                <include>emmatommy_consumer.conf</include>
+                <include>emmatommy_converter.conf</include>
+                <include>emmatommy_orchestrator.conf</include>
+                <include>emmatommy_producer.conf</include>
+                <include>log4j2_emmatommyconverter.xml</include>
+            </includes>
+        </resource>
+        <resource>
+            <directory>logs</directory>
+            <targetPath>${project.build.directory}/logs</targetPath>
+        </resource>
     </resources>
-
-  </build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.2.0</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>shade</goal>
+                    </goals>
+                    <configuration>
+                        <shadedArtifactAttached>true</shadedArtifactAttached>
+                        <transformers>
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <resource>reference.conf</resource>
+                            </transformer>
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <mainClass>emmaTommy.EmmaTommyConverter.Actors.EmmaTommyOrchestrator</mainClass>
+                            </transformer>
+                        </transformers>
+                        <filters>
+                            <filter>
+                                <artifact>*:*</artifact>
+                                <excludes>
+                                    <exclude>META-INF/*.SF</exclude>
+                                    <exclude>META-INF/*.DSA</exclude>
+                                    <exclude>META-INF/*.RSA</exclude>
+                                </excludes>
+                            </filter>
+                        </filters>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
 
 </project>

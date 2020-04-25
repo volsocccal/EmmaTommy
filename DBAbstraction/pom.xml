@@ -51,6 +51,12 @@
 
   <build>
 
+    <resources>
+      <resource>
+          <directory>conf</directory>
+      </resource>
+  </resources>
+
   </build>
 
 </project>
