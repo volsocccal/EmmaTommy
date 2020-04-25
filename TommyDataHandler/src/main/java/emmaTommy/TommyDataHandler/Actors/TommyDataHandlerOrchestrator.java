@@ -130,18 +130,35 @@ public class TommyDataHandlerOrchestrator extends AbstractActor {
 
 	public static void main(String[] args) {
 		
-		// Logger
 		String method_name = "::main(): ";
+		String confPath = "conf/tommydatahandler_orchestrator.conf";
+				
+		// Define and Load Configuration File
+ 		Properties prop = new Properties();
+ 		FileInputStream fileStream = null;
+ 		try {
+ 			fileStream = new FileInputStream(confPath);
+ 		} catch (FileNotFoundException e) {
+ 			
+ 		}
+ 		try {
+ 		    prop.load(fileStream); 		   
+ 		} catch (IOException e) {
+ 			
+ 		}
+		// Logger
+ 		String loggerPath = prop.getProperty("logger_conf");
+		System.setProperty("log4j2.configurationFile", loggerPath);
 		org.apache.logging.log4j.Logger logger = LogManager.getLogger("TommyDataHandlerOrchestrator");
 		
 		// Create Actor System
 		logger.info(method_name + "Creating ActorSystem ...");
-		ActorSystem system = ActorSystem.create("test-system");
+		ActorSystem system = ActorSystem.create("TommyDataHandler");
 		logger.info(method_name + system.name() + " ActorSystem is Active");
 		
 		// Create EmmaOrchestrator Actor
 		logger.info(method_name + "Creating TommyDataHandlerOrchestrator Actor ...");
-		ActorRef orchestrator = system.actorOf(Props.create(TommyDataHandlerOrchestrator.class, "conf/tommydatahandler_orchestrator.conf"), "TommyDataHandlerOrchestrator");
+		ActorRef orchestrator = system.actorOf(Props.create(TommyDataHandlerOrchestrator.class, confPath), "TommyDataHandlerOrchestrator");
 		logger.info(method_name + orchestrator.path().name() + " Actor is Active");
 		
 		// Send Start to EmmaOrchestrator

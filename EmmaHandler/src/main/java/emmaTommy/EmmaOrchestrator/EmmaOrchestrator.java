@@ -8,7 +8,6 @@ import java.util.Properties;
 import java.util.Scanner;
 
 import org.apache.logging.log4j.LogManager;
-
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
@@ -154,18 +153,35 @@ public class EmmaOrchestrator extends AbstractActor {
 
 	public static void main(String[] args) {
 		
-		// Logger
 		String method_name = "::main(): ";
+		String confPath = "conf/emma_orchestrator.conf";
+				
+		// Define and Load Configuration File
+ 		Properties prop = new Properties();
+ 		FileInputStream fileStream = null;
+ 		try {
+ 			fileStream = new FileInputStream(confPath);
+ 		} catch (FileNotFoundException e) {
+ 			
+ 		}
+ 		try {
+ 		    prop.load(fileStream); 		   
+ 		} catch (IOException e) {
+ 			
+ 		}
+		// Logger
+ 		String loggerPath = prop.getProperty("logger_conf");
+		System.setProperty("log4j2.configurationFile", loggerPath);
 		org.apache.logging.log4j.Logger logger = LogManager.getLogger("EmmaOrchestrator");
 		
 		// Create Actor System
 		logger.info(method_name + "Creating ActorSystem ...");
-		ActorSystem system = ActorSystem.create("test-system");
+		ActorSystem system = ActorSystem.create("EmmaHandler");
 		logger.info(method_name + system.name() + " ActorSystem is Active");
 		
 		// Create EmmaOrchestrator Actor
 		logger.info(method_name + "Creating EmmaOrchestrator Actor ...");
-		ActorRef orchestrator = system.actorOf(Props.create(EmmaOrchestrator.class, "conf/emma_orchestrator.conf"), "EmmaOrchestrator");
+		ActorRef orchestrator = system.actorOf(Props.create(EmmaOrchestrator.class, confPath), "EmmaOrchestrator");
 		logger.info(method_name + " EmmaOrchestrator Actor is Active");
 		
 		// Send Start to EmmaOrchestrator

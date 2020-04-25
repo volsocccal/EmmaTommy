@@ -4,8 +4,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.apache.logging.log4j.LogManager;
 
@@ -13,29 +11,12 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.typed.PostStop;
-import akka.pattern.Patterns;
 import emmaTommy.DBAbstraction.Actors.DBClientAPI;
-import emmaTommy.DBAbstraction.ActorsMessages.Queries.AcquireDBLock;
-import emmaTommy.DBAbstraction.ActorsMessages.Queries.GetServizioByID;
-import emmaTommy.DBAbstraction.ActorsMessages.Queries.ReleaseDBLock;
-import emmaTommy.DBAbstraction.ActorsMessages.Queries.UpdateServizioByID;
-import emmaTommy.DBAbstraction.ActorsMessages.Queries.WriteNewServizioByID;
-import emmaTommy.DBAbstraction.ActorsMessages.Replies.DBFailedToBeLocked;
-import emmaTommy.DBAbstraction.ActorsMessages.Replies.DBIsAlreadyLocked;
-import emmaTommy.DBAbstraction.ActorsMessages.Replies.DBLockAcquired;
-import emmaTommy.DBAbstraction.ActorsMessages.Replies.Reply;
-import emmaTommy.DBAbstraction.ActorsMessages.Replies.ReplyServizioById;
-import emmaTommy.DBAbstraction.ActorsMessages.Replies.ServizioByIDNotFound;
-import emmaTommy.DBAbstraction.ActorsMessages.Replies.UpdateServizioByIDFaillure;
-import emmaTommy.DBAbstraction.ActorsMessages.Replies.UpdateServizioByIDSuccess;
 import emmaTommy.TommyDataHandler.ActorsMessages.ServizioDataJSON;
 import emmaTommy.TommyDataHandler.ActorsMessages.StartDataWriting;
 import emmaTommy.TommyDataHandler.ActorsMessages.StopDataWriting;
 import emmaTommy.TommyDataModel.Servizio;
 import emmaTommy.TommyDataModel.TommyEnrichedJSON;
-import scala.concurrent.Await;
-import scala.concurrent.Future;
-import scala.concurrent.duration.Duration;
 
 public class TommyDataHandlerDataWriter extends AbstractActor {
 
