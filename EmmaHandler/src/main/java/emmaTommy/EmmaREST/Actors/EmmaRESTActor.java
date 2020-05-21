@@ -13,7 +13,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Properties;
 
-
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 
 import akka.actor.AbstractActor;
@@ -25,7 +25,8 @@ import emmaTommy.EmmaREST.ActorsMessages.StartREST;
 public class EmmaRESTActor extends AbstractActor {
 	
 	protected org.apache.logging.log4j.Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
-		
+	protected String actorID = RandomStringUtils.randomAlphanumeric(10);
+	
 	protected String PROTOCOL;
 	protected String MISSIONI_URL;
 	protected String soreu_BERGAMO_NAME;

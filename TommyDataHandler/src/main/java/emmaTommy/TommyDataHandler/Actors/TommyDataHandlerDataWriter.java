@@ -4,23 +4,34 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.typed.PostStop;
+import akka.util.Timeout;
 import emmaTommy.DBAbstraction.Actors.DBClientAPI;
+import emmaTommy.DBAbstraction.ActorsMessages.Replies.Reply;
 import emmaTommy.TommyDataHandler.ActorsMessages.ServizioDataJSON;
 import emmaTommy.TommyDataHandler.ActorsMessages.StartDataWriting;
 import emmaTommy.TommyDataHandler.ActorsMessages.StopDataWriting;
 import emmaTommy.TommyDataModel.Servizio;
 import emmaTommy.TommyDataModel.TommyEnrichedJSON;
+import scala.concurrent.Await;
+import scala.concurrent.Future;
+import scala.concurrent.duration.Duration;
+import scala.concurrent.duration.FiniteDuration;
 
 public class TommyDataHandlerDataWriter extends AbstractActor {
 
 	protected org.apache.logging.log4j.Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
+	protected String actorID = RandomStringUtils.randomAlphanumeric(10);
+	
 	protected Boolean writeToStagingDB;
 	protected Boolean activeStatus;
 	protected String stagingDBActorName;
@@ -75,6 +86,32 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
  		this.stagingDBPostingTableName = prop.getProperty("stagingDBPostingTableName");
  		this.stagingDBErrorTableName = prop.getProperty("stagingDBErrorTableName");
  		this.persistenceDBServiziCollectionName = prop.getProperty("persistenceDBServiziCollectionName");
+ 		 		
+		// Get PersistenceDB ActorRef
+ 		try {
+ 			FiniteDuration timeout = Duration.create(10, TimeUnit.SECONDS); 	 		
+ 	 		Future<ActorRef> persistenceDBActorRefFuture = this.getContext()
+ 	 															.getSystem()
+ 	 															.actorSelection("user/" + this.persistenceDBActorName)
+ 	 															.resolveOne(timeout);
+			this.persistenceDBActorRef = (ActorRef) Await.result(persistenceDBActorRefFuture, timeout);
+			logger.info("Obtainined PersistenceDB Actor Ref");
+		} catch (Exception e) {
+			logger.error("Failed to Obtain PersistenceDB Actor Ref: " + e.getMessage());
+		}
+ 		
+ 		// Get StagingDB ActorRef
+		try {
+			FiniteDuration timeout = Duration.create(10, TimeUnit.SECONDS); 	 		
+	 		Future<ActorRef> stagingDBActorRefFuture = this.getContext()
+	 														.getSystem()
+	 														.actorSelection("user/" + this.stagingDBActorName)
+	 														.resolveOne(timeout);
+			this.stagingDBActorRef = (ActorRef) Await.result(stagingDBActorRefFuture, timeout);
+			logger.info("Obtainined StagingDB Actor Ref");
+		} catch (Exception e) {
+			logger.error("Failed to Obtain StagingDB Actor Ref: " + e.getMessage());
+		}
  		
  		// Set Active Status to false
  		this.activeStatus = false;
@@ -114,11 +151,12 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 			
 		if (servizioData.getValidData()) {
 			
-			// Create Enriched Servizio
-			TommyEnrichedJSON servizioEnriched = new TommyEnrichedJSON(servizioData.getJSON());
-			
 			// Get servizio ID as String
-			String servzioIDStr = Integer.toString(servizioData.getID());	
+			String servzioIDStr = Integer.toString(servizioData.getID());
+			
+			// Create Enriched Servizio
+			TommyEnrichedJSON servizioEnriched = new TommyEnrichedJSON(servzioIDStr, servizioData.getJSON());		
+				
 			
 			try {
 				
@@ -130,12 +168,12 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 			    try {
 			    	
 			    	// Get the Lock for the Persistence DB
-					this.dbClient.acquireDBLockInfiniteLoop(this.getSelf(), this.persistenceDBActorRef, 
+					this.dbClient.acquireDBLockInfiniteLoop(this.getSelf(), actorID, this.persistenceDBActorRef, 
 															this.persistenceDBAskTimeOutSecs, this.persistenceDBLockTimeOutSecs);
 					lockAcquiredPersistenceDB = true;
 					
 					// Try to read the servizio from the Persistence DB		
-					TommyEnrichedJSON servizioEnrichedDBPersistence = this.dbClient.getServizioByID(this.getSelf(), this.persistenceDBActorRef, 
+					TommyEnrichedJSON servizioEnrichedDBPersistence = this.dbClient.getServizioByID(this.getSelf(), actorID, this.persistenceDBActorRef, 
 																						  this.persistenceDBAskTimeOutSecs, 
 																						  servzioIDStr, 
 																						  this.persistenceDBServiziCollectionName);
@@ -156,12 +194,12 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 						try {
 						
 							// Get the Lock for the Staging DB
-							this.dbClient.acquireDBLockInfiniteLoop(this.getSelf(), this.stagingDBActorRef, 
+							this.dbClient.acquireDBLockInfiniteLoop(this.getSelf(), actorID, this.stagingDBActorRef, 
 																	this.stagingDBAskTimeOutSecs, this.stagingDBLockTimeOutSecs);	
 							lockAcquiredStagingDB = true;
 							
 							// Try to read the servizio from the Staging DB - Error Section				
-							TommyEnrichedJSON servizioEnrichedDBStagingError = this.dbClient.getServizioByID(this.getSelf(), this.stagingDBActorRef, 
+							TommyEnrichedJSON servizioEnrichedDBStagingError = this.dbClient.getServizioByID(this.getSelf(), actorID, this.stagingDBActorRef, 
 																								 this.stagingDBAskTimeOutSecs, 
 																								 servzioIDStr, this.stagingDBErrorTableName);
 							if (servizioEnrichedDBStagingError != null) { // Servizio was already in the Staging DB - Error Section
@@ -172,16 +210,16 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 									logger.info(method_name + "Servizio " + servizioData.getID() + " was already updated in the staging DB - error section");
 								} else { // Update the Servizio in the Staging DB - Error Serction
 									logger.info(method_name + "Servizio " + servizioData.getID() + " was not updated in the staging DB - error section");
-									this.dbClient.updateServizioByID(this.getSelf(), this.stagingDBActorRef, 
-											this.stagingDBAskTimeOutSecs, 
-											servzioIDStr, servizioEnriched.getJsonServizio(), this.stagingDBErrorTableName);
+									this.dbClient.updateServizioByID(this.getSelf(), actorID, this.stagingDBActorRef, 
+																		this.stagingDBAskTimeOutSecs, 
+																		servzioIDStr, servizioEnriched.getJsonServizio(), this.stagingDBErrorTableName);
 									logger.info(method_name + "Servizio " + servizioData.getID() + " Updated successfully in the staging DB - error section");
 								}
 								
 							} else { // Servizio wasn't in the Staging DB - Error Section, will try the Posting Section
 								
 								// Try to read the servizio from the Staging DB - Posting Section				
-								TommyEnrichedJSON servizioEnrichedDBStagingPosting = this.dbClient.getServizioByID(this.getSelf(), this.stagingDBActorRef, 
+								TommyEnrichedJSON servizioEnrichedDBStagingPosting = this.dbClient.getServizioByID(this.getSelf(), actorID, this.stagingDBActorRef, 
 																									 this.stagingDBAskTimeOutSecs, 
 																									 servzioIDStr, this.stagingDBPostingTableName);
 								if (servizioEnrichedDBStagingPosting != null) { // Servizio was already in the Staging DB - Posting Section
@@ -191,14 +229,14 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 										logger.info(method_name + "Servizio " + servizioData.getID() + " was already updated in the staging DB - posting section");
 									} else { // Update the Servizio in the Staging DB - Error Serction
 										logger.info(method_name + "Servizio " + servizioData.getID() + " was not updated in the staging DB - posting section");
-										this.dbClient.updateServizioByID(this.getSelf(), this.stagingDBActorRef, 
+										this.dbClient.updateServizioByID(this.getSelf(), actorID, this.stagingDBActorRef, 
 												this.stagingDBAskTimeOutSecs, 
 												servzioIDStr, servizioEnriched.getJsonServizio(), this.stagingDBPostingTableName);
 										logger.info(method_name + "Servizio " + servizioData.getID() + " Updated successfully in the staging DB - posting section");
 									}						
 								} else { // Servizio wasn't in the Staging DB - Posting Section
 									logger.info(method_name + "Servizio " + servizioData.getID() + " wasn't present in the staging DB - posting section");
-									this.dbClient.writeNewServizioByID(this.getSelf(), this.stagingDBActorRef, 
+									this.dbClient.writeNewServizioByID(this.getSelf(), actorID, this.stagingDBActorRef, 
 																		 this.stagingDBAskTimeOutSecs, 
 																		 servzioIDStr, servizioEnriched.getJsonServizio(), 
 																		 this.stagingDBPostingTableName);
@@ -211,7 +249,7 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 							logger.error(method_name + "Servizio " + servizioData.getID() + " failed operating on the staging DB: " + e.getMessage());	
 						} finally {
 							if (lockAcquiredStagingDB) 
-								this.dbClient.releaseDBLock(this.getSelf(), this.stagingDBActorRef, this.stagingDBAskTimeOutSecs);
+								this.dbClient.releaseDBLock(this.getSelf(), actorID, this.stagingDBActorRef, this.stagingDBAskTimeOutSecs);
 						}
 						
 					}
@@ -220,7 +258,7 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 					logger.error(method_name + "Servizio " + servizioData.getID() + " failed operating on the persistence DB: " + e.getMessage());
 				}  finally {
 					if (lockAcquiredPersistenceDB) 
-						this.dbClient.releaseDBLock(this.getSelf(), this.persistenceDBActorRef, this.persistenceDBAskTimeOutSecs);
+						this.dbClient.releaseDBLock(this.getSelf(), actorID, this.persistenceDBActorRef, this.persistenceDBAskTimeOutSecs);
 				}
 			    
 			} catch (Exception e) {

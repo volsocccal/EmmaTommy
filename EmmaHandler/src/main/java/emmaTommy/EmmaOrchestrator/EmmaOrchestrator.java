@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.Scanner;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
@@ -24,6 +25,7 @@ import emmaTommy.EmmaREST.ActorsMessages.StartREST;
 public class EmmaOrchestrator extends AbstractActor {
 	
 	protected org.apache.logging.log4j.Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
+	protected String actorID = RandomStringUtils.randomAlphanumeric(10);
 	
 	protected String emma_rest_conf;
 	protected String emma_psswd_conf;
@@ -181,12 +183,12 @@ public class EmmaOrchestrator extends AbstractActor {
 		
 		// Create EmmaOrchestrator Actor
 		logger.info(method_name + "Creating EmmaOrchestrator Actor ...");
-		ActorRef orchestrator = system.actorOf(Props.create(EmmaOrchestrator.class, confPath), "EmmaOrchestrator");
+		ActorRef emmaOrchestrator = system.actorOf(Props.create(EmmaOrchestrator.class, confPath), "EmmaOrchestrator");
 		logger.info(method_name + " EmmaOrchestrator Actor is Active");
 		
 		// Send Start to EmmaOrchestrator
 		logger.info(method_name + "Sending EmmaOrchestrator Actor the Start Msg ...");
-		orchestrator.tell(new EmmaOrchestrator.Start(orchestrator.getClass().getSimpleName()), ActorRef.noSender());
+		emmaOrchestrator.tell(new EmmaOrchestrator.Start(emmaOrchestrator.getClass().getSimpleName()), ActorRef.noSender());
 		logger.info(method_name + "Sent :)");
 		
 		

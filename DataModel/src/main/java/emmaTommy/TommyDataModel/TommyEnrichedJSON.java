@@ -154,8 +154,9 @@ public class TommyEnrichedJSON {
 		this.initializedFlag = false;
 	}
 	
-	public TommyEnrichedJSON (String jsonServizio) {
+	public TommyEnrichedJSON (String codiceServizio, String jsonServizio) {
 		this();
+		this.setCodiceServizio(codiceServizio);
 		this.setJsonServizio(jsonServizio);
 	}
 	

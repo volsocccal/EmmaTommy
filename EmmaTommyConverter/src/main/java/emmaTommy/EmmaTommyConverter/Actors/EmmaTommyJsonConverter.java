@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 
-
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 
 import akka.actor.AbstractActor;
@@ -27,6 +27,7 @@ import akka.actor.Props;
 public class EmmaTommyJsonConverter extends AbstractActor {
 	
 	protected org.apache.logging.log4j.Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
+	protected String actorID = RandomStringUtils.randomAlphanumeric(10);
 	
 	protected MissioneFactory mFact;
 	protected ServizioFactory sFact;

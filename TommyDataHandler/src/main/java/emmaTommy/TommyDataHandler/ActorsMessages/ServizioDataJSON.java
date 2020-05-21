@@ -19,6 +19,7 @@ public class ServizioDataJSON {
     }
     
     public Boolean validateData() {
+    	validData = true;
     	if (json == null) {
     		this.validData = false;
     		this.errorMsg = "JSON Data was NULL";

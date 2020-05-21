@@ -17,12 +17,14 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.clients.consumer.Consumer;
 
 public class EmmaTommyKafkaConsumer extends AbstractActor {
 	
 	protected org.apache.logging.log4j.Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
+	protected String actorID = RandomStringUtils.randomAlphanumeric(10);
 	
 	protected int kafkaPollingTime; 
 	protected String topic;

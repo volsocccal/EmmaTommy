@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.Scanner;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 
 import akka.actor.AbstractActor;
@@ -21,6 +22,7 @@ import emmaTommy.TommyDataHandler.ActorsMessages.StopDataWriting;
 public class TommyDataHandlerOrchestrator extends AbstractActor {
 	
 	protected org.apache.logging.log4j.Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
+	protected String actorID = RandomStringUtils.randomAlphanumeric(10);
 	
 	protected String tommydatahandler_orchestrator_conf;
 	protected String tommydatahandler_consumer_conf;
@@ -156,14 +158,14 @@ public class TommyDataHandlerOrchestrator extends AbstractActor {
 		ActorSystem system = ActorSystem.create("TommyDataHandler");
 		logger.info(method_name + system.name() + " ActorSystem is Active");
 		
-		// Create EmmaOrchestrator Actor
+		// Create TommyDataHandlerOrchestrator Actor
 		logger.info(method_name + "Creating TommyDataHandlerOrchestrator Actor ...");
-		ActorRef orchestrator = system.actorOf(Props.create(TommyDataHandlerOrchestrator.class, confPath), "TommyDataHandlerOrchestrator");
-		logger.info(method_name + orchestrator.path().name() + " Actor is Active");
+		ActorRef tommyDataHandlerOrchestrator = system.actorOf(Props.create(TommyDataHandlerOrchestrator.class, confPath), "TommyDataHandlerOrchestrator");
+		logger.info(method_name + tommyDataHandlerOrchestrator.path().name() + " Actor is Active");
 		
-		// Send Start to EmmaOrchestrator
-		logger.info(method_name + "Sending "  + orchestrator.path().name() + " the Start Msg ...");
-		orchestrator.tell(new TommyDataHandlerOrchestrator.Start(orchestrator.getClass().getSimpleName()), ActorRef.noSender());
+		// Send Start to TommyDataHandlerOrchestrator
+		logger.info(method_name + "Sending "  + tommyDataHandlerOrchestrator.path().name() + " the Start Msg ...");
+		tommyDataHandlerOrchestrator.tell(new TommyDataHandlerOrchestrator.Start(tommyDataHandlerOrchestrator.getClass().getSimpleName()), ActorRef.noSender());
 		logger.info(method_name + "Sent :)");
 		
 		

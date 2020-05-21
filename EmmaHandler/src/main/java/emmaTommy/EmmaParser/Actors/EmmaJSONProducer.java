@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.logging.log4j.LogManager;
@@ -18,6 +19,8 @@ import emmaTommy.EmmaParser.ActorsMessages.MissioniDataJSON;
 public class EmmaJSONProducer extends AbstractActor {
 
 	protected org.apache.logging.log4j.Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
+	protected String actorID = RandomStringUtils.randomAlphanumeric(10);
+	
 	protected Properties KafkaProducerProps;
 	protected String topic;
 	protected KafkaProducer<Integer, String> kafkaProducer;
