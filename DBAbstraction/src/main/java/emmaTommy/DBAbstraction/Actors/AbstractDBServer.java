@@ -83,6 +83,9 @@ public abstract class AbstractDBServer extends AbstractActor {
 		this.logger = LogManager.getLogger(DBName);
 		this.state = DBState.ACTIVE;
 		
+		// Create Lock
+		this.lock = new DBLock();
+		
 		// Log Start
 		logger.info(method_name + "Starting DB");
 		logger.info(method_name + "DB Name: " + DBName);
@@ -95,15 +98,24 @@ public abstract class AbstractDBServer extends AbstractActor {
 		
 	}
 	
-	public Boolean checkValidLock(ActorRef client) {
+	public Boolean checkValidLock(ActorRef actor, String actorName, String actorID) {
 		if (this.lock.isLocked()) {
-			String lockOwner = this.lock.getLockOwner();
-			if (lockOwner.compareTo(client.path().name()) != 0) {
-				client.tell(new DBIsAlreadyLocked(lockOwner), this.getSelf());
+			String lockOwnerName = this.lock.getLockOwnerName();
+			String lockOwnerID = this.lock.getLockOwnerID();
+			if (lockOwnerName.compareTo(actorName) != 0) { // Actor Name Is Different
+				actor.tell(new DBIsAlreadyLocked(lockOwnerName, lockOwnerID), this.getSelf());
 				return false;
+			} else { // Actor Name is Same
+				if (lockOwnerID.compareTo(actorID) != 0) { // Actor ID Is Different
+					actor.tell(new DBIsAlreadyLocked(lockOwnerName, lockOwnerID), this.getSelf());
+					return false;
+				} else { //
+					return true;
+				}
 			}
+		} else {
+			return true;
 		}
-		return true;
 	}
 	
 	@Override
@@ -131,23 +143,26 @@ public abstract class AbstractDBServer extends AbstractActor {
 	
 	protected void onAquireDBLockQuery(AcquireDBLock queryObj) {
 		String method_name = "::onAquireDBLockQuery(): ";
-		logger.trace("Received new AcquireDBLock Query from " + this.getSender().path().name());
+		String callingClientName = queryObj.getCallingActorName();
+		String callingClientID = queryObj.getCallingActorID();
+		logger.trace("Received new AcquireDBLock Query from " + callingClientName + " ID " + callingClientID);
 		if (this.lock.isLocked()) {
-			if (this.lock.getLockOwner().compareTo(this.getSender().path().name()) == 0) {
-				logger.warn(method_name + "DB is already locked by " + this.lock.getLockOwner());
-				this.getSender().tell(new DBIsAlreadyLocked(this.lock.getLockOwner()), this.getSelf());
-				logger.trace(method_name + "Sent DBIsAlreadyLocked Reply to " + this.getSender().path().name());
-			} else {
-				logger.trace(method_name + "DB is already locked by calling client" + this.lock.getLockOwner());
+			if (this.lock.getLockOwnerName().compareTo(callingClientName) == 0 
+				&& this.lock.getLockOwnerID().compareTo(callingClientID) == 0) {				
+				logger.trace(method_name + "DB is already locked by calling client " + callingClientName + " ID " + callingClientID);
 				this.getSender().tell(new DBIsLockedByYou(), this.getSelf());
-				logger.trace(method_name + "Sent DBIsLockedByYou Reply to " + this.getSender().path().name());
+				logger.trace(method_name + "Sent DBIsLockedByYou Reply to " + callingClientID);
+			} else {
+				logger.trace(method_name + "DB is locked by " + this.lock.getLockOwnerName() + " ID " + this.lock.getLockOwnerID());;
+				this.getSender().tell(new DBIsAlreadyLocked(this.lock.getLockOwnerName(), this.lock.getLockOwnerID()), this.getSelf());
+				logger.trace(method_name + "Sent DBIsAlreadyLocked Reply to " + callingClientID);
 			}
 		} else {
 			logger.trace(method_name + "Currently DB is not locked");
-			this.lock.acquireLock(this.getSender().path().name());
-			logger.info(method_name + "DB Lock Acquired by " + this.lock.getLockOwner());
+			this.lock.acquireLock(callingClientName, callingClientID);
+			logger.info(method_name + "DB Lock Acquired by " + callingClientName + " ID " + callingClientID);
 			this.getSender().tell(new DBLockAcquired(), this.getSelf());
-			logger.trace(method_name + "Sent DBLockAcquired Reply to " + this.getSender().path().name());
+			logger.trace(method_name + "Sent DBLockAcquired Reply to " + callingClientName);
 		}
 	}
 	
@@ -161,21 +176,24 @@ public abstract class AbstractDBServer extends AbstractActor {
 	
 	protected void onIsDBLockedQuery(IsDBLocked queryObj) {
 		String method_name = "::onIsDBLockedQuery(): ";
-		logger.trace("Received IsDBLocked Query from " + this.getSender().path().name());
+		String callingClientName = queryObj.getCallingActorName();
+		String callingClientID = queryObj.getCallingActorID();
+		logger.trace("Received IsDBLocked Query from " + callingClientName + " ID " + callingClientID);
 		if (this.lock.isLocked()) {
-			if (this.lock.getLockOwner().compareTo(this.getSender().path().name()) == 0) {
-				logger.trace(method_name + "DB is already locked by " + this.lock.getLockOwner());
-				this.getSender().tell(new DBIsAlreadyLocked(this.lock.getLockOwner()), this.getSelf());
-				logger.trace(method_name + "Sent DBIsAlreadyLocked Reply to " + this.getSender().path().name());
-			} else {
-				logger.trace(method_name + "DB is already locked by calling client" + this.lock.getLockOwner());
+			if (this.lock.getLockOwnerName().compareTo(callingClientName) == 0 
+				&& this.lock.getLockOwnerID().compareTo(callingClientID) == 0) {				
+				logger.trace(method_name + "DB is already locked by calling client " + callingClientName + " ID " + callingClientID);
 				this.getSender().tell(new DBIsLockedByYou(), this.getSelf());
-				logger.trace(method_name + "Sent DBIsLockedByYou Reply to " + this.getSender().path().name());
+				logger.trace(method_name + "Sent DBIsLockedByYou Reply to " + callingClientID);
+			} else {
+				logger.trace(method_name + "DB is already locked by " + this.lock.getLockOwnerName() + " ID " + this.lock.getLockOwnerID());;
+				this.getSender().tell(new DBIsAlreadyLocked(this.lock.getLockOwnerName(), this.lock.getLockOwnerID()), this.getSelf());
+				logger.trace(method_name + "Sent DBIsAlreadyLocked Reply to " + callingClientID);
 			}
 		} else {
 			logger.trace(method_name + "Currently DB is not locked");
 			this.getSender().tell(new DBIsNotLocked(), this.getSelf());
-			logger.trace(method_name + "Sent DBIsNotLocked Reply to " + this.getSender().path().name());
+			logger.trace(method_name + "Sent DBIsNotLocked Reply to " + callingClientName);
 		}
 	}
 	
@@ -205,24 +223,25 @@ public abstract class AbstractDBServer extends AbstractActor {
 	
 	protected void onReleaseDBLockQuery(ReleaseDBLock queryObj) {		
 		String method_name = "::onReleaseDBLockQuery(): ";
-		logger.trace("Received ReleaseDBLock Query from " + this.getSender().path().name());
+		String callingClientName = queryObj.getCallingActorName();
+		String callingClientID = queryObj.getCallingActorID();
+		logger.trace("Received ReleaseDBLock Query from " + callingClientName + " ID " + callingClientID);
 		if (this.lock.isLocked()) {
-			if (this.lock.getLockOwner().compareTo(this.getSender().path().name()) == 0) {
-				logger.warn(method_name + "DB is locked by someone else" + this.lock.getLockOwner());
-				this.getSender().tell(new DBLockReleaseUnowning(this.lock.getLockOwner()), this.getSelf());
-				logger.trace(method_name + "Sent DBLockReleaseUnowning Reply to " + this.getSender().path().name());
-			} else {
-				logger.trace(method_name + "DB is locked by calling client" + this.getSender().path().name());
-				this.lock.releaseLock(this.getSender().path().name());
+			if (this.lock.getLockOwnerName().compareTo(callingClientName) == 0 
+				&& this.lock.getLockOwnerID().compareTo(callingClientID) == 0) {				
+				logger.trace(method_name + "DB is locked by calling client " + callingClientName + " ID " + callingClientID);
 				this.getSender().tell(new DBLockReleased(), this.getSelf());
-				logger.trace(method_name + "Sent DBLockReleased Reply to " + this.getSender().path().name());
+				logger.trace(method_name + "Sent DBLockReleased Reply to " + callingClientID);
+			} else {
+				logger.trace(method_name + "DB is locked by " + this.lock.getLockOwnerName() + " ID " + this.lock.getLockOwnerID());;
+				this.getSender().tell(new DBLockReleaseUnowning(this.lock.getLockOwnerName(), this.lock.getLockOwnerID()), this.getSelf());
+				logger.trace(method_name + "Sent DBLockReleaseUnowning Reply to " + callingClientID);
 			}
 		} else {
 			logger.trace(method_name + "Currently DB is not locked");
 			this.getSender().tell(new DBIsNotLocked(), this.getSelf());
-			logger.trace(method_name + "Sent DBIsNotLocked Reply to " + this.getSender().path().name());
+			logger.trace(method_name + "Sent DBIsNotLocked Reply to " + callingClientName);
 		}
-		
 	}
 	
 	protected abstract void onRemoveServizioByIDQuery(RemoveServizioByID queryObj);

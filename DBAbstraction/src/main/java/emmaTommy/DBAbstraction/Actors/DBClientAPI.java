@@ -17,6 +17,7 @@ import emmaTommy.DBAbstraction.ActorsMessages.Queries.MoveServizioByID;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.ReleaseDBLock;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.RemoveServizioByID;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.UpdateServizioByID;
+import emmaTommy.DBAbstraction.ActorsMessages.Queries.WriteNewServizioByID;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.CollectionListSuccess;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.DBFailedToBeLocked;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.DBIsAlive;
@@ -69,8 +70,8 @@ public class DBClientAPI {
 	 * @param operationTimeOutSecs Timeout for the Ask Operation
 	 * @throws DBOperationFailedException 
 	 */
-	public void acquireDBLockInfiniteLoop(ActorRef client, ActorRef dbManager, int operationTimeOutSecs) throws DBOperationFailedException {
-		this.acquireDBLockInfiniteLoop(client, dbManager, operationTimeOutSecs, operationTimeOutSecs);
+	public void acquireDBLockInfiniteLoop(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs) throws DBOperationFailedException {
+		this.acquireDBLockInfiniteLoop(client, clientID, dbManager, operationTimeOutSecs, operationTimeOutSecs);
 	}
 
 	/**
@@ -81,8 +82,8 @@ public class DBClientAPI {
 	 * @param timeoutBetweenLockRequestsSecs Timeout beetween each AcquireLock Query
 	 * @throws DBOperationFailedException 
 	 */
-	public void acquireDBLockInfiniteLoop(ActorRef client, ActorRef dbManager, int operationTimeOutSecs, int timeoutBetweenLockRequestsSecs) throws DBOperationFailedException {
-		this.acquireDBLock(client, dbManager, operationTimeOutSecs, timeoutBetweenLockRequestsSecs, -1);
+	public void acquireDBLockInfiniteLoop(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs, int timeoutBetweenLockRequestsSecs) throws DBOperationFailedException {
+		this.acquireDBLock(client, clientID, dbManager, operationTimeOutSecs, timeoutBetweenLockRequestsSecs, -1);
 	}
 
 	/**
@@ -94,7 +95,7 @@ public class DBClientAPI {
 	 * @param maxTrialsNum Max Number of AcquireLock Operations (-1 for infinite)
 	 * @throws DBOperationFailedException 
 	 */
-	public void acquireDBLock(ActorRef client, ActorRef dbManager, int operationTimeOutSecs, int timeoutBetweenLockRequestsSecs, int maxTrialsNum) throws DBOperationFailedException {
+	public void acquireDBLock(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs, int timeoutBetweenLockRequestsSecs, int maxTrialsNum) throws DBOperationFailedException {
 
 		String method_name = "::acquireDBLock(): ";
 
@@ -108,7 +109,7 @@ public class DBClientAPI {
 		if (timeoutBetweenLockRequestsSecs < 0) {
 			throw new DBOperationFailedException("Received TimeOut Between Lock Requests was negative");
 		}
-		if (maxTrialsNum < 0 || maxTrialsNum != -1) {
+		if (maxTrialsNum < 0 && maxTrialsNum != -1) {
 			throw new DBOperationFailedException(
 					"Received Max Trials Num was negative (Only -1 is permitted as infinite trials)");
 		}
@@ -134,7 +135,7 @@ public class DBClientAPI {
 						"Reached Max Trials for Locking Operation Num (" + maxTrialsNum + ")");
 			}
 
-			Future<Object> futureLock = Patterns.ask(dbManager, new AcquireDBLock(), 1000);
+			Future<Object> futureLock = Patterns.ask(dbManager, new AcquireDBLock(client.path().name(), clientID), 1000);
 
 			try {
 
@@ -145,7 +146,7 @@ public class DBClientAPI {
 					lockAcquired = true;
 					logger.trace(method_name + "Acquired DB Lock (Tentative " + trialNums + ")");
 				} else if (replyLock instanceof DBIsAlreadyLocked) {
-					throw new IllegalArgumentException("DB was already locked by " + ((DBIsAlreadyLocked) replyLock).getLockOwner());
+					throw new IllegalArgumentException(((DBIsAlreadyLocked) replyLock).getCause());
 				} else if (replyLock instanceof DBFailedToBeLocked) {
 					throw new DBOperationFailedException(((DBFailedToBeLocked) replyLock).getCause());
 				} else if (replyLock instanceof DBOperationFaillure) {
@@ -180,8 +181,8 @@ public class DBClientAPI {
 	 * @throws DBOperationFailedException 
 	 * @return True if the calling client owns the DB lock. False otherwise (If the DB isn't locked, the result will be false).
 	 */
-	public Boolean doesClientOwnsDBLock(ActorRef client, ActorRef dbManager, int operationTimeOutSecs) throws DBOperationFailedException {
-		return client.path().name().compareToIgnoreCase(this.getDBLockOwner(client, dbManager, operationTimeOutSecs)) == 0;
+	public Boolean doesClientOwnsDBLock(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs) throws DBOperationFailedException {
+		return client.path().name().compareToIgnoreCase(this.getDBLockOwner(client, clientID, dbManager, operationTimeOutSecs)) == 0;
 	}
 	
 	
@@ -193,7 +194,7 @@ public class DBClientAPI {
 	 * @throws DBOperationFailedException 
 	 * @return The ArrayList containing all the found collections on the DB. This list is never null, but can be Empty (No collections found)
 	 */
-	public ArrayList<String> getCollectionList(ActorRef client, ActorRef dbManager, int operationTimeOutSecs) throws DBOperationFailedException {
+	public ArrayList<String> getCollectionList(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs) throws DBOperationFailedException {
 		String method_name = "::getCollectionList(): ";
 		// Check Input Parameters
 		if (operationTimeOutSecs < 0) {
@@ -203,7 +204,9 @@ public class DBClientAPI {
 			throw new DBOperationFailedException("Received Operation TimeOut was zero");
 		}
 		ArrayList<String> collectionList = new ArrayList<String>();
-		Future<Object> futureCollectionList = Patterns.ask(dbManager, new GetCollectionList(), 1000);
+		Future<Object> futureCollectionList = Patterns.ask(dbManager, 
+															new GetCollectionList(client.path().name(), clientID), 
+															1000);
 
 		try {
 
@@ -235,16 +238,16 @@ public class DBClientAPI {
 	 * @throws DBOperationFailedException 
 	 * @return The DB Lock Owner Name. Empty String if the DB is not locked
 	 */
-	public String getDBLockOwner(ActorRef client, ActorRef dbManager, int operationTimeOutSecs) throws DBOperationFailedException {
+	public String getDBLockOwner(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs) throws DBOperationFailedException {
 		String method_name = "::getDBLockOwner(): ";
 		String lockOwner = "";
-		Future<Object> futureDBAlive = Patterns.ask(dbManager, new IsDBLocked(), 1000);
+		Future<Object> futureDBAlive = Patterns.ask(dbManager, new IsDBLocked(client.path().name(), clientID), 1000);
 		try {
 			Reply replyReleaseLock = (Reply) Await.result(futureDBAlive,
 					Duration.create(operationTimeOutSecs, TimeUnit.SECONDS));
 			if (replyReleaseLock instanceof DBIsAlreadyLocked) {
-				lockOwner = ((DBIsAlreadyLocked) replyReleaseLock).getLockOwner();
-				logger.trace(method_name + "DB is Locked by " + lockOwner);
+				lockOwner = ((DBIsAlreadyLocked) replyReleaseLock).getLockOwnerName();
+				logger.trace(method_name + ((DBIsAlreadyLocked) replyReleaseLock).getCause());
 			} else if (replyReleaseLock instanceof DBIsLockedByYou) {
 				lockOwner = client.path().name();
 				logger.trace(method_name + "DB is Locked by The Calling Client " + lockOwner);
@@ -275,7 +278,7 @@ public class DBClientAPI {
 	 * @return The wanted servizio. Null if the servizio isn't found in the collection.
 	 * @throws DBOperationFailedException
 	 */
-	public TommyEnrichedJSON getServizioByID(ActorRef client, ActorRef dbManager, int operationTimeOutSecs, String servizioID, String collectionName) throws DBOperationFailedException {
+	public TommyEnrichedJSON getServizioByID(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs, String servizioID, String collectionName) throws DBOperationFailedException {
 		String method_name = "::getServizioByID(): ";
 		// Check Input Parameters
 		if (operationTimeOutSecs < 0) {
@@ -285,7 +288,9 @@ public class DBClientAPI {
 			throw new DBOperationFailedException("Received Operation TimeOut was zero");
 		}
 		TommyEnrichedJSON servizioEnriched = new TommyEnrichedJSON();
-		Future<Object> futureGetServizio = Patterns.ask(dbManager, new GetServizioByID(servizioID, collectionName), 1000);
+		Future<Object> futureGetServizio = Patterns.ask(dbManager, 
+														new GetServizioByID(client.path().name(), clientID, servizioID, collectionName), 
+														1000);
 
 		try {
 
@@ -322,8 +327,8 @@ public class DBClientAPI {
 	 * @return True if the collection is present in the DB, false otherwise
 	 * @throws DBOperationFailedException
 	 */
-	public Boolean isCollectionByNamePresent(ActorRef client, ActorRef dbManager, int operationTimeOutSecs, String collectionName) throws DBOperationFailedException {
-		return (this.getCollectionList(client, dbManager, operationTimeOutSecs)).contains(collectionName);
+	public Boolean isCollectionByNamePresent(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs, String collectionName) throws DBOperationFailedException {
+		return (this.getCollectionList(client, clientID, dbManager, operationTimeOutSecs)).contains(collectionName);
 	}
 	
 	
@@ -335,7 +340,7 @@ public class DBClientAPI {
 	 * @return True if the DB is alive, false otherwise
 	 * @throws DBOperationFailedException
 	 */
-	public Boolean isDBAlive(ActorRef client, ActorRef dbManager, int operationTimeOutSecs) throws DBOperationFailedException {
+	public Boolean isDBAlive(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs) throws DBOperationFailedException {
 		String method_name = "::isDBAlive(): ";
 		// Check Input Parameters
 		if (operationTimeOutSecs < 0) {
@@ -344,7 +349,7 @@ public class DBClientAPI {
 		if (operationTimeOutSecs == 0) {
 			throw new DBOperationFailedException("Received Operation TimeOut was zero");
 		}
-		Future<Object> futureDBAlive = Patterns.ask(dbManager, new IsDBAlive(), 1000);
+		Future<Object> futureDBAlive = Patterns.ask(dbManager, new IsDBAlive(client.path().name(), clientID), 1000);
 		try {
 			Reply replyReleaseLock = (Reply) Await.result(futureDBAlive, Duration.create(operationTimeOutSecs, TimeUnit.SECONDS));
 			if (replyReleaseLock instanceof DBIsAlive) {
@@ -374,7 +379,7 @@ public class DBClientAPI {
 	 * @return True if the DB is Locked, false otherwise
 	 * @throws DBOperationFailedException
 	 */
-	public Boolean isDBLocked(ActorRef client, ActorRef dbManager, int operationTimeOutSecs) throws DBOperationFailedException {
+	public Boolean isDBLocked(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs) throws DBOperationFailedException {
 		String method_name = "::isDBAlive(): ";
 		// Check Input Parameters
 		if (operationTimeOutSecs < 0) {
@@ -384,7 +389,7 @@ public class DBClientAPI {
 			throw new DBOperationFailedException("Received Operation TimeOut was zero");
 		}
 		Boolean isDBLocked = true;
-		String lockOwner = this.getDBLockOwner(client, dbManager, operationTimeOutSecs);
+		String lockOwner = this.getDBLockOwner(client, clientID, dbManager, operationTimeOutSecs);
 		if (lockOwner == null) {
 			logger.error(method_name + "Received DBLockOwner was null");
 			throw new DBOperationFailedException("Received DBLockOwner was null");
@@ -408,7 +413,7 @@ public class DBClientAPI {
 	 * @return True if the DBManager Actor is in Active Status, false otherwise (for any other status)
 	 * @throws DBOperationFailedException
 	 */
-	public Boolean isDBManagerActive(ActorRef client, ActorRef dbManager, int operationTimeOutSecs) throws DBOperationFailedException {
+	public Boolean isDBManagerActive(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs) throws DBOperationFailedException {
 		String method_name = "::isDBManagerActive(): ";
 		// Check Input Parameters
 		if (operationTimeOutSecs < 0) {
@@ -418,7 +423,7 @@ public class DBClientAPI {
 			throw new DBOperationFailedException("Received Operation TimeOut was zero");
 		}
 		Boolean isDBManagerActiveFlag = false;
-		Future<Object> futureDBManagerActive = Patterns.ask(dbManager, new IsDBAlive(), 1000);
+		Future<Object> futureDBManagerActive = Patterns.ask(dbManager, new IsDBAlive(client.path().name(), clientID), 1000);
 		try {
 			Reply replyDBManagerActive = (Reply) Await.result(futureDBManagerActive, Duration.create(operationTimeOutSecs, TimeUnit.SECONDS));
 			if (replyDBManagerActive instanceof DBManagerStatus) {
@@ -458,7 +463,7 @@ public class DBClientAPI {
 	 * @throws DBOperationFailedException
 	 * 
 	 */
-	public void moveServizioByID(ActorRef client, ActorRef dbManager, int operationTimeOutSecs, String servizioID, String oldCollectionName, String newCollectionName) throws DBOperationFailedException {
+	public void moveServizioByID(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs, String servizioID, String oldCollectionName, String newCollectionName) throws DBOperationFailedException {
 		String method_name = "::moveServizioByID(): ";
 		// Check Input Parameters
 		if (operationTimeOutSecs < 0) {
@@ -467,7 +472,9 @@ public class DBClientAPI {
 		if (operationTimeOutSecs == 0) {
 			throw new DBOperationFailedException("Received Operation TimeOut was zero");
 		}
-		Future<Object> futureMoveServizio = Patterns.ask(dbManager, new MoveServizioByID(servizioID, oldCollectionName, newCollectionName), 1000);
+		Future<Object> futureMoveServizio = Patterns.ask(dbManager, 
+														new MoveServizioByID(client.path().name(), clientID, servizioID, oldCollectionName, newCollectionName), 
+														1000);
 
 		try {
 
@@ -504,7 +511,7 @@ public class DBClientAPI {
 	 * @throws DBOperationFailedException
 	 * 
 	 */
-	public void releaseDBLock(ActorRef client, ActorRef dbManager, int operationTimeOutSecs) throws DBOperationFailedException {
+	public void releaseDBLock(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs) throws DBOperationFailedException {
 		String method_name = "::releaseDBLock(): ";
 		// Check Input Parameters
 		if (operationTimeOutSecs < 0) {
@@ -513,7 +520,7 @@ public class DBClientAPI {
 		if (operationTimeOutSecs == 0) {
 			throw new DBOperationFailedException("Received Operation TimeOut was zero");
 		}
-		Future<Object> futureReleaseLock = Patterns.ask(dbManager, new ReleaseDBLock(), 1000);
+		Future<Object> futureReleaseLock = Patterns.ask(dbManager, new ReleaseDBLock(client.path().name(), clientID), 1000);
 		try {
 			Reply replyReleaseLock = (Reply) Await.result(futureReleaseLock, Duration.create(operationTimeOutSecs, TimeUnit.SECONDS));
 			if (replyReleaseLock instanceof DBLockReleased) {
@@ -542,7 +549,7 @@ public class DBClientAPI {
 	 * @throws DBOperationFailedException
 	 * 
 	 */
-	public void removeServizioByID(ActorRef client, ActorRef dbManager, int operationTimeOutSecs, String servizioID, String collectionName) throws DBOperationFailedException {
+	public void removeServizioByID(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs, String servizioID, String collectionName) throws DBOperationFailedException {
 		String method_name = "::writeNewServizioByID(): ";
 		// Check Input Parameters
 		if (operationTimeOutSecs < 0) {
@@ -551,7 +558,9 @@ public class DBClientAPI {
 		if (operationTimeOutSecs == 0) {
 			throw new DBOperationFailedException("Received Operation TimeOut was zero");
 		}
-		Future<Object> futureRemove = Patterns.ask(dbManager, new RemoveServizioByID(servizioID, collectionName), 1000);
+		Future<Object> futureRemove = Patterns.ask(dbManager, 
+													new RemoveServizioByID(client.path().name(), clientID, servizioID, collectionName), 
+													1000);
 		try {
 			Reply replyRemove = (Reply) Await.result(futureRemove, Duration.create(operationTimeOutSecs, TimeUnit.SECONDS));
 			if (replyRemove instanceof RemoveServizioByIDSuccess) {
@@ -579,7 +588,7 @@ public class DBClientAPI {
 	 * @throws DBOperationFailedException
 	 * 
 	 */
-	public void updateServizioByID(ActorRef client, ActorRef dbManager, int operationTimeOutSecs, String servizioID, String updatedServizioJSON, String collectionName) throws DBOperationFailedException {
+	public void updateServizioByID(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs, String servizioID, String updatedServizioJSON, String collectionName) throws DBOperationFailedException {
 		String method_name = "::updateServizioByID(): ";
 		// Check Input Parameters
 		if (operationTimeOutSecs < 0) {
@@ -588,7 +597,9 @@ public class DBClientAPI {
 		if (operationTimeOutSecs == 0) {
 			throw new DBOperationFailedException("Received Operation TimeOut was zero");
 		}
-		Future<Object> futureUpdate = Patterns.ask(dbManager, new UpdateServizioByID(servizioID, updatedServizioJSON, collectionName), 1000);
+		Future<Object> futureUpdate = Patterns.ask(dbManager, 
+													new UpdateServizioByID(client.path().name(), clientID, servizioID, updatedServizioJSON, collectionName), 
+													1000);
 		try {
 			Reply replyUpdate = (Reply) Await.result(futureUpdate, Duration.create(operationTimeOutSecs, TimeUnit.SECONDS));
 			if (replyUpdate instanceof UpdateServizioByIDSuccess) {
@@ -616,7 +627,7 @@ public class DBClientAPI {
 	 * @throws DBOperationFailedException
 	 * 
 	 */
-	public void writeNewServizioByID(ActorRef client, ActorRef dbManager, int operationTimeOutSecs, String servizioID, String newServizioJSON, String collectionName) throws DBOperationFailedException {
+	public void writeNewServizioByID(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs, String servizioID, String newServizioJSON, String collectionName) throws DBOperationFailedException {
 		String method_name = "::writeNewServizioByID(): ";
 		// Check Input Parameters
 		if (operationTimeOutSecs < 0) {
@@ -625,7 +636,9 @@ public class DBClientAPI {
 		if (operationTimeOutSecs == 0) {
 			throw new DBOperationFailedException("Received Operation TimeOut was zero");
 		}
-		Future<Object> futureWrite = Patterns.ask(dbManager, new UpdateServizioByID(servizioID, newServizioJSON, collectionName), 1000);
+		Future<Object> futureWrite = Patterns.ask(dbManager, 
+												new WriteNewServizioByID(client.path().name(), clientID, servizioID, newServizioJSON, collectionName), 
+												1000);
 		try {
 			Reply replyWrite = (Reply) Await.result(futureWrite, Duration.create(operationTimeOutSecs, TimeUnit.SECONDS));
 			if (replyWrite instanceof WriteNewServizioByIDSuccess) {

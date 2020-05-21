@@ -3,8 +3,8 @@ package emmaTommy.DBAbstraction.ActorsMessages.Queries;
 public class GetServizioByID extends Query {
 	protected String ID;
 	protected String collectionName;
-	public GetServizioByID(String ID, String collectionName) {
-		super();
+	public GetServizioByID(String callingActorName, String callingActorID, String ID, String collectionName) {
+		super(callingActorName, callingActorID);
 		if (ID == null) {
 			throw new NullPointerException("Received ID was null");
 		}

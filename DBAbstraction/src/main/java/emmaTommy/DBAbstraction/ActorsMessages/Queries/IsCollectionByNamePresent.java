@@ -2,8 +2,8 @@ package emmaTommy.DBAbstraction.ActorsMessages.Queries;
 
 public class IsCollectionByNamePresent extends Query {
 	protected String collectionName;
-	public IsCollectionByNamePresent(String collectionName) {
-		super();
+	public IsCollectionByNamePresent(String callingActorName, String callingActorID, String collectionName) {
+		super(callingActorName, callingActorID);
 		if (collectionName == null) {
 			throw new NullPointerException("Received collectionName was null");
 		}

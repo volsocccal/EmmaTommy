@@ -1,17 +1,17 @@
 package emmaTommy.DBAbstraction.ActorsMessages.Queries;
 
 public class RemoveServizioByID extends Query {
-	protected String ID;
+	protected String servizioID;
 	protected String collectionName;
-	public RemoveServizioByID(String ID, String collectionName) {
-		super();
-		if (ID == null) {
-			throw new NullPointerException("Received ID was null");
+	public RemoveServizioByID(String callingActorName, String callingActorID, String servizioID, String collectionName) {
+		super(callingActorName, callingActorID);
+		if (servizioID == null) {
+			throw new NullPointerException("Received servizioID was null");
 		}
-		if (ID.isBlank()) {
-			throw new IllegalArgumentException("Received ID was blanck");
+		if (servizioID.isBlank()) {
+			throw new IllegalArgumentException("Received servizioID was blanck");
 		}
-		this.ID = ID;
+		this.servizioID = servizioID;
 		if (collectionName == null) {
 			throw new NullPointerException("Received collectionName was null");
 		}
@@ -20,8 +20,8 @@ public class RemoveServizioByID extends Query {
 		}
 		this.collectionName = collectionName;
 	}
-	public String getID() {
-		return this.ID;
+	public String getServizioID() {
+		return this.servizioID;
 	}
 	public String getCollectionName() {
 		return this.collectionName;

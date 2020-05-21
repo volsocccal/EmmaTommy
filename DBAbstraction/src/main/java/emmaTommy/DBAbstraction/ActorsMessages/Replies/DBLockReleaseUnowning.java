@@ -1,20 +1,30 @@
 package emmaTommy.DBAbstraction.ActorsMessages.Replies;
 
 public class DBLockReleaseUnowning extends DBLockReleaseFaillure {
-	protected String lockOwner; 
-	public DBLockReleaseUnowning(String lockOwner) {
+	protected String lockOwnerName;
+	protected String lockOwnerID;
+	public DBLockReleaseUnowning(String lockOwnerName, String lockOwnerID) {
 		super("The Client did not own the Lock");
-		if (lockOwner == null) {
-			throw new NullPointerException("Received lockOwner was null");
+		if (lockOwnerName == null) {
+			throw new NullPointerException("Received lockOwner was nullptr");
 		}
-		if (lockOwner.isBlank()) {
-			throw new IllegalArgumentException("Received lockOwner was blank");
+		if (lockOwnerName.isBlank()) {
+			throw new IllegalArgumentException("Received lockOwner is Blanck");
 		}
-		this.lockOwner = lockOwner;
-		this.cause = this.cause + ", it is owned by " + lockOwner;
+		if (lockOwnerID == null) {
+			throw new NullPointerException("Received lockOwnerID was nullptr");
+		}
+		if (lockOwnerID.isBlank()) {
+			throw new IllegalArgumentException("Received lockOwnerID is Blanck");
+		}
+		this.lockOwnerName = lockOwnerName;
+		this.lockOwnerID = lockOwnerID;
+		this.cause = this.cause + ", it is owned by " + this.lockOwnerName + "  ID " + this.lockOwnerID;;
 	}
-	public String GetLockOwner() {
-		return this.lockOwner;
+	public String getLockOwnerName() {
+		return this.lockOwnerName;
 	}
-
+	public String getLockOwnerID() {
+		return this.lockOwnerID;
+	}
 }

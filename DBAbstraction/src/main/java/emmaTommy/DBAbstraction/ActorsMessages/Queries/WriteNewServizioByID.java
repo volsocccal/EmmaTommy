@@ -1,18 +1,18 @@
 package emmaTommy.DBAbstraction.ActorsMessages.Queries;
 
 public class WriteNewServizioByID extends Query {
-	protected String ID;
+	protected String servizioID;
 	protected String newServizioJSON;
 	protected String collectionName;
-	public WriteNewServizioByID(String ID, String newServizioJSON, String collectionName) {
-		super();
-		if (ID == null) {
-			throw new NullPointerException("Received ID was null");
+	public WriteNewServizioByID(String callingActorName, String callingActorID, String servizioID, String newServizioJSON, String collectionName) {
+		super(callingActorName, callingActorID);
+		if (servizioID == null) {
+			throw new NullPointerException("Received servizioID was null");
 		}
-		if (ID.isBlank()) {
-			throw new IllegalArgumentException("Received ID was blanck");
+		if (servizioID.isBlank()) {
+			throw new IllegalArgumentException("Received servizioID was blanck");
 		}
-		this.ID = ID;
+		this.servizioID = servizioID;
 		if (newServizioJSON == null) {
 			throw new NullPointerException("Received newServizioJSON was null");
 		}
@@ -25,8 +25,8 @@ public class WriteNewServizioByID extends Query {
 		}
 		this.collectionName = collectionName;
 	}
-	public String getID() {
-		return this.ID;
+	public String getServizioID() {
+		return this.servizioID;
 	}
 	public String getNewServizioJSON() {
 		return this.newServizioJSON;

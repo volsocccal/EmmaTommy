@@ -55,6 +55,9 @@ public class MockDB extends AbstractDBServer {
 			ArrayList<String> collectionListNames) {
 		super(DBName, DBTech, DBType, true, supportEnrichedJSON);
 		
+		// Logger Method Name
+		String method_name = "::MockDB(): ";
+		
 		if (collectionListNames == null) {
 			throw new NullPointerException("Reveived Null collectionListNames");
 		}
@@ -70,6 +73,7 @@ public class MockDB extends AbstractDBServer {
 				throw new NullPointerException("Reveived Empty collectionName");
 			}
 			this.collectionListNames.add(collectionName);
+			logger.info(method_name + "Added Collection " + collectionName + " to DB");
 		}
 		
 		// Create DB Map
@@ -78,11 +82,13 @@ public class MockDB extends AbstractDBServer {
 			for (String collectionName: this.collectionListNames) {
 				this.db_enriched.put(collectionName, new HashMap<String, TommyEnrichedJSON>());
 			}
+			logger.info(method_name + "Initialized Enriched DB");
 		} else {
 			this.db_raw = new HashMap<String, HashMap<String, String>>();
 			for (String collectionName: this.collectionListNames) {
 				this.db_raw.put(collectionName, new HashMap<String, String>());
 			}
+			logger.info(method_name + "Initialized Raw DB");
 		}
 		
 	}
@@ -90,9 +96,11 @@ public class MockDB extends AbstractDBServer {
 	@Override
 	protected void onGetCollectionListQuery(GetCollectionList queryObj) {
 		String method_name = "::onGetCollectionListQuery(): ";
-		logger.trace("Reveived CollectionListQuery from " + this.getSender().path().name());
-		if (checkValidLock(this.getSender())) {	
-			logger.trace(method_name + "Sending CollectionList to " + this.getSender().path().name());
+		String callingClientName = queryObj.getCallingActorName();
+		String callingClientID = queryObj.getCallingActorID();
+		logger.trace("Reveived CollectionListQuery from " + callingClientName + " ID " + callingClientID);
+		if (checkValidLock(this.getSender(), callingClientName, callingClientID)) {	
+			logger.trace(method_name + "Sending CollectionList to " + callingClientName);
 			this.getSender().tell(new CollectionListSuccess(this.collectionListNames), 
 									this.getSelf());
 		}
@@ -101,16 +109,18 @@ public class MockDB extends AbstractDBServer {
 	@Override
 	protected void onGetServizioByIDQuery(GetServizioByID queryObj) {
 		String method_name = "::onGetServizioByIDQuery(): ";
-		logger.trace("Reveived GetServizioByIDQuery from " + this.getSender().path().name());
+		String callingClientName = queryObj.getCallingActorName();
+		String callingClientID = queryObj.getCallingActorID();
+		logger.trace("Reveived GetServizioByIDQuery from " + callingClientName + " ID " + callingClientID);
 		String wantedCollectionName = queryObj.getCollectionName();
 		String servizioID = queryObj.getID();
-		logger.trace(method_name + this.getSender().path().name() + " wants servizio " + servizioID + " from collection " +  wantedCollectionName);
+		logger.trace(method_name + callingClientName + " wants servizio " + servizioID + " from collection " +  wantedCollectionName);
 		if (this.collectionListNames.contains(wantedCollectionName)) { // Collection Found
 			if (this.supportEnrichedJSON) { // Enriched JSON
 				if (this.db_enriched.get(wantedCollectionName).containsKey(servizioID)) {
 					TommyEnrichedJSON servizio = this.db_enriched.get(wantedCollectionName)
 																 .get(servizioID);
-					logger.trace(method_name + "Sending servizio " + servizioID + " from collection " +  wantedCollectionName + " to " + this.getSender().path().name());
+					logger.trace(method_name + "Sending servizio " + servizioID + " from collection " +  wantedCollectionName + " to " + callingClientName);
 					this.getSender().tell(new ReplyServizioByIdEnriched(servizioID, 
 																		servizio,
 																		wantedCollectionName), 
@@ -124,7 +134,7 @@ public class MockDB extends AbstractDBServer {
 				if (this.db_raw.get(wantedCollectionName).containsKey(servizioID)) {
 					String json = this.db_raw.get(wantedCollectionName)
 											 .get(servizioID);
-					logger.trace(method_name + "Sending servizio " + servizioID + " from collection " +  wantedCollectionName + " to " + this.getSender().path().name());
+					logger.trace(method_name + "Sending servizio " + servizioID + " from collection " +  wantedCollectionName + " to " + callingClientName);
 					this.getSender().tell(new ReplyServizioById(servizioID, 
 																json,
 																wantedCollectionName), 
@@ -145,8 +155,10 @@ public class MockDB extends AbstractDBServer {
 	@Override
 	protected void onIsCollectionByNamePresentQuery(IsCollectionByNamePresent queryObj) {
 		String method_name = "::onIsCollectionByNamePresentQuery(): ";
-		logger.trace("Reveived IsCollectionByNamePresentQuery from " + this.getSender().path().name());
-		if (checkValidLock(this.getSender())) {	
+		String callingClientName = queryObj.getCallingActorName();
+		String callingClientID = queryObj.getCallingActorID();
+		logger.trace("Reveived IsCollectionByNamePresentQuery from " + callingClientName + " ID " + callingClientID);
+		if (checkValidLock(this.getSender(), callingClientName, callingClientID)) {	
 			String wantedCollectionName = queryObj.getCollectionName();
 			if (this.collectionListNames.contains(wantedCollectionName)) {
 				logger.trace(method_name + "Collection " +  wantedCollectionName + " was present in the DB");
@@ -163,7 +175,9 @@ public class MockDB extends AbstractDBServer {
 	@Override
 	protected void onIsDBAliveQuery(IsDBAlive queryObj) {
 		String method_name = "::onIsDBAliveQuery(): ";
-		logger.trace("Reveived IsDBAliveQuery from " + this.getSender().path().name());
+		String callingClientName = queryObj.getCallingActorName();
+		String callingClientID = queryObj.getCallingActorID();
+		logger.trace("Reveived IsDBAliveQuery from " + callingClientName + " ID " + callingClientID);
 		logger.trace(method_name + "DB Is Alive");
 		this.getSender().tell(new DBIsAlive(), this.getSelf());
 	}
@@ -171,12 +185,14 @@ public class MockDB extends AbstractDBServer {
 	@Override
 	protected void onMoveServizioByIDQuery(MoveServizioByID queryObj) {
 		String method_name = "::onMoveServizioByIDQuery(): ";
-		logger.trace("Reveived MoveServizioByIDQuery from " + this.getSender().path().name());
-		if (checkValidLock(this.getSender())) {	
+		String callingClientName = queryObj.getCallingActorName();
+		String callingClientID = queryObj.getCallingActorID();
+		logger.trace("Reveived MoveServizioByIDQuery from " + callingClientName + " ID " + callingClientID);
+		if (checkValidLock(this.getSender(), callingClientName, callingClientID)) {	
 			String oldCollectionName = queryObj.GetOldCollectionName();
 			String newCollectionName = queryObj.GetNewCollectionName();
-			String servizioID = queryObj.getID();
-			logger.trace(method_name + this.getSender().path().name() + " wants to move servizio " + servizioID 
+			String servizioID = queryObj.getServizioID();
+			logger.trace(method_name + callingClientName + " wants to move servizio " + servizioID 
 									 + " from collection " +  oldCollectionName
 									 + " to collection " +  newCollectionName);
 			if (this.collectionListNames.contains(oldCollectionName)) { // Old Collection Name Found
@@ -252,11 +268,13 @@ public class MockDB extends AbstractDBServer {
 	@Override
 	protected void onRemoveServizioByIDQuery(RemoveServizioByID queryObj) {
 		String method_name = "::onRemoveServizioByIDQuery(): ";
-		logger.trace("Reveived RemoveServizioByIDQuery from " + this.getSender().path().name());
-		if (checkValidLock(this.getSender())) {				
+		String callingClientName = queryObj.getCallingActorName();
+		String callingClientID = queryObj.getCallingActorID();
+		logger.trace("Reveived RemoveServizioByIDQuery from " + callingClientName + " ID " + callingClientID);
+		if (checkValidLock(this.getSender(), callingClientName, callingClientID)) {			
 			String collectionName = queryObj.getCollectionName();
-			String servizioID = queryObj.getID();
-			logger.trace(method_name + this.getSender().path().name() + " wants to remove servizio " + servizioID + " from collection " +  collectionName);
+			String servizioID = queryObj.getServizioID();
+			logger.trace(method_name + callingClientName + " wants to remove servizio " + servizioID + " from collection " +  collectionName);
 			if (this.collectionListNames.contains(collectionName)) { // Collection Name Found
 				if (this.supportEnrichedJSON) { // Enriched JSON
 					if (this.db_enriched.get(collectionName).containsKey(servizioID)) {  // Servizio Found in Collection						
@@ -295,18 +313,20 @@ public class MockDB extends AbstractDBServer {
 	@Override
 	protected void onUpdateServizioByIDQuery(UpdateServizioByID queryObj) {
 		String method_name = "::onUpdateServizioByIDQuery(): ";
-		logger.trace("Reveived UpdateServizioByIDQuery from " + this.getSender().path().name());
-		if (checkValidLock(this.getSender())) {	
+		String callingClientName = queryObj.getCallingActorName();
+		String callingClientID = queryObj.getCallingActorID();
+		logger.trace("Reveived UpdateServizioByIDQuery from " + callingClientName + " ID " + callingClientID);
+		if (checkValidLock(this.getSender(), callingClientName, callingClientID)) {	
 			String collectionName = queryObj.getCollectionName();
-			String servizioID = queryObj.getID();
-			logger.trace(method_name + this.getSender().path().name() + " wants to update servizio " + servizioID + " in collection " +  collectionName);
+			String servizioID = queryObj.getServizioID();
+			logger.trace(method_name + callingClientName + " wants to update servizio " + servizioID + " in collection " +  collectionName);
 			if (this.collectionListNames.contains(collectionName)) { // Collection Name Found	
 				String json = queryObj.getUpdatedServizioJSON();
 				if (this.supportEnrichedJSON) { // Enriched JSON
 					if (this.db_enriched.get(collectionName).containsKey(servizioID)) {  // Servizio Found in Collection
 						String oldJson = this.db_enriched.get(collectionName).get(servizioID).getJsonServizio();
 						try {
-							TommyEnrichedJSON servizio = new TommyEnrichedJSON(json);						
+							TommyEnrichedJSON servizio = new TommyEnrichedJSON(servizioID, json);						
 							this.db_enriched.get(collectionName).put(servizioID, servizio);
 							logger.trace(method_name + "Updated Servizio " + servizioID + " in collection " +  collectionName);
 							this.getSender().tell(new UpdateServizioByIDSuccess(servizioID, oldJson, servizio.getJsonServizio(), collectionName), 
@@ -346,17 +366,19 @@ public class MockDB extends AbstractDBServer {
 	@Override
 	protected void onWriteNewServizioByIDQuery(WriteNewServizioByID queryObj) {
 		String method_name = "::onWriteNewServizioByIDQuery(): ";
-		logger.trace("Reveived WriteNewServizioByIDQuery from " + this.getSender().path().name());
-		if (checkValidLock(this.getSender())) {	
+		String callingClientName = queryObj.getCallingActorName();
+		String callingClientID = queryObj.getCallingActorID();
+		logger.trace("Reveived WriteNewServizioByIDQuery from " + callingClientName + " ID " + callingClientID);
+		if (checkValidLock(this.getSender(), callingClientName, callingClientID)) {	
 			String collectionName = queryObj.getCollectionName();
-			String servizioID = queryObj.getID();
-			logger.trace(method_name + this.getSender().path().name() + " wants to write servizio " + servizioID + " to collection " +  collectionName);
+			String servizioID = queryObj.getServizioID();
+			logger.trace(method_name + callingClientName + " wants to write servizio " + servizioID + " to collection " +  collectionName);
 			if (this.collectionListNames.contains(collectionName)) { // Collection Name Found		
 				String json = queryObj.getNewServizioJSON();
 				if (this.supportEnrichedJSON) { // Enriched JSON
 					if (!this.db_enriched.get(collectionName).containsKey(servizioID)) {  // Servizio Not Found in Collection
 						try {
-							TommyEnrichedJSON servizio = new TommyEnrichedJSON(json);						
+							TommyEnrichedJSON servizio = new TommyEnrichedJSON(servizioID, json);						
 							this.db_enriched.get(collectionName).put(servizioID, servizio);
 							logger.trace(method_name + "Wrote Servizio " + servizioID + " to collection " +  collectionName);
 							this.getSender().tell(new RemoveServizioByIDSuccess(servizioID, servizio.getJsonServizio(), collectionName), 
