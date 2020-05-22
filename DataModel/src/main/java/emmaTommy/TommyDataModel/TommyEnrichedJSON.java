@@ -8,6 +8,7 @@ import javax.xml.bind.JAXBException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import org.apache.logging.log4j.LogManager;
@@ -37,7 +38,10 @@ public class TommyEnrichedJSON {
 		String oldJsonServizio = this.jsonServizio;
 		try {
 			this.jsonServizio = jsonServizio;
-			Servizio s = this.buildServizio();						
+			Servizio s = this.buildServizio();
+			if (this.codiceServizio == null) {
+				this.codiceServizio = s.getCodiceServizio();
+			}
 			if (this.codiceServizio.compareTo(s.getCodiceServizio()) != 0) {
 				throw new IllegalArgumentException("Given Codice Servizio was " + this.codiceServizio
 													+ " but in the input JSON the CodiceServizio was " + s.getCodiceServizio());
@@ -112,16 +116,19 @@ public class TommyEnrichedJSON {
 	
 	/** Missione StartTime */
 	@Column(name="start_time")
-	protected LocalDateTime missioneStartTime;
-	public LocalDateTime getMissioneStartTime() {
+	protected LocalTime missioneStartTime;
+	public LocalTime getMissioneStartTime() {
 		return this.missioneStartTime;
 	}
 	public String getMissioneStartTimeStr() {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(dataFormatTime); 
 		return dtf.format(this.missioneStartTime);
 	}
-	public void setMissioneStartTime(LocalDateTime localDate) {
-		this.missioneStartTime = localDate;
+	public void setMissioneStartTime(LocalTime localStartTime) {
+		if (localStartTime == null) {
+			logger.error("TommyEnrichedJSON::setMissioneStartTime(): " + "Received null MissioneStartTime");
+		}
+		this.missioneStartTime = localStartTime;
 	}
 	
 	/** Object TimeStamp */

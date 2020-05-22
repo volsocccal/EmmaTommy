@@ -48,7 +48,7 @@ public class ServizioFactory {
 		s.setCodiceServizio(Integer.toString(m.getCodiceMissione()));
 		
 		// orario_inizio_servizio" : "type:HH:II:required"
-		s.setOrarioInizioServizio(m.getInizioMissione());
+		s.setOrarioInizioServizio(m.getInizioMissione().toLocalTime());
 		
 		// Get Tratte
 		Tratte tr = m.getTratte();
@@ -59,8 +59,8 @@ public class ServizioFactory {
 					if (trList.size() == 1) {
 						Tratta tr1 = trList.get(0);
 						if (tr1 != null) {
-							s.setOrarioArrivoPosto(tr1.getDataArrivo());
-							s.setOrarioPartenzaPosto(tr1.getDataPartenza());
+							s.setOrarioArrivoPosto(tr1.getDataArrivo().toLocalTime());
+							s.setOrarioPartenzaPosto(tr1.getDataPartenza().toLocalTime());
 							//s.setLuogoPartenza(tr1.getDestinazione());
 						}
 					} else {
@@ -72,12 +72,12 @@ public class ServizioFactory {
 									tr1 = trList.get(1);
 									tr2 = trList.get(0);
 								}
-								s.setOrarioArrivoOspedale(tr2.getDataArrivo());
-								s.setOrarioPartenzaOspedale(tr2.getDataPartenza());
+								s.setOrarioArrivoOspedale(tr2.getDataArrivo().toLocalTime());
+								s.setOrarioPartenzaOspedale(tr2.getDataPartenza().toLocalTime());
 								s.setLuogoArrivo(tr2.getDestinazione());
 							}
-							s.setOrarioArrivoPosto(tr1.getDataArrivo());
-							s.setOrarioPartenzaPosto(tr1.getDataPartenza());
+							s.setOrarioArrivoPosto(tr1.getDataArrivo().toLocalTime());
+							s.setOrarioPartenzaPosto(tr1.getDataPartenza().toLocalTime());
 							//s.setLuogoPartenza(tr1.getDestinazione());
 						}
 					}
@@ -86,7 +86,7 @@ public class ServizioFactory {
 		}
 		
 		// orario_fine_servizio" : "type:HH:II:required"
-		s.setOrarioFineServizio(m.getFineMissione());
+		s.setOrarioFineServizio(m.getFineMissione().toLocalTime());
 		    	
 		// tag_idintervento" : "type:String:required"
 		s.setTagIdIntervento(this.tipoEventoConverter(m.getConvenzioneEnte()));

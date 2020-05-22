@@ -2,6 +2,7 @@ package emmaTommy.TommyDataModel;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -47,66 +48,66 @@ public class Servizio extends TommyDataModel {
 	// orario_inizio_servizio" : "type:HH:II:required"
 	@XmlElement(name = "orario_inizio_servizio", required = true)	
 	@XmlJavaTypeAdapter(DateTimeAdapterHHmm.class)
-	protected LocalDateTime orario_inizio_servizio;
-	public void setOrarioInizioServizio (LocalDateTime orario_inizio_servizio) {
+	protected LocalTime orario_inizio_servizio;
+	public void setOrarioInizioServizio (LocalTime orario_inizio_servizio) {
 		this.orario_inizio_servizio = orario_inizio_servizio;
 	}
-	protected LocalDateTime getOrarioInizioServizio() {
+	protected LocalTime getOrarioInizioServizio() {
 		return this.orario_inizio_servizio;
 	}
 	
 	// orario_arrivo_posto" : "type:HH:II"
 	@XmlElement(name = "orario_arrivo_posto", required = false)	
 	@XmlJavaTypeAdapter(DateTimeAdapterHHmm.class)
-	protected LocalDateTime orario_arrivo_posto;
-	public void setOrarioArrivoPosto (LocalDateTime orario_arrivo_posto) {
+	protected LocalTime orario_arrivo_posto;
+	public void setOrarioArrivoPosto (LocalTime orario_arrivo_posto) {
 		this.orario_arrivo_posto = orario_arrivo_posto;
 	}
-	public LocalDateTime getOrarioArrivoPosto() {
+	public LocalTime getOrarioArrivoPosto() {
 		return this.orario_arrivo_posto;
 	}
 	
 	// orario_partenza_posto" : "type:HH:II"
 	@XmlElement(name = "orario_partenza_posto", required = false)	
 	@XmlJavaTypeAdapter(DateTimeAdapterHHmm.class)
-	protected LocalDateTime orario_partenza_posto;
-	public void setOrarioPartenzaPosto (LocalDateTime orario_partenza_posto) {
+	protected LocalTime orario_partenza_posto;
+	public void setOrarioPartenzaPosto (LocalTime orario_partenza_posto) {
 		this.orario_partenza_posto = orario_partenza_posto;
 	}
-	public LocalDateTime getOrarioPartenzaPosto() {
+	public LocalTime getOrarioPartenzaPosto() {
 		return this.orario_partenza_posto;
 	}
 	
 	// orario_arrivo_ospedale" : "type:HH:II"
 	@XmlElement(name = "orario_arrivo_ospedale", required = false)
 	@XmlJavaTypeAdapter(DateTimeAdapterHHmm.class)
-	protected LocalDateTime orario_arrivo_ospedale; 
-	public void setOrarioArrivoOspedale (LocalDateTime orario_arrivo_ospedale) {
+	protected LocalTime orario_arrivo_ospedale; 
+	public void setOrarioArrivoOspedale (LocalTime orario_arrivo_ospedale) {
 		this.orario_arrivo_ospedale = orario_arrivo_ospedale;
 	}
-	public LocalDateTime getOrarioArrivoOspedale() {
+	public LocalTime getOrarioArrivoOspedale() {
 		return this.orario_arrivo_ospedale;
 	}
 	
 	// orario_partenza_ospedale" : "type:HH:II"
 	@XmlElement(name = "orario_partenza_ospedale", required = false)
 	@XmlJavaTypeAdapter(DateTimeAdapterHHmm.class)
-	protected LocalDateTime orario_partenza_ospedale;
-	public void setOrarioPartenzaOspedale (LocalDateTime orario_partenza_ospedale) {
+	protected LocalTime orario_partenza_ospedale;
+	public void setOrarioPartenzaOspedale (LocalTime orario_partenza_ospedale) {
 		this.orario_partenza_ospedale = orario_partenza_ospedale;
 	}
-	public LocalDateTime getOrarioPartenzaOspedale() {
+	public LocalTime getOrarioPartenzaOspedale() {
 		return this.orario_partenza_ospedale;
 	}
 	
 	// orario_fine_servizio" : "type:HH:II:required"
 	@XmlElement(name = "orario_fine_servizio", required = true)	
 	@XmlJavaTypeAdapter(DateTimeAdapterHHmm.class)
-	protected LocalDateTime orario_fine_servizio;
-	public void setOrarioFineServizio (LocalDateTime orario_fine_servizio) {
+	protected LocalTime orario_fine_servizio;
+	public void setOrarioFineServizio (LocalTime orario_fine_servizio) {
 		this.orario_fine_servizio = orario_fine_servizio;
 	}
-	public LocalDateTime getOrarioFineServizio() {
+	public LocalTime getOrarioFineServizio() {
 		return this.orario_fine_servizio;
 	}
 	    	

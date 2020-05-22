@@ -1,16 +1,16 @@
 package emmaTommy.DataModel;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-public class DateTimeAdapterHHmm extends XmlAdapter<String, LocalDateTime> {
+public class DateTimeAdapterHHmm extends XmlAdapter<String, LocalTime> {
  
     private static final String DATE_FORMAT_STRING = "HH:mm";
  
     @Override
-    public String marshal(LocalDateTime date) {
+    public String marshal(LocalTime date) {
     	String date_str;
     	if (date == null) {
     		date_str =  "";
@@ -22,11 +22,11 @@ public class DateTimeAdapterHHmm extends XmlAdapter<String, LocalDateTime> {
     }
  
     @Override
-    public LocalDateTime unmarshal(String v) {   
-    	LocalDateTime d = null;
+    public LocalTime unmarshal(String v) {   
+    	LocalTime d = null;
         try {
         	DateTimeFormatter dtf = DateTimeFormatter.ofPattern(DATE_FORMAT_STRING); 
-        	d = LocalDateTime.parse(v, dtf);
+        	d = LocalTime.parse(v, dtf);
 		} catch (java.time.format.DateTimeParseException e) {
 		}
         return d;
