@@ -1,6 +1,7 @@
 package emmaTommy.DBAbstraction.Actors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -9,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import akka.actor.ActorRef;
 import akka.pattern.Patterns;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.AcquireDBLock;
+import emmaTommy.DBAbstraction.ActorsMessages.Queries.GetAllServiziInCollection;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.GetCollectionList;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.GetServizioByID;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.IsDBAlive;
@@ -34,6 +36,8 @@ import emmaTommy.DBAbstraction.ActorsMessages.Replies.RemoveServizioByIDSuccess;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.DBIsNotAlive;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.DBIsNotLocked;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.Reply;
+import emmaTommy.DBAbstraction.ActorsMessages.Replies.ReplyServiziInCollection;
+import emmaTommy.DBAbstraction.ActorsMessages.Replies.ReplyServiziInCollectionEnriched;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.ReplyServizioById;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.ReplyServizioByIdEnriched;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.ServizioByIDNotFound;
@@ -316,6 +320,69 @@ public class DBClientAPI {
 		}
 		return servizioEnriched;
 	}
+	
+
+	/**
+	 * Get all the Servizi in the given Collection from the DB
+	 * @param client ActorRef of the client, caller of the Query
+	 * @param dbManager ActorRef of the DB Manager Actor
+	 * @param operationTimeOutSecs Timeout for the Ask Operation
+	 * @param collectionName Name of the collection where the Servizio should be found
+	 * @return The wanted servizio. Null if the servizio isn't found in the collection.
+	 * @throws DBOperationFailedException
+	 */
+	public ArrayList<TommyEnrichedJSON> getAllServiziInCollection(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs, String collectionName) throws DBOperationFailedException {
+		String method_name = "::getAllServiziInCollection(): ";
+		// Check Input Parameters
+		if (operationTimeOutSecs < 0) {
+			throw new DBOperationFailedException("Received Operation TimeOut was negative");
+		}
+		if (operationTimeOutSecs == 0) {
+			throw new DBOperationFailedException("Received Operation TimeOut was zero");
+		}
+		ArrayList<TommyEnrichedJSON> serviziListEnriched = new ArrayList<TommyEnrichedJSON>();
+		Future<Object> futureGetServizi = Patterns.ask(dbManager, 
+														new GetAllServiziInCollection(client.path().name(), clientID, collectionName), 
+														1000);
+
+		try {
+
+			Reply replyGetServizi = (Reply) Await.result(futureGetServizi, Duration.create(operationTimeOutSecs, TimeUnit.SECONDS));
+			
+			if (replyGetServizi instanceof ReplyServiziInCollection) {
+				HashMap<String, String> serviziMap = ((ReplyServiziInCollection) replyGetServizi).getServiziMap();
+				for (String servizioID: serviziMap.keySet()) {
+					if (servizioID == null) {
+						throw new NullPointerException("Found a null key in serviziMap");
+					}
+					String servizio = serviziMap.get(servizioID);
+					if (servizio == null) {
+						throw new NullPointerException("Found a null servizio associated to ID " +  servizioID + " in serviziMap");
+					}
+					if (servizio.isBlank()) {
+						throw new NullPointerException("Found a blanck servizio associated to ID " +  servizioID + " in serviziMap");
+					}
+					TommyEnrichedJSON servizioEnriched = new TommyEnrichedJSON(servizioID, servizio);
+					serviziListEnriched.add(servizioEnriched);
+				}
+				
+				
+			} else if (replyGetServizi instanceof ReplyServiziInCollectionEnriched) {
+				serviziListEnriched.addAll(((ReplyServiziInCollectionEnriched) replyGetServizi).getServiziMap().values());
+			} else if (replyGetServizi instanceof DBOperationFaillure) {
+				throw new DBOperationFailedException(((DBOperationFaillure) replyGetServizi).getCause());
+			} else {
+				throw new DBOperationFailedException("Received unhandled reply of type: " + replyGetServizi.getReplyTypeName());
+			}
+			
+		} catch (Exception e) {
+			String error_msg = "Failed to get servizi from collection " + collectionName + ": " + e.getMessage();
+			logger.error(method_name + error_msg);			
+			throw new DBOperationFailedException(error_msg);
+		}
+		return serviziListEnriched;
+	}
+	
 	
 	
 	/**

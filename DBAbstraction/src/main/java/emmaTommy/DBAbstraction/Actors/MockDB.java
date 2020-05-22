@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import akka.actor.Props;
+import emmaTommy.DBAbstraction.ActorsMessages.Queries.GetAllServiziInCollection;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.GetCollectionList;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.GetServizioByID;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.IsCollectionByNamePresent;
@@ -18,6 +19,8 @@ import emmaTommy.DBAbstraction.ActorsMessages.Replies.CollectionNotFound;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.DBIsAlive;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.MoveServizioByIDSuccess;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.RemoveServizioByIDSuccess;
+import emmaTommy.DBAbstraction.ActorsMessages.Replies.ReplyServiziInCollection;
+import emmaTommy.DBAbstraction.ActorsMessages.Replies.ReplyServiziInCollectionEnriched;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.ReplyServizioById;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.ReplyServizioByIdEnriched;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.ServizioByIDAlreadyPresentInCollection;
@@ -144,6 +147,30 @@ public class MockDB extends AbstractDBServer {
 					this.getSender().tell(new ServizioByIDNotFound(servizioID, wantedCollectionName), 
 			  								this.getSelf());
 				}
+			}
+		} else { // Collection Not Found
+			logger.error(method_name + "Collection " +  wantedCollectionName + " wasn't present in the DB");
+			this.getSender().tell(new CollectionNotFound(wantedCollectionName), 
+								  this.getSelf());
+		}
+	}
+	
+	protected void onGetAllServiziInCollectionQuery(GetAllServiziInCollection queryObj) {
+		String method_name = "::onGetAllServiziInCollectionQuery(): ";
+		String callingClientName = queryObj.getCallingActorName();
+		String callingClientID = queryObj.getCallingActorID();
+		logger.trace("Reveived GetAllServiziInCollection from " + callingClientName + " ID " + callingClientID);
+		String wantedCollectionName = queryObj.getCollectionName();
+		logger.trace(method_name + callingClientName + " wants all servizi in collection " +  wantedCollectionName);
+		if (this.collectionListNames.contains(wantedCollectionName)) { // Collection Found
+			if (this.supportEnrichedJSON) { // Enriched JSON
+				logger.trace(method_name + "Sending all servizi enriched in collection " +  wantedCollectionName + " to " + callingClientName);
+				this.getSender().tell(new ReplyServiziInCollectionEnriched(this.db_enriched.get(wantedCollectionName), wantedCollectionName), 
+									  this.getSelf());
+			} else { // Raw JSON
+				logger.trace(method_name + "Sending all servizi in collection " +  wantedCollectionName + " to " + callingClientName);
+				this.getSender().tell(new ReplyServiziInCollection(this.db_raw.get(wantedCollectionName), wantedCollectionName), 
+									  this.getSelf());
 			}
 		} else { // Collection Not Found
 			logger.error(method_name + "Collection " +  wantedCollectionName + " wasn't present in the DB");

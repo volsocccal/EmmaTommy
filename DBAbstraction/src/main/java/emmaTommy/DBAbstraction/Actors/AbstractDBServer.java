@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.AcquireDBLock;
+import emmaTommy.DBAbstraction.ActorsMessages.Queries.GetAllServiziInCollection;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.GetCollectionList;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.GetServizioByID;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.IsCollectionByNamePresent;
@@ -124,6 +125,7 @@ public abstract class AbstractDBServer extends AbstractActor {
 				.match(AcquireDBLock.class, this::onAquireDBLockQuery)
 				.match(GetCollectionList.class, this::onGetCollectionListQuery)
 				.match(GetServizioByID.class, this::onGetServizioByIDQuery)
+				.match(GetAllServiziInCollection.class, this::onGetAllServiziInCollectionQuery)
 				.match(IsCollectionByNamePresent.class, this::onIsCollectionByNamePresentQuery)
 				.match(IsDBAlive.class, this::onIsDBAliveQuery)
 				.match(IsDBLocked.class, this::onIsDBLockedQuery)
@@ -169,6 +171,8 @@ public abstract class AbstractDBServer extends AbstractActor {
 	protected abstract void onGetCollectionListQuery(GetCollectionList queryObj);
 	
 	protected abstract void onGetServizioByIDQuery(GetServizioByID queryObj);
+	
+	protected abstract void onGetAllServiziInCollectionQuery(GetAllServiziInCollection queryObj);
 	
 	protected abstract void onIsCollectionByNamePresentQuery(IsCollectionByNamePresent queryObj);
 	
@@ -230,6 +234,7 @@ public abstract class AbstractDBServer extends AbstractActor {
 			if (this.lock.getLockOwnerName().compareTo(callingClientName) == 0 
 				&& this.lock.getLockOwnerID().compareTo(callingClientID) == 0) {				
 				logger.trace(method_name + "DB is locked by calling client " + callingClientName + " ID " + callingClientID);
+				this.lock.releaseLock(callingClientName, callingClientID);
 				this.getSender().tell(new DBLockReleased(), this.getSelf());
 				logger.trace(method_name + "Sent DBLockReleased Reply to " + callingClientID);
 			} else {
