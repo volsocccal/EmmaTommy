@@ -7,7 +7,7 @@ import java.util.HashMap;
 public class TommyDataModelEnums {
 
 	// Qualifiche Tommy
-	public static final String AUTISTA = "AUT";
+	public static final String AUTISTA = "AUTISTA";
 	public static final String CAPOEQUIPAGGIO = "CAP";
 	public static final String SOCCORRITORE_ADD = "SOCC_ADD";
 	public static final String SOCCORRITORE = "SOCC";
