@@ -127,7 +127,7 @@ public class EmmaOrchestrator extends AbstractActor {
     	logger.info(method_name + "Tell EmmaRestActor to Start");
     	this.emmaRestActorRef.tell(startREST, this.getSelf());
     	
-    	// 
+    	// Create Scheduler for Periodic REST Operation
     	logger.info(method_name + "Scheduling EmmaRestActor Download every " + requestTimeSecs + " seconds");
     	this.cancellableJob = this.getContext().getSystem().getScheduler().schedule(Duration.Zero(), 
     																				Duration.create(requestTimeSecs, TimeUnit.SECONDS), 
