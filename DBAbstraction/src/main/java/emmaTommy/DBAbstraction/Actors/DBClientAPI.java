@@ -294,7 +294,7 @@ public class DBClientAPI {
 		TommyEnrichedJSON servizioEnriched = new TommyEnrichedJSON();
 		Future<Object> futureGetServizio = Patterns.ask(dbManager, 
 														new GetServizioByID(client.path().name(), clientID, servizioID, collectionName), 
-														1000);
+														10000);
 
 		try {
 
