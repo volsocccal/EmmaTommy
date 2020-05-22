@@ -1,4 +1,4 @@
-package emmaTommy.TommyDataHandler.ActorsMessages;
+package emmaTommy.TommyPoster.ActorsMessages;
 
 import java.util.ArrayList;
 
@@ -8,15 +8,15 @@ public class PostDataResponse extends PostData {
 	protected String tommyResponse;
 	
 	public PostDataResponse(PostData postData, Boolean success, String tommyResponse) {		
-		this(postData.getCodiceMezzo(), postData.getCodiciServizi(), postData.getJsonServizi(),success, tommyResponse);		
+		this(postData.getCodiceMezzo(), postData.getCodiciServizi(), postData.getJsonServizi(), success, tommyResponse);		
 	}
 	
-	public PostDataResponse(String codiceMezzo, ArrayList<Integer> codiciServizi, String jsonServizi, Boolean success, String tommyResponse) {
+	public PostDataResponse(String codiceMezzo, ArrayList<String> codiciServizi, String jsonServizi, Boolean success, String tommyResponse) {
 		super(codiceMezzo, codiciServizi, jsonServizi);
 		String method_name = "::PostDataResponse(): ";
 		
 		// Success Flag
-		this.tommyResponse = tommyResponse;
+		this.success = success;
 		
 		// tommyResponse
 		if (tommyResponse == null) {

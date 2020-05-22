@@ -23,6 +23,11 @@
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
+      <groupId>emmaTommy</groupId>
+      <artifactId>DBAbstraction</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
         <groupId>org.apache.commons</groupId>
 		<artifactId>commons-lang3</artifactId>
 		<version>3.10</version>
@@ -57,7 +62,9 @@
             <directory>conf</directory>
             <targetPath>${project.build.directory}/conf</targetPath>
             <includes>
-                <include>tommy_refs.conf</include>
+                <include>tommy_posthandler.conf</include>
+                <include>tommy_rest_service_refs.conf</include>
+                <include>tommy_db.conf</include>
                 <include>log4j2_tommyposter.xml</include>
             </includes>
         </resource>

@@ -5,37 +5,16 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
-        <!--RollingFile name="MySqlHandler" fileName="logs_test/MySqlHandler.log" filePattern="../logs_test/$${date:yyyy-MM}/Tommy/MySqlHandler-%d{MM-dd-yyyy}-%i.log"-->
-        <RollingFile name="MySqlHandler" fileName="logs_test/MySqlHandler.log" filePattern="logs_test/MySqlHandler-%i.log">
-            <PatternLayout>
-                <Pattern>%d [%t] %-5p %c%m%n</Pattern>
-            </PatternLayout>
-            <Policies>
-                <!--TimeBasedTriggeringPolicy interval="24" modulate="true"/-->
-                <SizeBasedTriggeringPolicy size="100 MB"/>
-            </Policies>
-        </RollingFile>
-        <RollingFile name="TommyKafkaConsumer" fileName="logs_test/TommyKafkaConsumer.log" filePattern="logs_test/TommyKafkaConsumer-%i.log">
-            <PatternLayout>
-                <Pattern>%d [%t] %-5p %c%m%n</Pattern>
-            </PatternLayout>
-            <Policies>
-                <!--TimeBasedTriggeringPolicy interval="24" modulate="true"/-->
-                <SizeBasedTriggeringPolicy size="100 MB"/>
-            </Policies>
-        </RollingFile>
-        <!--RollingFile name="TommyOrchestrator" fileName="logs_test/TommyOrchestrator.log" filePattern="../logs_test/$${date:yyyy-MM}/Tommy/TommyOrchestrator-%d{MM-dd-yyyy}-%i.log"-->
-        <RollingFile name="TommyOrchestrator" fileName="logs_test/TommyOrchestrator.log" filePattern="logs_test/TommyOrchestrator-%i.log">
-            <PatternLayout>
-                <Pattern>%d [%t] %-5p %c%m%n</Pattern>
-            </PatternLayout>
-            <Policies>
-                <!--TimeBasedTriggeringPolicy interval="24" modulate="true"/-->
-                <SizeBasedTriggeringPolicy size="100 MB"/>
-            </Policies>
-        </RollingFile>
-        <!--RollingFile name="TommyPostHandler" fileName="logs_test/TommyPostHandler.log" filePattern="../logs_test/$${date:yyyy-MM}/Tommy/TommyPostHandler-%d{MM-dd-yyyy}-%i.log"-->
         <RollingFile name="TommyPostHandler" fileName="logs_test/TommyPostHandler.log" filePattern="logs_test/TommyPostHandler-%i.log">
+            <PatternLayout>
+                <Pattern>%d [%t] %-5p %c%m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!--TimeBasedTriggeringPolicy interval="24" modulate="true"/-->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="TommyRestPoster" fileName="logs_test/TommyRestPoster.log" filePattern="logs_test/TommyRestPoster-%i.log">
             <PatternLayout>
                 <Pattern>%d [%t] %-5p %c%m%n</Pattern>
             </PatternLayout>
@@ -46,17 +25,11 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Logger name="MySqlHandler" level="trace">
-            <AppenderRef ref="MySqlHandler"/>
-        </Logger>
-        <Logger name="TommyKafkaConsumer" level="trace">
-            <AppenderRef ref="TommyKafkaConsumer"/>
-        </Logger>
-         <Logger name="TommyOrchestrator" level="trace">
-            <AppenderRef ref="TommyOrchestrator"/>
-        </Logger>
          <Logger name="TommyPostHandler" level="trace">
             <AppenderRef ref="TommyPostHandler"/>
+        </Logger>
+        <Logger name="TommyRestPoster" level="trace">
+            <AppenderRef ref="TommyRestPoster"/>
         </Logger>
         <Root level="warn">
             <AppenderRef ref="Console"/>
