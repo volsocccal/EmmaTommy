@@ -12,6 +12,7 @@ import emmaTommy.DBAbstraction.ActorsMessages.Queries.IsCollectionByNamePresent;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.IsDBAlive;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.IsDBLocked;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.IsDBManagerActive;
+import emmaTommy.DBAbstraction.ActorsMessages.Queries.IsServizioByIDPresent;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.MoveServizioByID;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.ReleaseDBLock;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.RemoveServizioByID;
@@ -130,6 +131,7 @@ public abstract class AbstractDBServer extends AbstractActor {
 				.match(IsDBAlive.class, this::onIsDBAliveQuery)
 				.match(IsDBLocked.class, this::onIsDBLockedQuery)
 				.match(IsDBManagerActive.class, this::onIsDBManagerActiveQuery)
+				.match(IsServizioByIDPresent.class, this::onIsServizioByIDPresent)
 				.match(MoveServizioByID.class, this::onMoveServizioByIDQuery)
 				.match(ReleaseDBLock.class, this::onReleaseDBLockQuery)
 				.match(RemoveServizioByID.class, this::onRemoveServizioByIDQuery)
@@ -222,6 +224,7 @@ public abstract class AbstractDBServer extends AbstractActor {
 		logger.trace(method_name + "Sent DBManagerStatus Reply to " + this.getSender().path().name());
 	}
 	
+	protected abstract void onIsServizioByIDPresent(IsServizioByIDPresent queryObj);
 	
 	protected abstract void onMoveServizioByIDQuery(MoveServizioByID queryObj);
 	

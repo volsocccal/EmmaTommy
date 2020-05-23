@@ -9,6 +9,7 @@ import emmaTommy.DBAbstraction.ActorsMessages.Queries.GetCollectionList;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.GetServizioByID;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.IsCollectionByNamePresent;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.IsDBAlive;
+import emmaTommy.DBAbstraction.ActorsMessages.Queries.IsServizioByIDPresent;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.MoveServizioByID;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.RemoveServizioByID;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.UpdateServizioByID;
@@ -24,6 +25,7 @@ import emmaTommy.DBAbstraction.ActorsMessages.Replies.ReplyServiziInCollectionEn
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.ReplyServizioById;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.ReplyServizioByIdEnriched;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.ServizioByIDAlreadyPresentInCollection;
+import emmaTommy.DBAbstraction.ActorsMessages.Replies.ServizioByIDFound;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.ServizioByIDNotFound;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.ServizioNotValid;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.UpdateServizioByIDSuccess;
@@ -209,6 +211,44 @@ public class MockDB extends AbstractDBServer {
 		this.getSender().tell(new DBIsAlive(), this.getSelf());
 	}
 
+	@Override
+	protected void onIsServizioByIDPresent(IsServizioByIDPresent queryObj) {
+		String method_name = "::onIsServizioByIDPresent(): ";
+		String callingClientName = queryObj.getCallingActorName();
+		String callingClientID = queryObj.getCallingActorID();
+		logger.trace("Reveived IsServizioByIDPresent from " + callingClientName + " ID " + callingClientID);
+		String wantedCollectionName = queryObj.getCollectionName();
+		String servizioID = queryObj.getID();
+		logger.trace(method_name + callingClientName + " wants servizio " + servizioID + " from collection " +  wantedCollectionName);
+		if (this.collectionListNames.contains(wantedCollectionName)) { // Collection Found
+			if (this.supportEnrichedJSON) { // Enriched JSON
+				if (this.db_enriched.get(wantedCollectionName).containsKey(servizioID)) {
+					logger.trace(method_name + "Sending servizioByIdFound (servizio " + servizioID + " from collection " +  wantedCollectionName + ") to " + callingClientName);
+					this.getSender().tell(new ServizioByIDFound(servizioID, wantedCollectionName), 
+										  this.getSelf());
+				} else {  // Servizio Not Found
+					logger.warn(method_name + "Sending servizioByIdJNotFound (servizio " + servizioID + " from collection " +  wantedCollectionName + ") to " + callingClientName);
+					this.getSender().tell(new ServizioByIDNotFound(servizioID, wantedCollectionName), 
+							  				this.getSelf());
+				}
+			} else { // Raw JSON
+				if (this.db_raw.get(wantedCollectionName).containsKey(servizioID)) {
+					logger.trace(method_name + "Sending servizioByIdFound (servizio " + servizioID + " from collection " +  wantedCollectionName + ") to " + callingClientName);
+					this.getSender().tell(new ServizioByIDFound(servizioID, wantedCollectionName), 
+										  this.getSelf());
+				} else {  // Servizio Not Found
+					logger.warn(method_name + "Sending servizioByIdJNotFound (servizio " + servizioID + " from collection " +  wantedCollectionName + ") to " + callingClientName);
+					this.getSender().tell(new ServizioByIDNotFound(servizioID, wantedCollectionName), 
+							  				this.getSelf());
+				}
+			}
+		} else { // Collection Not Found
+			logger.error(method_name + "Collection " +  wantedCollectionName + " wasn't present in the DB");
+			this.getSender().tell(new CollectionNotFound(wantedCollectionName), 
+								  this.getSelf());
+		}
+	}
+	
 	@Override
 	protected void onMoveServizioByIDQuery(MoveServizioByID queryObj) {
 		String method_name = "::onMoveServizioByIDQuery(): ";

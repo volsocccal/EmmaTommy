@@ -15,6 +15,7 @@ import emmaTommy.DBAbstraction.ActorsMessages.Queries.GetCollectionList;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.GetServizioByID;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.IsDBAlive;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.IsDBLocked;
+import emmaTommy.DBAbstraction.ActorsMessages.Queries.IsServizioByIDPresent;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.MoveServizioByID;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.ReleaseDBLock;
 import emmaTommy.DBAbstraction.ActorsMessages.Queries.RemoveServizioByID;
@@ -40,6 +41,7 @@ import emmaTommy.DBAbstraction.ActorsMessages.Replies.ReplyServiziInCollection;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.ReplyServiziInCollectionEnriched;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.ReplyServizioById;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.ReplyServizioByIdEnriched;
+import emmaTommy.DBAbstraction.ActorsMessages.Replies.ServizioByIDFound;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.ServizioByIDNotFound;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.UpdateServizioByIDSuccess;
 import emmaTommy.DBAbstraction.ActorsMessages.Replies.WriteNewServizioByIDSuccess;
@@ -518,6 +520,49 @@ public class DBClientAPI {
 		return isDBManagerActiveFlag;
 	}
 	
+	/**
+	 * Checks that a Servizio Item exists in the given Collectin in the DB
+	 * @param client ActorRef of the client, caller of the Query
+	 * @param dbManager ActorRef of the DB Manager Actor
+	 * @param operationTimeOutSecs Timeout for the Ask Operation
+	 * @param servizioID ID of the wanted Servizio
+	 * @param collectionName Name of the collection where the Servizio should be found
+	 * @return True if the servizio is found, false otherwise
+	 * @throws DBOperationFailedException
+	 */
+	public Boolean isServizioByIdPresent(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs, String servizioID, String collectionName) throws DBOperationFailedException {
+		String method_name = "::isServizioByIdPresent(): ";
+		// Check Input Parameters
+		if (operationTimeOutSecs < 0) {
+			throw new DBOperationFailedException("Received Operation TimeOut was negative");
+		}
+		if (operationTimeOutSecs == 0) {
+			throw new DBOperationFailedException("Received Operation TimeOut was zero");
+		}
+		Future<Object> futureCheckServizio = Patterns.ask(dbManager, 
+														new IsServizioByIDPresent(client.path().name(), clientID, servizioID, collectionName), 
+														10000);
+
+		try {
+
+			Reply replyCheckServizio = (Reply) Await.result(futureCheckServizio, Duration.create(operationTimeOutSecs, TimeUnit.SECONDS));
+			
+			if (replyCheckServizio instanceof ServizioByIDFound) {
+				return true;
+			} else if (replyCheckServizio instanceof ServizioByIDNotFound) {
+				return false;
+			} else if (replyCheckServizio instanceof DBOperationFaillure) {
+				throw new DBOperationFailedException(((DBOperationFaillure) replyCheckServizio).getCause());
+			} else {
+				throw new DBOperationFailedException("Received unhandled reply of type: " + replyCheckServizio.getReplyTypeName());
+			}
+			
+		} catch (Exception e) {
+			String error_msg = "Failed to check wheter servizio " + servizioID + " exists in collection " + collectionName + ": " + e.getMessage();
+			logger.error(method_name + error_msg);			
+			throw new DBOperationFailedException(error_msg);
+		}
+	}
 	
 	/**
 	 * Move a Servizio Between Collections
