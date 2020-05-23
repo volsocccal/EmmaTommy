@@ -5,6 +5,7 @@
 DataModel/target/
 EmmaHandler/target/
 EmmaTommyConverter/target/
+EmmaTommySupervisor/target
 PersistenceDB/target/
 StagingDB/target/
 TommyDataHandler/target/
@@ -22,6 +23,8 @@ EmmaHandler/logs/*
 EmmaHandler/logs_test/*
 EmmaTommyConverter/logs/*
 EmmaTommyConverter/logs_test/*
+EmmaTommySupervisor/logs/*
+EmmaTommySupervisor/logs_test/*
 PersistenceDB/logs/*
 PersistenceDB/logs_test/*
 StagingDB/logs/*
@@ -33,17 +36,25 @@ TommyDataPoster/logs_test/*
 
 # Ignore the folder for full xml downloads (since it may contains sensible patient information)
 EmmaHandler/data_xml_download/*
+EmmaTommySupervisor/data_xml_download/*
 
 # Ignore the folder for jsons produced files (since it may contains sensible patient information)
 EmmaHandler/data_json_missioni_download/*
+EmmaTommySupervisor/data_json_missioni_download/*
 
 # Ignore the folder for jsons produced files (since it may contains sensible patient information)
 EmmaTommyConverter/data_json_servizi_download/*
+EmmaTommySupervisor/data_json_servizi_download/*
 
 # Ignore the folder for jsons test files (since it may contains sensible patient/emt information)
 EmmaHandler/data_json_missioni_download/*
 EmmaTommyConverter/data_json_missioni_test/*
 TommyPoster/data_json_test/*
+EmmaTommySupervisor/data_json_missioni_download/*
+
+# Ignore the folder for TOMMY REST Post jsons
+TommyPoster/post_json_folder/*
+EmmaTommySupervisor/post_json_folder/*
 
 # Ignore the docs/xml 
 docs/xmlParsing_REST_MISSIONI
@@ -56,10 +67,11 @@ docs/xmlParsing_REST_MISSIONI/*.xlsx
 # Ignore the docs/RestTommy/specifiche.txt
 docs/RestTommy/specifiche.txt
 
-# Ignore the following conf files with sensible data (public ips, users and psswd even masked)
+# Ignore the following conf files with sensible data (public url, users and psswd even masked)
 EmmaHandler/conf/emma_psswd.conf
-TommyDataHandler/conf/tommy_refs.conf
-TommyDataPoster/conf/tommy_refs.conf
+TommyPoster/conf/tommy_rest_service_refs.conf
+EmmaTommySupervisor/conf/emma_psswd.conf
+EmmaTommySupervisor/conf//tommy_rest_service_refs.conf
 
 # Ignore the following scripts
 scripts/test/mysql/psswd.txt

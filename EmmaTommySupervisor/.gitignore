@@ -1,0 +1,41 @@
+# EmmaTommy repository .gitIgnore
+# $ cat .gitignore
+
+# Ignore the target folder for every projects
+target/
+
+# Ignore every *.class file
+*.class
+
+# Ignore the logs
+logs/*
+logs_test/*
+
+# Ignore the folder for full xml downloads (since it may contains sensible patient information)
+data_xml_download/*
+
+# Ignore the folder for jsons produced files (since it may contains sensible patient information)
+data_json_missioni_download/*
+
+# Ignore the folder for jsons produced files (since it may contains sensible patient information)
+data_json_servizi_download/*
+
+# Ignore the folder for jsons test files (since it may contains sensible patient/emt information)
+data_json_missioni_download/*
+
+# Ignore the folder for TOMMY REST Post jsons
+post_json_folder/*
+
+# Ignore the following conf files with sensible data (public url, users and psswd even masked)
+conf/emma_psswd.conf
+conf//tommy_rest_service_refs.conf
+
+
+# Ignore eclipse files
+.settings
+.classpath
+.project
+
+# Ignore Jars file
+jars
+/.metadata/

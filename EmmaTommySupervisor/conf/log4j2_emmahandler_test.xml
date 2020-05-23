@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="TRACE">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        <!--RollingFile name="emmaREST" fileName="logs_TESTSemmaREST.log" filePattern="logs_TESTS/$${date:yyyy-MM}/emmaREST-%d{MM-dd-yyyy}-%i.log"-->
+        <RollingFile name="emmaREST" fileName="logs_TESTSemmaREST_TEST.log" filePattern="logs_TESTS/emmaREST_TEST-%i.log">
+            <PatternLayout>
+                <Pattern>%d [%t] %-5p %c%m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!--TimeBasedTriggeringPolicy interval="24" modulate="true"/-->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="EmmaDataModel" fileName="logs_TESTS/EmmaDataModel_TEST.log" filePattern="logs_TESTS/EmmaDataModel_TEST-%i.log">
+            <PatternLayout>
+                <Pattern>%d [%t] %-5p %c%m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!--TimeBasedTriggeringPolicy interval="24" modulate="true"/-->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="EmmaDataModelActor" fileName="logs_TESTS/EmmaDataModelActor_TEST.log" filePattern="logs_TESTS/EmmaDataModelActor_TEST-%i.log">
+            <PatternLayout>
+                <Pattern>%d [%t] %-5p %c%m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!--TimeBasedTriggeringPolicy interval="24" modulate="true"/-->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="emmaREST" level="trace">
+            <AppenderRef ref="emmaREST"/>
+        </Logger>
+        <Logger name="EmmaDataModel" level="trace">
+            <AppenderRef ref="EmmaDataModel"/>
+        </Logger>
+        <Logger name="EmmaDataModelActor" level="trace">
+            <AppenderRef ref="EmmaDataModelActor"/>
+        </Logger>
+        <Root level="trace">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
+    
+    
+ 

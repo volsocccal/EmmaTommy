@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        <RollingFile name="TommyDataHandlerKafkaConsumer" fileName="logs_test/TommyDataHandlerKafkaConsumer.log" filePattern="logs_test/TommyDataHandlerKafkaConsumer-%i.log">
+            <PatternLayout>
+                <Pattern>%d [%t] %-5p %c%m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!--TimeBasedTriggeringPolicy interval="24" modulate="true"/-->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="TommyDataHandlerOrchestrator" fileName="logs_test/TommyDataHandlerOrchestrator.log" filePattern="logs_test/TommyDataHandlerOrchestrator-%i.log">
+            <PatternLayout>
+                <Pattern>%d [%t] %-5p %c%m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!--TimeBasedTriggeringPolicy interval="24" modulate="true"/-->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="TommyDataHandlerDataWriter" fileName="logs_test/TommyDataHandlerDataWriter.log" filePattern="logs_test/TommyDataHandlerDataWriter-%i.log">
+            <PatternLayout>
+                <Pattern>%d [%t] %-5p %c%m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!--TimeBasedTriggeringPolicy interval="24" modulate="true"/-->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="TommyDataHandlerKafkaConsumer" level="trace">
+            <AppenderRef ref="TommyDataHandlerKafkaConsumer"/>
+        </Logger>
+         <Logger name="TommyDataHandlerOrchestrator" level="trace">
+            <AppenderRef ref="TommyDataHandlerOrchestrator"/>
+        </Logger>
+         <Logger name="TommyDataHandlerDataWriter" level="trace">
+            <AppenderRef ref="TommyDataHandlerDataWriter"/>
+        </Logger>
+        <Root level="warn">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
+    
+    
+ 

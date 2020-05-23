@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        <RollingFile name="EmmaTommyJsonConverter" fileName="logs_test/EmmaTommyJsonConverter.log" filePattern="logs_test/EmmaTommyJsonConverter-%i.log">
+            <PatternLayout>
+                <Pattern>%d [%t] %-5p %c%m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!--TimeBasedTriggeringPolicy interval="24" modulate="true"/-->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="EmmaTommyKafkaConsumer" fileName="logs_test/EmmaTommyKafkaConsumer.log" filePattern="logs_test/EmmaTommyKafkaConsumer-%i.log">
+            <PatternLayout>
+                <Pattern>%d [%t] %-5p %c%m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!--TimeBasedTriggeringPolicy interval="24" modulate="true"/-->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
+        <!--RollingFile name="EmmaTommyOrchestrator" fileName="logs_test/EmmaTommyOrchestrator.log" filePattern="../logs/$${date:yyyy-MM}/EmmaTommy/EmmaTommyOrchestrator-%d{MM-dd-yyyy}-%i.log"-->
+        <RollingFile name="EmmaTommyOrchestrator" fileName="logs_test/EmmaTommyOrchestrator.log" filePattern="logs_test/EmmaTommyOrchestrator-%i.log">
+            <PatternLayout>
+                <Pattern>%d [%t] %-5p %c%m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!--TimeBasedTriggeringPolicy interval="24" modulate="true"/-->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
+        <!--RollingFile name="EmmaTommyKafkaProducer" fileName="logs_test/EmmaTommyKafkaProducer.log" filePattern="../logs/$${date:yyyy-MM}/EmmaTommy/EmmaTommyKafkaProducer-%d{MM-dd-yyyy}-%i.log"-->
+        <RollingFile name="EmmaTommyKafkaProducer" fileName="logs_test/EmmaTommyKafkaProducer.log" filePattern="logs_test/EmmaTommyKafkaProducer-%i.log">
+            <PatternLayout>
+                <Pattern>%d [%t] %-5p %c%m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!--TimeBasedTriggeringPolicy interval="24" modulate="true"/-->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="EmmaTommyJsonConverter" level="trace">
+            <AppenderRef ref="EmmaTommyJsonConverter"/>
+        </Logger>
+        <Logger name="EmmaTommyKafkaConsumer" level="trace">
+            <AppenderRef ref="EmmaTommyKafkaConsumer"/>
+        </Logger>
+         <Logger name="EmmaTommyOrchestrator" level="trace">
+            <AppenderRef ref="EmmaTommyOrchestrator"/>
+        </Logger>
+         <Logger name="EmmaTommyKafkaProducer" level="trace">
+            <AppenderRef ref="EmmaTommyKafkaProducer"/>
+        </Logger>
+        <Root level="warn">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
+    
+    
+ 
