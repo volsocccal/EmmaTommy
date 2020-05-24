@@ -1,8 +1,8 @@
 package emmaTommy.DBAbstraction.ActorsMessages.Replies;
 
-public abstract class DBOperationFaillure extends Reply {
+public class DBOperationFaillure extends Reply {
 	protected String cause;
-	DBOperationFaillure(String cause) {
+	public DBOperationFaillure(String cause) {
 		if (cause == null) {
 			throw new NullPointerException("Received Cause was nullptr");
 		}

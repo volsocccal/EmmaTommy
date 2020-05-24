@@ -11,7 +11,8 @@ import org.apache.logging.log4j.LogManager;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
-import emmaTommy.DBAbstraction.Actors.MockDB;
+import emmaTommy.DBAbstraction.Actors.DBServer;
+import emmaTommy.DBAbstraction.DBHandlers.MockDB;
 import emmaTommy.EmmaOrchestrator.EmmaOrchestrator;
 import emmaTommy.EmmaTommyConverter.Actors.EmmaTommyOrchestrator;
 import emmaTommy.TommyDataHandler.Actors.TommyDataHandlerOrchestrator;
@@ -69,7 +70,8 @@ public class EmmaTommySupervisor {
 	 		}
 	 		Boolean stagingDBUseMock = (Integer.parseInt(stagingDBProp.getProperty("useMock")) == 0) ? (true) : (false);
 			String stagingDBName = "StagingDBHandler";
-			String stagingDBTech = "MySQL";
+			String stagingDBInstanceName = "Staging MySql";
+			String stagingDBTech = "MySql";
 			String stagingDBType = "Sql";
 			Boolean stagingDBSupportEnrichedJSON = true;
 			ArrayList<String> stagingCollectionListNames = new ArrayList<String>() { 
@@ -80,13 +82,14 @@ public class EmmaTommySupervisor {
 		        } 
 		    }; 
 			logger.info(method_name + "Creating " + stagingDBName + " Actor ...");
-			ActorRef stagingDBHandler = system.actorOf(Props.create(MockDB.class, 
-					stagingDBName, 
-					stagingDBTech, 
-					stagingDBType, 
-					stagingDBSupportEnrichedJSON, 
-					stagingCollectionListNames), 
-					stagingDBName);
+			ActorRef stagingDBHandler = system.actorOf(Props.create(DBServer.class, 
+																	stagingDBName, 
+																	new MockDB (stagingDBInstanceName, 
+																				stagingDBTech, 
+																				stagingDBType, 
+																				stagingDBSupportEnrichedJSON, 
+																				stagingCollectionListNames)), 
+																	stagingDBName);
 			logger.info(method_name + " " + stagingDBName + " Actor is Active");
 			
 			
@@ -106,6 +109,7 @@ public class EmmaTommySupervisor {
 	 		}
 	 		Boolean persistenceDBUseMock = (Integer.parseInt(persistenceDBProp.getProperty("useMock")) == 0) ? (true) : (false);
 			String persistenceDBName = "PersistenceDBHandler";
+			String persistenceDBInstanceName = "Persistence Mongo";
 			String persistenceDBTech = "MongoDB";
 			String persistenceDBType = "NoSql";
 			Boolean persistenceDBSupportEnrichedJSON = false;
@@ -119,12 +123,13 @@ public class EmmaTommySupervisor {
 		        } 
 		    }; 
 			logger.info(method_name + "Creating " + persistenceDBName + " Actor ...");
-			ActorRef persistenceDBHandler = system.actorOf(Props.create(MockDB.class, 
-					persistenceDBName, 
-					persistenceDBTech, 
-					persistenceDBType, 
-					persistenceDBSupportEnrichedJSON, 
-					persistenceDBCollectionListNames), 
+			ActorRef persistenceDBHandler = system.actorOf(Props.create(DBServer.class, 
+															persistenceDBName, 
+															new MockDB (persistenceDBInstanceName, 
+																	persistenceDBTech, 
+																	persistenceDBType, 
+																	persistenceDBSupportEnrichedJSON, 
+																	persistenceDBCollectionListNames)), 
 					persistenceDBName);
 			logger.info(method_name + " " + persistenceDBName + " Actor is Active");
 			

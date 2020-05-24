@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -14,9 +13,7 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.typed.PostStop;
-import akka.util.Timeout;
 import emmaTommy.DBAbstraction.Actors.DBClientAPI;
-import emmaTommy.DBAbstraction.ActorsMessages.Replies.Reply;
 import emmaTommy.TommyDataHandler.ActorsMessages.ServizioDataJSON;
 import emmaTommy.TommyDataHandler.ActorsMessages.StartDataWriting;
 import emmaTommy.TommyDataHandler.ActorsMessages.StopDataWriting;
