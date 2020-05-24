@@ -23,8 +23,8 @@ import akka.actor.Cancellable;
 import akka.actor.Props;
 import akka.actor.typed.PostStop;
 import akka.pattern.Patterns;
-import emmaTommy.DBAbstraction.Actors.DBClientAPI;
-import emmaTommy.DBAbstraction.Actors.DBOperationFailedException;
+import emmaTommy.DBClient.Actors.DBClientAPI;
+import emmaTommy.DBClient.Actors.DBOperationFailedException;
 import emmaTommy.TommyDataModel.TommyEnrichedJSON;
 import emmaTommy.TommyPoster.ActorsMessages.PostData;
 import emmaTommy.TommyPoster.ActorsMessages.PostDataResponse;
@@ -204,8 +204,7 @@ public class TommyPostHandler extends AbstractActor {
     	try {
 			Thread.sleep(60000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(method_name + e.getMessage());
 		}
     	
     	// Create Scheduler for Periodic Operation

@@ -24,7 +24,12 @@
     </dependency>
     <dependency>
       <groupId>emmaTommy</groupId>
-      <artifactId>DBAbstraction</artifactId>
+      <artifactId>DBClient</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>emmaTommy</groupId>
+      <artifactId>DBServerAbstraction</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
