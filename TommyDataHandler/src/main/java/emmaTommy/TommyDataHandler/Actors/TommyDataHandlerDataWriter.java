@@ -39,8 +39,7 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 	protected int stagingDBLockTimeOutSecs;
 	protected int persistenceDBAskTimeOutSecs;
 	protected int persistenceDBLockTimeOutSecs;
-	protected String stagingDBPostingTableName;
-	protected String stagingDBErrorTableName;
+	protected String stagingDBServiziTableName;
 	protected String persistenceDBServiziCollectionName;
 	
 	protected DBClientAPI dbClient = new DBClientAPI(this.getClass().getSimpleName());
@@ -80,8 +79,7 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
  		this.stagingDBLockTimeOutSecs = Integer.parseInt(prop.getProperty("stagingDBLockTimeOutSecs"));
  		this.persistenceDBAskTimeOutSecs = Integer.parseInt(prop.getProperty("persistenceDBAskTimeOutSecs"));
  		this.persistenceDBLockTimeOutSecs = Integer.parseInt(prop.getProperty("persistenceDBAskTimeOutSecs"));
- 		this.stagingDBPostingTableName = prop.getProperty("stagingDBPostingTableName");
- 		this.stagingDBErrorTableName = prop.getProperty("stagingDBErrorTableName");
+ 		this.stagingDBServiziTableName = prop.getProperty("stagingDBServiziTableName");
  		this.persistenceDBServiziCollectionName = prop.getProperty("persistenceDBServiziCollectionName");
  		 		
 		// Get PersistenceDB ActorRef
@@ -208,78 +206,44 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 																	this.stagingDBAskTimeOutSecs, this.stagingDBLockTimeOutSecs);	
 							lockAcquiredStagingDB = true;
 							
-							// Check if the servizio already exists in the Staging DB - Error Section
-							Boolean servizioPresentStagingDBError = this.dbClient.isServizioByIdPresent(
+							// Check if the servizio already exists in the Staging DB
+							Boolean servizioPresentStagingDB = this.dbClient.isServizioByIdPresent(
 									this.getSelf(), 
 									actorID, 
 									this.stagingDBActorRef, 
 									this.stagingDBAskTimeOutSecs, 
-									servzioIDStr, this.stagingDBErrorTableName);
+									servzioIDStr, this.stagingDBServiziTableName);
 							
-							if (servizioPresentStagingDBError) { // Servizio was already in the Staging DB - Error Section
+							if (servizioPresentStagingDB) { // Servizio was already in the Staging DB
 							
-								// Try to read the servizio from the Staging DB - Error Section				
-								TommyEnrichedJSON servizioEnrichedDBStagingError = this.dbClient.getServizioByID(this.getSelf(), actorID, this.stagingDBActorRef, 
+								// Try to read the servizio from the Staging DB			
+								TommyEnrichedJSON servizioEnrichedDBStaging = this.dbClient.getServizioByID(this.getSelf(), actorID, this.stagingDBActorRef, 
 																									 this.stagingDBAskTimeOutSecs, 
-																									 servzioIDStr, this.stagingDBErrorTableName);
-								if (servizioEnrichedDBStagingError != null) {									
-									logger.info(method_name + "Servizio " + servizioData.getID() + " was already present in the staging DB - error section");
-									Servizio servizioDB = servizioEnrichedDBStagingError.buildServizio();
+																									 servzioIDStr, this.stagingDBServiziTableName);
+								if (servizioEnrichedDBStaging != null) {									
+									logger.info(method_name + "Servizio " + servizioData.getID() + " was already present in the staging DB");
+									Servizio servizioDB = servizioEnrichedDBStaging.buildServizio();
 									if (servizioDB.equals(servizio)) { // Equals, Discard the New Data
-										logger.info(method_name + "Servizio " + servizioData.getID() + " was already updated in the staging DB - error section");
-									} else { // Update the Servizio in the Staging DB - Error Serction
-										logger.info(method_name + "Servizio " + servizioData.getID() + " was not updated in the staging DB - error section");
-										this.dbClient.updateServizioByID(this.getSelf(), actorID, this.stagingDBActorRef, 
+										logger.info(method_name + "Servizio " + servizioData.getID() + " was already updated in the staging DB");
+									} else { // Update the Servizio in the Staging DB
+										logger.info(method_name + "Servizio " + servizioData.getID() + " was not updated in the staging DB");
+										this.dbClient.updateServizioEnrichedByID(this.getSelf(), actorID, this.stagingDBActorRef, 
 																			this.stagingDBAskTimeOutSecs, 
-																			servzioIDStr, servizioEnriched.getJsonServizio(), this.stagingDBErrorTableName);
-										logger.info(method_name + "Servizio " + servizioData.getID() + " Updated successfully in the staging DB - error section");
-									}								
-								} else {
-									logger.error(method_name + "Servizio " + servizioData.getID() + " was null in the staging db DB - Error Section");
-								}
-								
-							} else { // Servizio wasn't in the Staging DB - Error Section, will try the Posting Section
-								
-								// Check if the servizio already exists in the StagingDB - Posting Section
-								Boolean servizioPresentStagingDBPosting = this.dbClient.isServizioByIdPresent(
-										this.getSelf(), 
-										actorID, 
-										this.stagingDBActorRef, 
-										this.stagingDBAskTimeOutSecs, 
-										servzioIDStr, this.stagingDBPostingTableName);
-								
-								if (servizioPresentStagingDBPosting) { // Servizio was already in the Staging DB - Posting Section
-								
-									// Try to read the servizio from the Staging DB - Posting Section				
-									TommyEnrichedJSON servizioEnrichedDBStagingPosting = this.dbClient.getServizioByID(this.getSelf(), actorID, this.stagingDBActorRef, 
-																										 this.stagingDBAskTimeOutSecs, 
-																										 servzioIDStr, this.stagingDBPostingTableName);
-									if (servizioEnrichedDBStagingPosting != null) { // Servizio was already in the Staging DB - Posting Section
-										logger.info(method_name + "Servizio " + servizioData.getID() + " was already present in the staging DB - posting section");
-										Servizio servizioDB = servizioEnrichedDBStagingPosting.buildServizio();
-										if (servizioDB.equals(servizio)) { // Equals, Discard the New Data
-											logger.info(method_name + "Servizio " + servizioData.getID() + " was already updated in the staging DB - posting section");
-										} else { // Update the Servizio in the Staging DB - Error Serction
-											logger.info(method_name + "Servizio " + servizioData.getID() + " was not updated in the staging DB - posting section");
-											this.dbClient.updateServizioByID(this.getSelf(), actorID, this.stagingDBActorRef, 
-													this.stagingDBAskTimeOutSecs, 
-													servzioIDStr, servizioEnriched.getJsonServizio(), this.stagingDBPostingTableName);
-											logger.info(method_name + "Servizio " + servizioData.getID() + " Updated successfully in the staging DB - posting section");
-										}
-									} else {
-										logger.error(method_name + "Servizio " + servizioData.getID() + " was null in the staging db DB - Posting Section");
+																			servzioIDStr, servizioEnriched, this.stagingDBServiziTableName);
+										logger.info(method_name + "Servizio " + servizioData.getID() + " Updated successfully in the staging DB");
 									}
-								} else { // Servizio wasn't in the Staging DB - Posting Section
-									logger.info(method_name + "Servizio " + servizioData.getID() + " wasn't present in the staging DB - posting section");
-									this.dbClient.writeNewServizioByID(this.getSelf(), actorID, this.stagingDBActorRef, 
-																		 this.stagingDBAskTimeOutSecs, 
-																		 servzioIDStr, servizioEnriched.getJsonServizio(), 
-																		 this.stagingDBPostingTableName);
-									logger.info(method_name + "Servizio " + servizioData.getID() + " Written successfully in the staging DB - posting section");
+								} else {
+									logger.error(method_name + "Servizio " + servizioData.getID() + " was null in the staging db DB");
 								}
 								
-							}
-							
+							} else { // Servizio wasn't in the Staging DB								
+								logger.info(method_name + "Servizio " + servizioData.getID() + " wasn't present in the staging DB");
+								this.dbClient.writeNewServizioEnrichedByID(this.getSelf(), actorID, this.stagingDBActorRef, 
+																		this.stagingDBAskTimeOutSecs, 
+																		servzioIDStr, servizioEnriched, 
+																		this.stagingDBServiziTableName);
+								logger.info(method_name + "Servizio " + servizioData.getID() + " Written successfully in the staging DB");				
+							}							
 						} catch (Exception e) {
 							logger.error(method_name + "Servizio " + servizioData.getID() + " failed operating on the staging DB: " + e.getMessage());	
 						} finally {

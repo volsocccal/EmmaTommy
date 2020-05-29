@@ -2,6 +2,8 @@ package emmaTommy.TommyDataModel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.xml.bind.JAXBException;
@@ -17,7 +19,7 @@ import emmaTommy.TommyDataModel.Factories.ServizioFactory;
 
 
 @Entity
-@Table(name="servizi")
+@Table(name="serviziStaging")
 public class TommyEnrichedJSON {
 
 	static org.apache.logging.log4j.Logger logger = LogManager.getLogger("TommyDataModel");
@@ -36,6 +38,7 @@ public class TommyEnrichedJSON {
 			throw new NullPointerException(method_name + "Input Servizio was nullptr");
 		}
 		String oldJsonServizio = this.jsonServizio;
+		PostStatus oldStatus = this.postStatus;
 		try {
 			this.jsonServizio = jsonServizio;
 			Servizio s = this.buildServizio();
@@ -51,16 +54,20 @@ public class TommyEnrichedJSON {
 				this.setMissioneStartDate(s.getMissioneDate());
 				this.setMissioneStartTime(s.getOrarioInizioServizio());
 				this.setTimeStamp(LocalDateTime.now());
-				this.initializedFlag = true;				
+				this.postStatus = PostStatus.POSTING;
+				this.initializedFlag = true;		
 			}			
 		} catch (JAXBException e) {
 			this.jsonServizio = oldJsonServizio;
+			this.postStatus = oldStatus;
 			throw new IllegalArgumentException("Failed to Unmarshall the given JSON: " + e.getMessage());			
 		} catch (IllegalArgumentException e) {
 			this.jsonServizio = oldJsonServizio;
+			this.postStatus = oldStatus;
 			throw e;		
 		} catch (Exception e) {
 			this.jsonServizio = oldJsonServizio;
+			this.postStatus = oldStatus;
 			throw e;		
 		}
 		
@@ -145,11 +152,41 @@ public class TommyEnrichedJSON {
 		this.timeStamp = timeStamp;
 	}
 	
+	/** Object State */
+	public enum PostStatus {
+	    POSTING,
+	    ERROR
+	}
+	@Enumerated(EnumType.STRING)
+	@Column(name="postStatus")
+	protected PostStatus postStatus;
+	public PostStatus getPostStatus() {
+		return this.postStatus;
+	}
+	public String getPostStatusStr() {
+		return this.postStatus.name();
+	}
+	public void setPostStatus(PostStatus newPostStatus) {
+		this.postStatus = newPostStatus;
+	}
+	public void setPostStatusStr(String str) {
+		this.postStatus = PostStatus.valueOf(str);
+	}
+	public Boolean isInPostingState() {
+		return this.postStatus == PostStatus.POSTING;
+	}
+	public Boolean isInErrorState() {
+		return this.postStatus == PostStatus.ERROR;
+	}
+
+	
 	/** Initialized Flag */
 	protected Boolean initializedFlag; 
 	public Boolean isInitialized() {
 		return this.initializedFlag;
 	}
+	
+	
 	
 	public TommyEnrichedJSON() {
 		this.jsonServizio = null;
@@ -159,11 +196,24 @@ public class TommyEnrichedJSON {
 		this.missioneStartDate = null; 
 		this.timeStamp = LocalDateTime.now(); 
 		this.initializedFlag = false;
+		this.postStatus = PostStatus.POSTING;
 	}
 	
 	public TommyEnrichedJSON (String codiceServizio, String jsonServizio) {
 		this();
 		this.setCodiceServizio(codiceServizio);
+		this.setJsonServizio(jsonServizio);
+	}
+	public TommyEnrichedJSON (String codiceServizio, String jsonServizio, String postStatusStr) {
+		this();
+		this.setCodiceServizio(codiceServizio);
+		this.setPostStatusStr(postStatusStr);		
+		this.setJsonServizio(jsonServizio);
+	}
+	public TommyEnrichedJSON (String codiceServizio, String jsonServizio, PostStatus postStatus) {
+		this();
+		this.setCodiceServizio(codiceServizio);
+		this.setPostStatus(postStatus);		
 		this.setJsonServizio(jsonServizio);
 	}
 	

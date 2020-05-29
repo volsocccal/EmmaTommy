@@ -19,7 +19,9 @@ import emmaTommy.DBClient.ActorsMessages.Queries.MoveServizioByID;
 import emmaTommy.DBClient.ActorsMessages.Queries.ReleaseDBLock;
 import emmaTommy.DBClient.ActorsMessages.Queries.RemoveServizioByID;
 import emmaTommy.DBClient.ActorsMessages.Queries.UpdateServizioByID;
+import emmaTommy.DBClient.ActorsMessages.Queries.UpdateServizioEnrichedByID;
 import emmaTommy.DBClient.ActorsMessages.Queries.WriteNewServizioByID;
+import emmaTommy.DBClient.ActorsMessages.Queries.WriteNewServizioEnrichedByID;
 import emmaTommy.DBClient.ActorsMessages.Replies.CollectionFound;
 import emmaTommy.DBClient.ActorsMessages.Replies.CollectionListSuccess;
 import emmaTommy.DBClient.ActorsMessages.Replies.CollectionNotFound;
@@ -46,7 +48,9 @@ import emmaTommy.DBClient.ActorsMessages.Replies.ReplyServizioByIdEnriched;
 import emmaTommy.DBClient.ActorsMessages.Replies.ServizioByIDAlreadyPresentInCollection;
 import emmaTommy.DBClient.ActorsMessages.Replies.ServizioByIDFound;
 import emmaTommy.DBClient.ActorsMessages.Replies.ServizioByIDNotFound;
+import emmaTommy.DBClient.ActorsMessages.Replies.UpdateServizioByIDEnrichedSuccess;
 import emmaTommy.DBClient.ActorsMessages.Replies.UpdateServizioByIDSuccess;
+import emmaTommy.DBClient.ActorsMessages.Replies.WriteNewServizioByIDEnrichedSuccess;
 import emmaTommy.DBClient.ActorsMessages.Replies.WriteNewServizioByIDSuccess;
 import emmaTommy.DBServerAbstraction.DBExceptions.CollectionNotPresentException;
 import emmaTommy.DBServerAbstraction.DBExceptions.ServizioAlreadyInCollectionDBException;
@@ -143,7 +147,9 @@ public class DBServer extends AbstractActor {
 				.match(ReleaseDBLock.class, this::onReleaseDBLockQuery)
 				.match(RemoveServizioByID.class, this::onRemoveServizioByIDQuery)
 				.match(UpdateServizioByID.class, this::onUpdateServizioByIDQuery)
+				.match(UpdateServizioEnrichedByID.class, this::onUpdateServizioEnrichedByIDQuery)
 				.match(WriteNewServizioByID.class, this::onWriteNewServizioByIDQuery)
+				.match(WriteNewServizioEnrichedByID.class, this::onWriteNewServizioEnrichedByIDQuery)
 				.match(String.class, s -> {
 					logger.info(this.getClass().getSimpleName() + " Received String message: {}", s);
 	             })
@@ -535,6 +541,52 @@ public class DBServer extends AbstractActor {
 		}
 	}
 	
+	protected void onUpdateServizioEnrichedByIDQuery(UpdateServizioEnrichedByID queryObj) {
+		String method_name = "::onUpdateServizioEnrichedByIDQuery(): ";
+		String callingClientName = queryObj.getCallingActorName();
+		String callingClientID = queryObj.getCallingActorID();
+		logger.trace("Reveived UpdateServizioByID from " + callingClientName + " ID " + callingClientID);
+		if (checkValidLock(this.getSender(), callingClientName, callingClientID)) {			
+			String collectionName = queryObj.getCollectionName();
+			String servizioID = queryObj.getServizioID();
+			TommyEnrichedJSON servizioEnrichedUpdated = queryObj.getUpdatedServizioEnrichedJSON();
+			logger.trace(method_name + callingClientName + " wants to remove servizio " + servizioID + " from collection " +  collectionName);
+			try {
+				if (this.db.areServiziEnriched()) { // Enriched JSON
+					TommyEnrichedJSON servizioOldEnriched = this.db.getServizioEnrichedByID(servizioID, collectionName);
+					this.db.updateServizioEnrichedByID(servizioID, collectionName, servizioEnrichedUpdated);
+					logger.trace(method_name + "Updated Servizio " + servizioID + " in collection " +  collectionName);
+					this.getSender().tell(new UpdateServizioByIDEnrichedSuccess(servizioID, 
+																		servizioOldEnriched, 
+																		servizioEnrichedUpdated, 
+																		collectionName), 
+					  						this.getSelf());
+				} else { // Raw JSON
+					String servizioOld = this.db.getServizioByID(servizioID, collectionName);
+					this.db.updateServizioByID(servizioID, collectionName, servizioEnrichedUpdated.getJsonServizio());
+					logger.trace(method_name + "Updated Servizio " + servizioID + " in collection " +  collectionName);
+					this.getSender().tell(new UpdateServizioByIDSuccess(servizioID, 
+																		servizioOld, 
+																		servizioEnrichedUpdated.getJsonServizio(), 
+																		collectionName), 
+					  						this.getSelf());
+				}
+			} catch (CollectionNotPresentException e) {
+				logger.error(method_name + e.getMessage());
+				this.getSender().tell(new CollectionNotFound(e.getCollectionName()), 
+									  this.getSelf());
+			} catch (ServizioNotPresentException e) {
+				logger.error(method_name + e.getMessage());
+				this.getSender().tell(new ServizioByIDNotFound(e.getServizioID(), e.getCollectionName()), 
+										this.getSelf());
+			} catch (UnknownDBException e) {
+				logger.error(method_name + e.getMessage());
+				this.getSender().tell(new DBOperationFaillure(e.getMessage()), 
+										this.getSelf());
+			}			
+		}
+	}
+	
 	protected void onWriteNewServizioByIDQuery(WriteNewServizioByID queryObj) {
 		String method_name = "::onWriteNewServizioByIDQuery(): ";
 		String callingClientName = queryObj.getCallingActorName();
@@ -555,6 +607,44 @@ public class DBServer extends AbstractActor {
 					this.db.writeNewServizioByID(servizioID, collectionName, servizioNew);
 					logger.trace(method_name + "Wrote Servizio " + servizioID + " to collection " +  collectionName);
 					this.getSender().tell(new WriteNewServizioByIDSuccess(servizioID, servizioNew, collectionName), 
+									  		this.getSelf());
+				}
+			} catch (CollectionNotPresentException e) {
+				logger.error(method_name + e.getMessage());
+				this.getSender().tell(new CollectionNotFound(e.getCollectionName()), 
+									  this.getSelf());
+			} catch (ServizioAlreadyInCollectionDBException e) {
+				logger.error(method_name + e.getMessage());
+				this.getSender().tell(new ServizioByIDAlreadyPresentInCollection(e.getServizioID(), e.getCollectionName()), 
+										this.getSelf());
+			} catch (UnknownDBException e) {
+				logger.error(method_name + e.getMessage());
+				this.getSender().tell(new DBOperationFaillure(e.getMessage()), 
+										this.getSelf());
+			}
+		}
+	}
+	
+	protected void onWriteNewServizioEnrichedByIDQuery(WriteNewServizioEnrichedByID queryObj) {
+		String method_name = "::onWriteNewServizioEnrichedByIDQuery(): ";
+		String callingClientName = queryObj.getCallingActorName();
+		String callingClientID = queryObj.getCallingActorID();
+		logger.trace("Reveived WriteNewServizioByID from " + callingClientName + " ID " + callingClientID);
+		if (checkValidLock(this.getSender(), callingClientName, callingClientID)) {			
+			String collectionName = queryObj.getCollectionName();
+			String servizioID = queryObj.getServizioID();
+			TommyEnrichedJSON servizioEnrichedNew = queryObj.getNewServizioEnrichedJSON();
+			logger.trace(method_name + callingClientName + " wants to remove servizio " + servizioID + " from collection " +  collectionName);
+			try {
+				if (this.db.areServiziEnriched()) { // Enriched JSON
+					this.db.writeNewServizioEnrichedByID(servizioID, collectionName, servizioEnrichedNew);
+					logger.trace(method_name + "Wrote Servizio " + servizioID + " to collection " +  collectionName);
+					this.getSender().tell(new WriteNewServizioByIDEnrichedSuccess(servizioID, servizioEnrichedNew, collectionName), 
+					  						this.getSelf());
+				} else { // Raw JSON
+					this.db.writeNewServizioByID(servizioID, collectionName, servizioEnrichedNew.getJsonServizio());
+					logger.trace(method_name + "Wrote Servizio " + servizioID + " to collection " +  collectionName);
+					this.getSender().tell(new WriteNewServizioByIDSuccess(servizioID, servizioEnrichedNew.getJsonServizio(), collectionName), 
 									  		this.getSelf());
 				}
 			} catch (CollectionNotPresentException e) {

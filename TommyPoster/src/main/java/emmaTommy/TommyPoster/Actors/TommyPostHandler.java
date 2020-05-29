@@ -59,8 +59,7 @@ public class TommyPostHandler extends AbstractActor {
 	protected int stagingDBLockTimeOutSecs;
 	protected int persistenceDBAskTimeOutSecs;
 	protected int persistenceDBLockTimeOutSecs;
-	protected String stagingDBPostingTableName;
-	protected String stagingDBErrorTableName;
+	protected String stagingDBServiziTableName;
 	protected String persistenceDBServiziCollectionName;
 	
 	protected ActorRef TommyRestPosterActorRef;
@@ -135,8 +134,7 @@ public class TommyPostHandler extends AbstractActor {
   		this.stagingDBLockTimeOutSecs = Integer.parseInt(propDB.getProperty("stagingDBLockTimeOutSecs"));
   		this.persistenceDBAskTimeOutSecs = Integer.parseInt(propDB.getProperty("persistenceDBAskTimeOutSecs"));
   		this.persistenceDBLockTimeOutSecs = Integer.parseInt(propDB.getProperty("persistenceDBAskTimeOutSecs"));
-  		this.stagingDBPostingTableName = propDB.getProperty("stagingDBPostingTableName");
-  		this.stagingDBErrorTableName = propDB.getProperty("stagingDBErrorTableName");
+  		this.stagingDBServiziTableName = propDB.getProperty("stagingDBServiziTableName");
   		this.persistenceDBServiziCollectionName = propDB.getProperty("persistenceDBServiziCollectionName");
   		
   		// Get PersistenceDB ActorRef
@@ -245,29 +243,34 @@ public class TommyPostHandler extends AbstractActor {
 			// Instantiate the map of blocked automezzi
 			TreeMap<String, Boolean> blockedMezziMap = new TreeMap<String, Boolean>();
 		
-			// Collect Every Servizio from StagingDB - Error Section
+			// Collect Every Servizio from StagingDB
 			logger.trace(method_name + "Reading all servizi from StagingDB - Error Section");
-			ArrayList<TommyEnrichedJSON> serviziListError = this.dbClient.getAllServiziInCollection(this.getSelf(), 
+			ArrayList<TommyEnrichedJSON> serviziList = this.dbClient.getAllServiziInCollection(this.getSelf(), 
 																									actorID, 
 																									this.stagingDBActorRef, 
 																									this.stagingDBAskTimeOutSecs, 
-																									this.stagingDBErrorTableName);
-			logger.trace(method_name + "Read " + serviziListError.size() + " servizi from StagingDB - Error Section");
+																									this.stagingDBServiziTableName);
+			logger.trace(method_name + "Read " + serviziList.size() + " servizi from StagingDB");
+			
+			// Create list of servizi in error state and in posting state
+			ArrayList<TommyEnrichedJSON> serviziListError = new ArrayList<TommyEnrichedJSON>();
+			ArrayList<TommyEnrichedJSON> serviziEnrichedListToPost = new ArrayList<TommyEnrichedJSON>();;
+			for (TommyEnrichedJSON servizioEnriched: serviziList) {				
+				if (servizioEnriched.isInPostingState()) {
+					serviziEnrichedListToPost.add(servizioEnriched);
+				}	
+				if (servizioEnriched.isInErrorState()) {
+					serviziListError.add(servizioEnriched);
+				}
+			}
+			logger.trace(method_name + "Read " + serviziEnrichedListToPost.size() + " servizi In Posting State from StagingDB");
+			logger.trace(method_name + "Read " + serviziListError.size() + " servizi In Error State from StagingDB");
 			
 			// Block all Automezzi of servizi in error state from posting
 			for (TommyEnrichedJSON servizioEnriched: serviziListError) {
 				blockedMezziMap.put(servizioEnriched.getCodiceMezzo(), false);
 				logger.error(method_name + "Mezzo " + servizioEnriched.getCodiceMezzo() + " was blocked from posting");
 			}
-			
-			// Collect Every Servizio from StagingDB - Posting Section
-			logger.trace(method_name + "Reading all servizi from StagingDB - Posting Section");
-			ArrayList<TommyEnrichedJSON> serviziEnrichedListToPost = this.dbClient.getAllServiziInCollection(this.getSelf(), 
-																										actorID, 
-																										this.stagingDBActorRef, 
-																										this.stagingDBAskTimeOutSecs, 
-																										this.stagingDBPostingTableName);
-			logger.trace(method_name + "Read " + serviziEnrichedListToPost.size() + " servizi from StagingDB - Posting Section");
 			
 			// Put all read servizi from posting section to a sorted tree map
 			TreeMap<String, TommyEnrichedJSON> serviziToPost = new TreeMap<String, TommyEnrichedJSON>();
@@ -284,22 +287,22 @@ public class TommyPostHandler extends AbstractActor {
 				if (servizioID.compareTo(this.startingServizioID) < 0) { // Check against startingServizioID
 					logger.warn(method_name + "Servizio " + servizioID + " was before startingServizioID " + startingServizioID);
 					/**
-					if (servizioInError(servizioID, servizioEnriched)) { // Servizio Must Go to Staging DB - Error Section
+					if (servizioInError(servizioID, servizioEnriched)) { // Servizio Must Go to Staging DB with Error State
 						serviziUnpostable.put(servizioID, servizioEnriched);
-						logger.error(method_name + "Servizio " + servizioID + " will be put in the StagingDB - Error Section");
+						logger.error(method_name + "Servizio " + servizioID + " will be put in the StagingDB with Error State");
 					} else { // Servizio is not In Error State
 						if (validateServizioForPosting(servizioID, servizioEnriched, new TreeMap<String, Boolean>())) { // Servizio mustGo to PersistenceDB
 							serviziPosted.put(servizioID, servizioEnriched);
 							logger.warn(method_name + "Servizio " + servizioID + " will be put in the PersistenceDB");
 						} else { // Servizio will Remain in Posting section, but the mezzo will be blocked from posting
-							logger.warn(method_name + "Servizio " + servizioID + " is not valid for posting and will remain in StagingDB - Posting Sectio");
+							logger.warn(method_name + "Servizio " + servizioID + " is not valid for posting and will remain in StagingDB with Posting State");
 						}
 					}
 					*/
 				} else { // Validate for Posting	
-					if (servizioInError(servizioID, servizioEnriched)) { // Servizio Must Go to Staging DB - Error Section
+					if (servizioInError(servizioID, servizioEnriched)) { // Servizio Must Go to Staging DB with Error State
 						serviziUnpostable.put(servizioID, servizioEnriched);
-						logger.error(method_name + "Servizio " + servizioID + " will be put in the StagingDB - Error Section");
+						logger.error(method_name + "Servizio " + servizioID + " will be put in the StagingDB with Error State");
 					} else { // Servizio is not In Error State
 						if (validateServizioForPosting(servizioID, servizioEnriched, blockedMezziMap)) { // Servizio can be posted
 							if (!serviziToPostByMezzo.containsKey(servizioEnriched.getCodiceMezzo())) { // Map For Mezzo Does Not Exists
@@ -318,7 +321,7 @@ public class TommyPostHandler extends AbstractActor {
 			
 			// Post Servizi Grouped by Mezzo
 			for (String automezzo: serviziToPostByMezzo.keySet() ) {
-				logger.trace(method_name, "Posting Servizi for mezzo " + automezzo);
+				logger.trace(method_name + "Posting Servizi for mezzo " + automezzo);
 				PostData postData = new PostData(automezzo, serviziToPostByMezzo.get(automezzo));
 				if (this.save_post_json_to_disk) {
 					String fileName = new SimpleDateFormat("'postData_'yyyyMMdd_HHmmss'.json'").format(new Date());
@@ -331,10 +334,10 @@ public class TommyPostHandler extends AbstractActor {
 				try {
 					PostDataResponse response = (PostDataResponse) Await.result(postResponse, Duration.create(tommyPostTimeout, TimeUnit.SECONDS));
 					if (response.getSuccess()) {
-						logger.trace(method_name, "Post Success Servizi for Automezzo " + automezzo);
-						logger.trace(method_name, response.getTommyResponse());
+						logger.trace(method_name + "Post Success Servizi for Automezzo " + automezzo);
+						logger.trace(method_name + response.getTommyResponse());
 						serviziPosted.putAll(serviziToPostByMezzo.get(automezzo));
-						logger.trace(method_name, "Added " + serviziToPostByMezzo.get(automezzo).size() + 
+						logger.trace(method_name + "Added " + serviziToPostByMezzo.get(automezzo).size() + 
 													" servizi for automezzo " + automezzo +
 													" to serviziPosted Map");
 						if (this.save_post_json_to_disk) {
@@ -344,10 +347,10 @@ public class TommyPostHandler extends AbstractActor {
 					        outputStream.close();
 						}	
 					} else {
-						logger.error(method_name, "Post Error Servizi for mezzo " + automezzo);
-						logger.error(method_name, response.getTommyResponse());
+						logger.error(method_name + "Post Error Servizi for mezzo " + automezzo);
+						logger.error(method_name + response.getTommyResponse());
 						serviziUnpostable.putAll(serviziToPostByMezzo.get(automezzo));
-						logger.warn(method_name, "Added " + serviziToPostByMezzo.get(automezzo).size() + 
+						logger.warn(method_name + "Added " + serviziToPostByMezzo.get(automezzo).size() + 
 								" servizi for automezzo " + automezzo +
 								" to serviziUnpostable Map");
 						if (this.save_post_json_to_disk) {
@@ -363,32 +366,35 @@ public class TommyPostHandler extends AbstractActor {
 				}
 			}
 			
-			// Write Posted Servizi to PersistenceDB and Remove Posted Servizi From StagingDB Posting Section
+			// Write Posted Servizi to PersistenceDB and Remove Posted Servizi From StagingDB
 			if (this.writeOverPersistenceDB) {
 				for (String servizioID: serviziPosted.keySet()) {
-					TommyEnrichedJSON servizioEnriched = serviziPosted.get(servizioID);
+					TommyEnrichedJSON servizioEnrichedPosted = serviziPosted.get(servizioID);
 					this.dbClient.writeNewServizioByID(this.getSelf(), actorID, this.persistenceDBActorRef, 
 							 this.persistenceDBAskTimeOutSecs, 
-							 servizioID, servizioEnriched.getJsonServizio(), 
+							 servizioID, servizioEnrichedPosted.getJsonServizio(), 
 							 this.persistenceDBServiziCollectionName);
 					logger.trace(method_name + "Written servizio " + servizioID + " to PersistenceDB - " + this.persistenceDBServiziCollectionName);
 					this.dbClient.removeServizioByID(this.getSelf(), actorID, this.stagingDBActorRef, 
 							 this.persistenceDBAskTimeOutSecs, 
 							 servizioID, 
-							 this.stagingDBPostingTableName);
-					logger.trace(method_name + "Removed servizio " + servizioID + " from StagingDB - " + this.stagingDBPostingTableName);
+							 this.stagingDBServiziTableName);
+					logger.trace(method_name + "Removed servizio " + servizioID + " from StagingDB - " + this.stagingDBServiziTableName);
 				}
 			} else {
 				logger.warn(method_name + "Write over PersistenceDB was disabled by configuration");
 			}
 			
-			// Move Unpostable Servizi from StagingDB Posting Section to Error Section
+			// Update Unpostable Servizi in StagingDB with Error State
 			for (String servizioID: serviziUnpostable.keySet()) {
-				this.dbClient.moveServizioByID(this.getSelf(), actorID, this.stagingDBActorRef, 
+				TommyEnrichedJSON servizioEnrichedUnPosted = serviziUnpostable.get(servizioID);
+				servizioEnrichedUnPosted.setPostStatus(TommyEnrichedJSON.PostStatus.ERROR);
+				this.dbClient.updateServizioEnrichedByID(this.getSelf(), actorID, this.stagingDBActorRef, 
 						 this.stagingDBAskTimeOutSecs, 
 						 servizioID,
-						 this.stagingDBPostingTableName, this.stagingDBErrorTableName);
-				logger.trace(method_name + "Moved servizio " + servizioID + " in StagingDB from " + stagingDBPostingTableName + " to " + stagingDBErrorTableName);
+						 servizioEnrichedUnPosted, 
+						 this.stagingDBServiziTableName);
+				logger.trace(method_name + "Updated servizio " + servizioID + " in StagingDB with Error State");
 			}
 			
 		} catch (Exception e) {
@@ -418,27 +424,27 @@ public class TommyPostHandler extends AbstractActor {
     	
     	// Check ServizioID
     	if (servizioID == null) {
-    		logger.error(method_name, "Received servizio has null servizioID");
+    		logger.error(method_name + "Received servizio has null servizioID");
     		return true;
     	}
     	if (servizioID.isBlank()) {
-    		logger.error(method_name, "Received servizio has blanck servizioID");
+    		logger.error(method_name + "Received servizio has blanck servizioID");
     		return true;
     	}
     	
     	// Check servizioEnriched
     	if (servizioEnriched == null) {
-    		logger.error(method_name, "Received servizio was null");
+    		logger.error(method_name + "Received servizio was null");
     		return true;
     	}
     	
     	// Check Mezzo Servizio
     	if (servizioEnriched.getCodiceMezzo() == null) {
-    		logger.error(method_name, "Servizio " + servizioID + " has null codiceMezzo");
+    		logger.error(method_name + "Servizio " + servizioID + " has null codiceMezzo");
     		return true;
     	}
     	if (servizioEnriched.getCodiceMezzo().isBlank()) {
-    		logger.error(method_name, "Servizio " + servizioID + " has blanck codiceMezzo");
+    		logger.error(method_name + "Servizio " + servizioID + " has blanck codiceMezzo");
     		return true;
     	}
     			
@@ -456,20 +462,20 @@ public class TommyPostHandler extends AbstractActor {
     	
     	// Check if KM Servizio are More than 0
     	if (servizioEnriched.getKm() <= 0) {
-    		logger.error(method_name, "Servizio " + servizioID + " has non positive KM");
+    		logger.error(method_name + "Servizio " + servizioID + " has non positive KM");
     		return false;
     	}
     	
     	// Check blockedMezziMap
     	if (blockedMezziMap == null) {
-    		logger.error(method_name, "Received blockedMezziMap was null");
+    		logger.error(method_name + "Received blockedMezziMap was null");
     		return false;
     	}
     	
     	
     	// Check blockedMezziMap
     	if (blockedMezziMap.containsKey(servizioEnriched.getCodiceMezzo())) {
-    		logger.error(method_name, "Servizio " + servizioID + " has blocked AutoMezzo " + servizioEnriched.getCodiceMezzo());
+    		logger.error(method_name + "Servizio " + servizioID + " has blocked AutoMezzo " + servizioEnriched.getCodiceMezzo());
     		return false;
     	}
     			

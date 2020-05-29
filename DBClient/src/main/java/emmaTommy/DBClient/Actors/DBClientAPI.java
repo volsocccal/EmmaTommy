@@ -20,7 +20,9 @@ import emmaTommy.DBClient.ActorsMessages.Queries.MoveServizioByID;
 import emmaTommy.DBClient.ActorsMessages.Queries.ReleaseDBLock;
 import emmaTommy.DBClient.ActorsMessages.Queries.RemoveServizioByID;
 import emmaTommy.DBClient.ActorsMessages.Queries.UpdateServizioByID;
+import emmaTommy.DBClient.ActorsMessages.Queries.UpdateServizioEnrichedByID;
 import emmaTommy.DBClient.ActorsMessages.Queries.WriteNewServizioByID;
+import emmaTommy.DBClient.ActorsMessages.Queries.WriteNewServizioEnrichedByID;
 import emmaTommy.DBClient.ActorsMessages.Replies.CollectionListSuccess;
 import emmaTommy.DBClient.ActorsMessages.Replies.DBFailedToBeLocked;
 import emmaTommy.DBClient.ActorsMessages.Replies.DBIsAlive;
@@ -43,7 +45,9 @@ import emmaTommy.DBClient.ActorsMessages.Replies.ReplyServizioById;
 import emmaTommy.DBClient.ActorsMessages.Replies.ReplyServizioByIdEnriched;
 import emmaTommy.DBClient.ActorsMessages.Replies.ServizioByIDFound;
 import emmaTommy.DBClient.ActorsMessages.Replies.ServizioByIDNotFound;
+import emmaTommy.DBClient.ActorsMessages.Replies.UpdateServizioByIDEnrichedSuccess;
 import emmaTommy.DBClient.ActorsMessages.Replies.UpdateServizioByIDSuccess;
+import emmaTommy.DBClient.ActorsMessages.Replies.WriteNewServizioByIDEnrichedSuccess;
 import emmaTommy.DBClient.ActorsMessages.Replies.WriteNewServizioByIDSuccess;
 import emmaTommy.TommyDataModel.TommyEnrichedJSON;
 import scala.concurrent.Await;
@@ -714,7 +718,7 @@ public class DBClientAPI {
 													1000);
 		try {
 			Reply replyUpdate = (Reply) Await.result(futureUpdate, Duration.create(operationTimeOutSecs, TimeUnit.SECONDS));
-			if (replyUpdate instanceof UpdateServizioByIDSuccess) {
+			if (replyUpdate instanceof UpdateServizioByIDSuccess || replyUpdate instanceof UpdateServizioByIDEnrichedSuccess) {
 				logger.trace(method_name + "Updated servizio " + servizioID + " from collection " + collectionName);
 			} else if (replyUpdate instanceof DBOperationFaillure) {
 				throw new DBOperationFailedException(((DBOperationFaillure) replyUpdate).getCause());
@@ -723,6 +727,46 @@ public class DBClientAPI {
 			}
 		} catch (TimeoutException | InterruptedException | IllegalArgumentException e) {
 			logger.error(method_name + " Failed to update servizio " + servizioID + " from collection " + collectionName
+									 + ": " + e.getMessage());
+		}
+	}
+
+	
+	 /** Update a Servizio with new Data
+	 * @param client ActorRef of the client, caller of the Query
+	 * @param dbManager ActorRef of the DB Manager Actor
+	 * @param operationTimeOutSecs Timeout for the Ask Operation
+	 * @param servizioID ID of the Servizio to move
+	 * @param updatedServizioEnrichedJSON new Enriched JSON for the Servizio
+	 * @param collectionName Collection where the Servizio is to be found
+	 * @throws DBOperationFailedException
+	 * 
+	 */
+	public void updateServizioEnrichedByID(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs, String servizioID, TommyEnrichedJSON updatedServizioEnrichedJSON, String collectionName) throws DBOperationFailedException {
+		String method_name = "::updateServizioEnrichedByID(): ";
+		// Check Input Parameters
+		if (operationTimeOutSecs < 0) {
+			throw new DBOperationFailedException("Received Operation TimeOut was negative");
+		}
+		if (operationTimeOutSecs == 0) {
+			throw new DBOperationFailedException("Received Operation TimeOut was zero");
+		}
+		Future<Object> futureUpdate = Patterns.ask(dbManager, 
+													new UpdateServizioEnrichedByID(client.path().name(), clientID, servizioID, updatedServizioEnrichedJSON, collectionName), 
+													1000);
+		try {
+			Reply replyUpdate = (Reply) Await.result(futureUpdate, Duration.create(operationTimeOutSecs, TimeUnit.SECONDS));
+			if (replyUpdate instanceof UpdateServizioByIDEnrichedSuccess) {
+				logger.trace(method_name + "Updated servizio " + servizioID + " in collection " + collectionName + " as plain JSON and not Enriched!");
+			} else if (replyUpdate instanceof UpdateServizioByIDSuccess) {
+				logger.trace(method_name + "Updated servizio " + servizioID + " in collection " + collectionName);
+			} else if (replyUpdate instanceof DBOperationFaillure) {
+				throw new DBOperationFailedException(((DBOperationFaillure) replyUpdate).getCause());
+			} else {
+				throw new DBOperationFailedException("Received unhandled reply of type: " + replyUpdate.getReplyTypeName());
+			}
+		} catch (TimeoutException | InterruptedException | IllegalArgumentException e) {
+			logger.error(method_name + " Failed to update servizio " + servizioID + " in collection " + collectionName
 									 + ": " + e.getMessage());
 		}
 	}
@@ -753,7 +797,7 @@ public class DBClientAPI {
 												1000);
 		try {
 			Reply replyWrite = (Reply) Await.result(futureWrite, Duration.create(operationTimeOutSecs, TimeUnit.SECONDS));
-			if (replyWrite instanceof WriteNewServizioByIDSuccess) {
+			if (replyWrite instanceof WriteNewServizioByIDSuccess || replyWrite instanceof WriteNewServizioByIDSuccess) {
 				logger.trace(method_name + "Wrote new servizio " + servizioID + " from collection " + collectionName);
 			} else if (replyWrite instanceof DBOperationFaillure) {
 				throw new DBOperationFailedException(((DBOperationFaillure) replyWrite).getCause());
@@ -762,6 +806,48 @@ public class DBClientAPI {
 			}
 		} catch (TimeoutException | InterruptedException | IllegalArgumentException e) {
 			logger.error(method_name + " Failed to write new servizio " + servizioID + " from collection " + collectionName
+									 + ": " + e.getMessage());
+		}
+	}
+	
+	
+
+	/**
+	 * Write a new Servizio to the given Collection
+	 * @param client ActorRef of the client, caller of the Query
+	 * @param dbManager ActorRef of the DB Manager Actor
+	 * @param operationTimeOutSecs Timeout for the Ask Operation
+	 * @param servizioID ID of the Servizio to move
+	 * @param newServizioEnrichedJSON new Enriched JSON for the Servizio
+	 * @param collectionName Collection where the Servizio is to be found
+	 * @throws DBOperationFailedException
+	 * 
+	 */
+	public void writeNewServizioEnrichedByID(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs, String servizioID, TommyEnrichedJSON newServizioEnrichedJSON, String collectionName) throws DBOperationFailedException {
+		String method_name = "::writeNewServizioEnrichedByID(): ";
+		// Check Input Parameters
+		if (operationTimeOutSecs < 0) {
+			throw new DBOperationFailedException("Received Operation TimeOut was negative");
+		}
+		if (operationTimeOutSecs == 0) {
+			throw new DBOperationFailedException("Received Operation TimeOut was zero");
+		}
+		Future<Object> futureWrite = Patterns.ask(dbManager, 
+												new WriteNewServizioEnrichedByID(client.path().name(), clientID, servizioID, newServizioEnrichedJSON, collectionName), 
+												1000);
+		try {
+			Reply replyWrite = (Reply) Await.result(futureWrite, Duration.create(operationTimeOutSecs, TimeUnit.SECONDS));
+			if (replyWrite instanceof WriteNewServizioByIDEnrichedSuccess) {
+				logger.trace(method_name + "Wrote new servizio enriched " + servizioID + " to collection " + collectionName);
+			} else if (replyWrite instanceof WriteNewServizioByIDSuccess) {
+				logger.warn(method_name + "Wrote new servizio " + servizioID + " to collection " + collectionName + " as plain JSON and not Enriched!");
+			} else if (replyWrite instanceof DBOperationFaillure) {
+				throw new DBOperationFailedException(((DBOperationFaillure) replyWrite).getCause());
+			} else {
+				throw new DBOperationFailedException("Received unhandled reply of type: " + replyWrite.getReplyTypeName());
+			}
+		} catch (TimeoutException | InterruptedException | IllegalArgumentException e) {
+			logger.error(method_name + " Failed to write new servizio " + servizioID + " to collection " + collectionName
 									 + ": " + e.getMessage());
 		}
 	}

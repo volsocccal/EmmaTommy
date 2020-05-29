@@ -12,6 +12,7 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import emmaTommy.DBServerAbstraction.Actors.DBServer;
+import emmaTommy.DBServerAbstraction.DBExceptions.UnknownDBException;
 import emmaTommy.DBServerAbstraction.DBHandlers.MockDB;
 import emmaTommy.EmmaOrchestrator.EmmaOrchestrator;
 import emmaTommy.EmmaTommyConverter.Actors.EmmaTommyOrchestrator;
@@ -21,7 +22,7 @@ import emmaTommy.TommyPoster.Actors.TommyPostHandler;
 
 public class EmmaTommySupervisor {
 	 
-	 public static void main(String[] args) {
+	 public static void main(String[] args) throws UnknownDBException {
 			
 			String method_name = "::main(): ";
 			String supervisorConfPath = "conf/supervisor.conf";
@@ -77,8 +78,7 @@ public class EmmaTommySupervisor {
 			ArrayList<String> stagingCollectionListNames = new ArrayList<String>() { 
 				private static final long serialVersionUID = 1L;
 				{ 
-					add("Posting");
-		            add("Error");
+					add("postingTable");
 		        } 
 		    }; 
 			logger.info(method_name + "Creating " + stagingDBName + " Actor ...");
