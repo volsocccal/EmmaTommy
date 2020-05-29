@@ -6,6 +6,7 @@ import java.util.HashMap;
 import emmaTommy.DBServerAbstraction.DBExceptions.CollectionNotPresentException;
 import emmaTommy.DBServerAbstraction.DBExceptions.ServizioAlreadyInCollectionDBException;
 import emmaTommy.DBServerAbstraction.DBExceptions.ServizioNotPresentException;
+import emmaTommy.DBServerAbstraction.DBExceptions.UnknownDBException;
 import emmaTommy.TommyDataModel.TommyEnrichedJSON;
 
 
@@ -13,16 +14,36 @@ public class MockDB extends AbstractDB {
 	
 	protected HashMap<String, HashMap<String, TommyEnrichedJSON>> db_enriched;
 	protected HashMap<String, HashMap<String, String>> db_raw;
+	protected ArrayList<String> collectionListNames;
 
 	public MockDB(String DBName, 
 			String DBTech, 
 			String DBType, 
 			Boolean supportEnrichedJSON,
-			ArrayList<String> collectionListNames) {
-		super(DBName, DBTech, DBType, true, supportEnrichedJSON, collectionListNames);
+			ArrayList<String> collectionListNames) throws UnknownDBException {
+		super(DBName, DBTech, DBType, true, supportEnrichedJSON);
 		
 		// Logger Method Name
 		String method_name = "::MockDB(): ";
+		
+		// Log CollectionNames
+		if (collectionListNames == null) {
+			throw new NullPointerException("Reveived Null collectionListNames");
+		}
+		if (collectionListNames.isEmpty()) {
+			throw new NullPointerException("Reveived Empty collectionListNames");
+		}
+		this.collectionListNames = new ArrayList<String>();
+		for (String collectionName: collectionListNames) {
+			if (collectionName == null) {
+				throw new NullPointerException("Reveived Null collectionName");
+			}
+			if (collectionListNames.isEmpty()) {
+				throw new NullPointerException("Reveived Empty collectionName");
+			}
+			this.collectionListNames.add(collectionName);
+			logger.info(method_name + "Added Collection " + collectionName + " to DB");
+		}
 		
 		// Create DB Map
 		if (this.supportEnrichedJSON) {

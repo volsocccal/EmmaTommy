@@ -20,31 +20,30 @@ public abstract class AbstractDB {
 	protected String DBType;
 	protected Boolean DBMock;
 	protected Boolean supportEnrichedJSON;
-	protected ArrayList<String> collectionListNames;
 
-	public AbstractDB(String DBInstanceName, String DBTech, String DBType, Boolean DBMock, Boolean supportEnrichedJSON, ArrayList<String> collectionListNames) {
+	public AbstractDB(String DBInstanceName, String DBTech, String DBType, Boolean DBMock, Boolean supportEnrichedJSON) throws UnknownDBException {
 		
 		// Logger Method Name
 		String method_name = "::AbstractDB(): ";
 		
 		// Check Input Data
 		if (DBInstanceName == null) {
-			throw new NullPointerException("Reveived Null DBInstanceName");
+			throw new UnknownDBException("Reveived Null DBInstanceName");
 		}
 		if (DBInstanceName.isBlank()) {
-			throw new NullPointerException("Reveived Blank DBInstanceName");
+			throw new UnknownDBException("Reveived Blank DBInstanceName");
 		}
 		if (DBTech == null) {
-			throw new NullPointerException("Reveived Null DBTech");
+			throw new UnknownDBException("Reveived Null DBTech");
 		}
 		if (DBTech.isBlank()) {
-			throw new NullPointerException("Reveived Blank DBTech");
+			throw new UnknownDBException("Reveived Blank DBTech");
 		}
 		if (DBType == null) {
-			throw new NullPointerException("Reveived Null DBType");
+			throw new UnknownDBException("Reveived Null DBType");
 		}
 		if (DBType.isBlank()) {
-			throw new NullPointerException("Reveived Blank DBType");
+			throw new UnknownDBException("Reveived Blank DBType");
 		}
 				
 		// Save Configuration Data
@@ -62,25 +61,6 @@ public abstract class AbstractDB {
 		logger.info(method_name + "DB Type: " + DBType);
 		logger.info(method_name + "DB Mock: " + DBMock);
 		logger.info(method_name + "DB Supports Enriched JSON: " + supportEnrichedJSON);
-		
-		// Log CollectionNames
-		if (collectionListNames == null) {
-			throw new NullPointerException("Reveived Null collectionListNames");
-		}
-		if (collectionListNames.isEmpty()) {
-			throw new NullPointerException("Reveived Empty collectionListNames");
-		}
-		this.collectionListNames = new ArrayList<String>();
-		for (String collectionName: collectionListNames) {
-			if (collectionName == null) {
-				throw new NullPointerException("Reveived Null collectionName");
-			}
-			if (collectionListNames.isEmpty()) {
-				throw new NullPointerException("Reveived Empty collectionName");
-			}
-			this.collectionListNames.add(collectionName);
-			logger.info(method_name + "Added Collection " + collectionName + " to DB");
-		}
 		
 	}
 	
