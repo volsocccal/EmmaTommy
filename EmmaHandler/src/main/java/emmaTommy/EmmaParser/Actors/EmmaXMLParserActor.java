@@ -143,25 +143,26 @@ public class EmmaXMLParserActor extends AbstractActor {
 				}
 				int codiceMissione = missione.getCodiceMissione();
 				if (codiceMissione < MISSIONE_MIN_ID) {
-					throw new RuntimeException("");
-				}
-				if (!missione.getValidState()) {
-					logger.error(method_name + "missione " + codiceMissione + " was not valid. I will parse it for bookkeping");
-					logger.error(method_name + "missione " + codiceMissione + " invalid mission stack: \n" + missione.getErrorListFormatted());
+					logger.warn(method_name + "missione " + codiceMissione + "was preceding the starting missione " + MISSIONE_MIN_ID + ", will discard it");
 				} else {
-					logger.info(method_name + "missione " + codiceMissione + " was valid.");
-				}
-				String missione_JSON = missione.toJSON();
-				if (this.sendJSONOverKAFKA) {
-					MissioniDataJSON jsonMissioni = new MissioniDataJSON(codiceMissione, missione_JSON);
-					JsonKafkaProducer.tell(jsonMissioni, this.getSelf());
-				}
-				if (this.saveJSONToLog) {
-					logger.info(method_name + "Missione id=" + codiceMissione);
-					logger.trace(missione_JSON);
-				}
-				if (this.saveJSONToFile) {
-					this.writeJSONToFile(this.json_folder_path, missione_JSON, codiceMissione);
+					if (!missione.getValidState()) {
+						logger.error(method_name + "missione " + codiceMissione + " was not valid. I will parse it for bookkeping");
+						logger.error(method_name + "missione " + codiceMissione + " invalid mission stack: \n" + missione.getErrorListFormatted());
+					} else {
+						logger.info(method_name + "missione " + codiceMissione + " was valid.");
+					}
+					String missione_JSON = missione.toJSON();
+					if (this.sendJSONOverKAFKA) {
+						MissioniDataJSON jsonMissioni = new MissioniDataJSON(codiceMissione, missione_JSON);
+						JsonKafkaProducer.tell(jsonMissioni, this.getSelf());
+					}
+					if (this.saveJSONToLog) {
+						logger.info(method_name + "Missione id=" + codiceMissione);
+						logger.trace(missione_JSON);
+					}
+					if (this.saveJSONToFile) {
+						this.writeJSONToFile(this.json_folder_path, missione_JSON, codiceMissione);
+					}
 				}
 			} catch (Exception e) {
 				logger.error(method_name + e.getClass().getSimpleName() + " - " + e.getMessage());
