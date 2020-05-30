@@ -176,7 +176,7 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 							  this.persistenceDBServiziCollectionName);
 					
 					if (servizioPresentPersistenceDB) { // Servizio was already in the Persistence DB
-					
+						logger.info(method_name + "Servizio " + servizioData.getID() + " was already present in the persistence DB");
 						// Try to read the servizio from the Persistence DB		
 						TommyEnrichedJSON servizioEnrichedDBPersistence = this.dbClient.getServizioByID(this.getSelf(), actorID, this.persistenceDBActorRef, 
 																							  this.persistenceDBAskTimeOutSecs, 
@@ -184,7 +184,6 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 																							  this.persistenceDBServiziCollectionName);
 						
 						if (servizioEnrichedDBPersistence != null) {
-							logger.info(method_name + "Servizio " + servizioData.getID() + " was already present in the persistence DB");
 							Servizio servizioDB = servizioEnrichedDBPersistence.buildServizio();
 							if (servizioDB.equals(servizio)) { // Equals, Discard the New Data
 								logger.info(method_name + "Servizio " + servizioData.getID() + " was already updated in the persistence DB");
@@ -198,6 +197,7 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 						}
 						
 					} else { // Servizio wasn't in the Persistence DB
+						logger.info(method_name + "Servizio " + servizioData.getID() + " wasn't present in the Persistence DB");
 						Boolean lockAcquiredStagingDB = false;
 						try {
 						
