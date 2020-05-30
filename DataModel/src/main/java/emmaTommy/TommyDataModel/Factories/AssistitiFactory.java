@@ -49,13 +49,15 @@ public class AssistitiFactory {
 				emmaTommy.TommyDataModel.Assistito newAssistito;
 				
 				// Anagrafica
-				if (p.getNome() != null && p.getCognome() != null) {						
+				if (p.getNome() != null && p.getCognome() != null) {		
+					/**
 					String codiceFiscale = p.getCognome() + "_" + p.getNome();
 					if (p.getDataNascita() != null) {
 						if (p.getDataNascitaStr() != null) {
 							codiceFiscale += "_" + p.getDataNascitaStr();
 						}
-					}					
+					}*/
+					String codiceFiscale = "NON NOTO";
 					newAssistito = new emmaTommy.TommyDataModel.Assistito();
 					newAssistito.setCodiceFiscale(codiceFiscale);
 					newAssistito.setCognome(p.getCognome());
