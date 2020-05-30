@@ -143,11 +143,11 @@ public class EmmaXMLParserActor extends AbstractActor {
 				}
 				int codiceMissione = missione.getCodiceMissione();
 				if (codiceMissione < MISSIONE_MIN_ID) {
-					logger.warn(method_name + "missione " + codiceMissione + "was preceding the starting missione " + MISSIONE_MIN_ID + ", will discard it");
+					logger.warn(method_name + "missione " + codiceMissione + " is preceding the starting missione " + MISSIONE_MIN_ID + ", will discard it");
 				} else {
 					if (!missione.getValidState()) {
 						logger.error(method_name + "missione " + codiceMissione + " was not valid. I will parse it for bookkeping");
-						logger.error(method_name + "missione " + codiceMissione + " invalid mission stack: \n" + missione.getErrorListFormatted());
+						logger.error(method_name + "missione " + codiceMissione + " has invalid mission stack: \n" + missione.getErrorListFormatted());
 					} else {
 						logger.info(method_name + "missione " + codiceMissione + " was valid.");
 					}
