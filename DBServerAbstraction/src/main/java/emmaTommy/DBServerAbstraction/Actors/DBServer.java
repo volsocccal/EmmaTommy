@@ -1,6 +1,7 @@
 package emmaTommy.DBServerAbstraction.Actors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.logging.log4j.LogManager;
 
@@ -367,8 +368,18 @@ public class DBServer extends AbstractActor {
 		logger.trace("Reveived IsServizioByIDPresent from " + callingClientName + " ID " + callingClientID);
 		String wantedCollectionName = queryObj.getCollectionName();
 		String servizioID = queryObj.getID();
-		logger.trace(method_name + callingClientName + " wants servizio " + servizioID + " from collection " +  wantedCollectionName);
+		logger.trace(method_name + callingClientName + " wants to know if servizio " + servizioID + " in collection " +  wantedCollectionName + " is present");
 		try {
+			HashMap<String, TommyEnrichedJSON> serviziInCollection = this.db.getAllServiziEnrichedInCollection(wantedCollectionName);
+			String serviziLog = "Servizi in Collection " + wantedCollectionName + ": " + serviziInCollection.size();
+			if (serviziInCollection.isEmpty()) {
+				serviziLog += " - Empty";
+			} else {
+				for (String servizioId: serviziInCollection.keySet()) {
+					serviziLog += "\n" + servizioId + " - Status " + serviziInCollection.get(servizioId).getPostStatusStr();
+				}				
+			}
+			logger.trace(method_name + serviziLog);
 			if (this.db.isServizioByIDPresent(servizioID, wantedCollectionName)) { // Servizio Found
 				logger.trace(method_name + "Sending servizioByIdFound (servizio " + servizioID + " from collection " +  wantedCollectionName + ") to " + callingClientName);
 				this.getSender().tell(new ServizioByIDFound(servizioID, wantedCollectionName), 
@@ -479,6 +490,16 @@ public class DBServer extends AbstractActor {
 					this.getSender().tell(new RemoveServizioByIDSuccess(servizioID, servizio, collectionName), 
 									  		this.getSelf());
 				}
+				HashMap<String, TommyEnrichedJSON> serviziInCollection = this.db.getAllServiziEnrichedInCollection(collectionName);
+				String serviziLog = "Servizi in Collection " + collectionName + ": " + serviziInCollection.size();
+				if (serviziInCollection.isEmpty()) {
+					serviziLog += " - Empty";
+				} else {
+					for (String servizioId: serviziInCollection.keySet()) {
+						serviziLog += "\n" + servizioId + " - Status " + serviziInCollection.get(servizioId).getPostStatusStr();
+					}				
+				}
+				logger.trace(method_name + serviziLog);
 			} catch (CollectionNotPresentException e) {
 				logger.error(method_name + e.getMessage());
 				this.getSender().tell(new CollectionNotFound(e.getCollectionName()), 
@@ -504,7 +525,7 @@ public class DBServer extends AbstractActor {
 			String collectionName = queryObj.getCollectionName();
 			String servizioID = queryObj.getServizioID();
 			String servizioUpdated = queryObj.getUpdatedServizioJSON();
-			logger.trace(method_name + callingClientName + " wants to remove servizio " + servizioID + " from collection " +  collectionName);
+			logger.trace(method_name + callingClientName + " wants to update servizio " + servizioID + " from collection " +  collectionName);
 			try {
 				if (this.db.areServiziEnriched()) { // Enriched JSON
 					TommyEnrichedJSON servizioOldEnriched = this.db.getServizioEnrichedByID(servizioID, collectionName);
@@ -525,6 +546,16 @@ public class DBServer extends AbstractActor {
 																		collectionName), 
 					  						this.getSelf());
 				}
+				HashMap<String, TommyEnrichedJSON> serviziInCollection = this.db.getAllServiziEnrichedInCollection(collectionName);
+				String serviziLog = "Servizi in Collection " + collectionName + ": " + serviziInCollection.size();
+				if (serviziInCollection.isEmpty()) {
+					serviziLog += " - Empty";
+				} else {
+					for (String servizioId: serviziInCollection.keySet()) {
+						serviziLog += "\n" + servizioId + " - Status " + serviziInCollection.get(servizioId).getPostStatusStr();
+					}				
+				}
+				logger.trace(method_name + serviziLog);
 			} catch (CollectionNotPresentException e) {
 				logger.error(method_name + e.getMessage());
 				this.getSender().tell(new CollectionNotFound(e.getCollectionName()), 
@@ -550,7 +581,7 @@ public class DBServer extends AbstractActor {
 			String collectionName = queryObj.getCollectionName();
 			String servizioID = queryObj.getServizioID();
 			TommyEnrichedJSON servizioEnrichedUpdated = queryObj.getUpdatedServizioEnrichedJSON();
-			logger.trace(method_name + callingClientName + " wants to remove servizio " + servizioID + " from collection " +  collectionName);
+			logger.trace(method_name + callingClientName + " wants to update servizio " + servizioID + " in collection " +  collectionName);
 			try {
 				if (this.db.areServiziEnriched()) { // Enriched JSON
 					TommyEnrichedJSON servizioOldEnriched = this.db.getServizioEnrichedByID(servizioID, collectionName);
@@ -571,6 +602,16 @@ public class DBServer extends AbstractActor {
 																		collectionName), 
 					  						this.getSelf());
 				}
+				HashMap<String, TommyEnrichedJSON> serviziInCollection = this.db.getAllServiziEnrichedInCollection(collectionName);
+				String serviziLog = "Servizi in Collection " + collectionName + ": " + serviziInCollection.size();
+				if (serviziInCollection.isEmpty()) {
+					serviziLog += " - Empty";
+				} else {
+					for (String servizioId: serviziInCollection.keySet()) {
+						serviziLog += "\n" + servizioId + " - Status " + serviziInCollection.get(servizioId).getPostStatusStr();
+					}				
+				}
+				logger.trace(method_name + serviziLog);
 			} catch (CollectionNotPresentException e) {
 				logger.error(method_name + e.getMessage());
 				this.getSender().tell(new CollectionNotFound(e.getCollectionName()), 
@@ -596,7 +637,7 @@ public class DBServer extends AbstractActor {
 			String collectionName = queryObj.getCollectionName();
 			String servizioID = queryObj.getServizioID();
 			String servizioNew = queryObj.getNewServizioJSON();
-			logger.trace(method_name + callingClientName + " wants to remove servizio " + servizioID + " from collection " +  collectionName);
+			logger.trace(method_name + callingClientName + " wants to write servizio " + servizioID + " in collection " +  collectionName);
 			try {
 				if (this.db.areServiziEnriched()) { // Enriched JSON
 					this.db.writeNewServizioEnrichedByID(servizioID, collectionName, new TommyEnrichedJSON(servizioID, servizioNew));
@@ -609,6 +650,16 @@ public class DBServer extends AbstractActor {
 					this.getSender().tell(new WriteNewServizioByIDSuccess(servizioID, servizioNew, collectionName), 
 									  		this.getSelf());
 				}
+				HashMap<String, TommyEnrichedJSON> serviziInCollection = this.db.getAllServiziEnrichedInCollection(collectionName);
+				String serviziLog = "Servizi in Collection " + collectionName + ": " + serviziInCollection.size();
+				if (serviziInCollection.isEmpty()) {
+					serviziLog += " - Empty";
+				} else {
+					for (String servizioId: serviziInCollection.keySet()) {
+						serviziLog += "\n" + servizioId + " - Status " + serviziInCollection.get(servizioId).getPostStatusStr();
+					}				
+				}
+				logger.trace(method_name + serviziLog);
 			} catch (CollectionNotPresentException e) {
 				logger.error(method_name + e.getMessage());
 				this.getSender().tell(new CollectionNotFound(e.getCollectionName()), 
@@ -634,7 +685,7 @@ public class DBServer extends AbstractActor {
 			String collectionName = queryObj.getCollectionName();
 			String servizioID = queryObj.getServizioID();
 			TommyEnrichedJSON servizioEnrichedNew = queryObj.getNewServizioEnrichedJSON();
-			logger.trace(method_name + callingClientName + " wants to remove servizio " + servizioID + " from collection " +  collectionName);
+			logger.trace(method_name + callingClientName + " wants to write servizio " + servizioID + " in collection " +  collectionName);
 			try {
 				if (this.db.areServiziEnriched()) { // Enriched JSON
 					this.db.writeNewServizioEnrichedByID(servizioID, collectionName, servizioEnrichedNew);
@@ -647,6 +698,16 @@ public class DBServer extends AbstractActor {
 					this.getSender().tell(new WriteNewServizioByIDSuccess(servizioID, servizioEnrichedNew.getJsonServizio(), collectionName), 
 									  		this.getSelf());
 				}
+				HashMap<String, TommyEnrichedJSON> serviziInCollection = this.db.getAllServiziEnrichedInCollection(collectionName);
+				String serviziLog = "Servizi in Collection " + collectionName + ": " + serviziInCollection.size();
+				if (serviziInCollection.isEmpty()) {
+					serviziLog += " - Empty";
+				} else {
+					for (String servizioId: serviziInCollection.keySet()) {
+						serviziLog += "\n" + servizioId + " - Status " + serviziInCollection.get(servizioId).getPostStatusStr();
+					}				
+				}
+				logger.trace(method_name + serviziLog);
 			} catch (CollectionNotPresentException e) {
 				logger.error(method_name + e.getMessage());
 				this.getSender().tell(new CollectionNotFound(e.getCollectionName()), 

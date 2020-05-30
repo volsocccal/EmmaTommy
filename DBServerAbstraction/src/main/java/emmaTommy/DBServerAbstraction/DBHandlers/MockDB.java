@@ -172,11 +172,11 @@ public class MockDB extends AbstractDB {
 	public String removeServizioByID(String servizioID, String collectionName) throws CollectionNotPresentException, ServizioNotPresentException {
 		if (this.supportEnrichedJSON) { // Enriched JSON
 			TommyEnrichedJSON servizioEnriched = this.getServizioEnrichedByID(servizioID, collectionName);
-			this.db_enriched.get(collectionName).get(servizioID);
+			this.db_enriched.get(collectionName).remove(servizioID);
 			return servizioEnriched.getJsonServizio();
 		} else { // Raw JSON
 			String servizio = this.getServizioByID(servizioID, collectionName);
-			this.db_raw.get(collectionName).get(servizioID);
+			this.db_raw.get(collectionName).remove(servizioID);
 			return servizio;
 		}
 	}
@@ -185,11 +185,11 @@ public class MockDB extends AbstractDB {
 	public TommyEnrichedJSON removeServizioEnrichedByID(String servizioID, String collectionName) throws CollectionNotPresentException, ServizioNotPresentException {
 		if (this.supportEnrichedJSON) { // Enriched JSON
 			TommyEnrichedJSON servizioEnriched = this.getServizioEnrichedByID(servizioID, collectionName);
-			this.db_enriched.get(collectionName).get(servizioID);
+			this.db_enriched.get(collectionName).remove(servizioID);
 			return servizioEnriched;
 		} else { // Raw JSON
 			String servizio = this.getServizioByID(servizioID, collectionName);
-			this.db_raw.get(collectionName).get(servizioID);
+			this.db_raw.get(collectionName).remove(servizioID);
 			return new TommyEnrichedJSON(servizioID, servizio);
 		}
 	}
