@@ -196,43 +196,47 @@ public class TommyRestPoster extends AbstractActor {
             		}
 	     			logger.info(method_name + "Rest Service Answer: " + response);  
 	     			if (response.contains("ERR")) {
-	     				respData = new PostDataResponse(postData, false, response);
+	     				respData = new PostDataResponse(postData, PostDataResponse.PostResponseStatus.ERROR, response);
 	     			} else {
-	     				respData = new PostDataResponse(postData, true, response);
+	     				if (response.contains("warning")) {
+	     					respData = new PostDataResponse(postData, PostDataResponse.PostResponseStatus.WARNING, response);
+	     				} else {
+	     					respData = new PostDataResponse(postData, PostDataResponse.PostResponseStatus.SUCCESS, response);
+	     				}
 	     			}
             	} else {
-            		respData = new PostDataResponse(postData, false, "Posting is disabled (maybe I never received a startPosting msg)");
+            		respData = new PostDataResponse(postData, PostDataResponse.PostResponseStatus.ERROR, "Posting is disabled (maybe I never received a startPosting msg)");
             	}
             } catch (MalformedURLException e) {
             	String errorMsg = "Url Malformed Error: " + e.getMessage();
             	logger.error(method_name + errorMsg);
-            	respData = new PostDataResponse(postData, false, errorMsg);
+            	respData = new PostDataResponse(postData, PostDataResponse.PostResponseStatus.ERROR, errorMsg);
     		} catch (IOException e) {
     			String errorMsg = "Failed to post the following servizi for automezzo " + postData.getCodiceMezzo()+ "\n" + e.getMessage();
     			logger.error(errorMsg);
-    			respData = new PostDataResponse(postData, false, errorMsg);
+    			respData = new PostDataResponse(postData, PostDataResponse.PostResponseStatus.ERROR, errorMsg);
     		}
            
         } catch (URISyntaxException e) {
         	String errorMsg = "URI Syntax Error: " + e.getMessage();
         	logger.error(method_name + errorMsg);
-        	respData = new PostDataResponse(postData, false, errorMsg);
+        	respData = new PostDataResponse(postData, PostDataResponse.PostResponseStatus.ERROR, errorMsg);
         } catch (UnsupportedEncodingException e) {
         	String errorMsg = "URL Encoder UnsupportedEncoding Error: " + e.getMessage();
         	logger.error(method_name + errorMsg);
-        	respData = new PostDataResponse(postData, false, errorMsg);
+        	respData = new PostDataResponse(postData, PostDataResponse.PostResponseStatus.ERROR, errorMsg);
         } catch (IllegalArgumentException e) {
         	String errorMsg = "Illegal Argument Error: " + e.getMessage();
         	logger.error(method_name + errorMsg);
-        	respData = new PostDataResponse(postData, false, errorMsg);
+        	respData = new PostDataResponse(postData, PostDataResponse.PostResponseStatus.ERROR, errorMsg);
         } catch (NullPointerException e) {
         	String errorMsg = "Null Pointer Error: " + e.getMessage();
         	logger.error(method_name + errorMsg);
-        	respData = new PostDataResponse(postData, false, errorMsg);
+        	respData = new PostDataResponse(postData, PostDataResponse.PostResponseStatus.ERROR, errorMsg);
 		} catch (Exception e) {
 			String errorMsg = "Unknown Error: " + e.getMessage();
 			logger.error(method_name + errorMsg);
-			respData = new PostDataResponse(postData, false, errorMsg);
+			respData = new PostDataResponse(postData, PostDataResponse.PostResponseStatus.ERROR, errorMsg);
 		}
 		
 		// Send response

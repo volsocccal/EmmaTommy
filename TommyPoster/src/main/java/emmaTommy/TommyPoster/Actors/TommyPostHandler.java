@@ -333,7 +333,7 @@ public class TommyPostHandler extends AbstractActor {
 				
 				try {
 					PostDataResponse response = (PostDataResponse) Await.result(postResponse, Duration.create(tommyPostTimeout, TimeUnit.SECONDS));
-					if (response.getSuccess()) {
+					if (response.isResponseStatusSuccess()) {
 						logger.trace(method_name + "Post Success Servizi for Automezzo " + automezzo);
 						logger.trace(method_name + response.getTommyResponse());
 						serviziPosted.putAll(serviziToPostByMezzo.get(automezzo));
@@ -342,6 +342,19 @@ public class TommyPostHandler extends AbstractActor {
 													" to serviziPosted Map");
 						if (this.save_post_json_to_disk) {
 							String fileName = new SimpleDateFormat("'postReplySuccess'yyyyMMdd_HHmmss'.json'").format(new Date());
+							FileOutputStream outputStream = new FileOutputStream(this.post_json_folder + "/" + fileName);
+					        outputStream.write(response.getTommyResponse().getBytes());     
+					        outputStream.close();
+						}	
+					} else if (response.isResponseStatusWarning()) {
+						logger.warn(method_name + "Post Success with Warning Servizi for Automezzo " + automezzo);
+						logger.warn(method_name + response.getTommyResponse());
+						serviziPosted.putAll(serviziToPostByMezzo.get(automezzo));
+						logger.trace(method_name + "Added " + serviziToPostByMezzo.get(automezzo).size() + 
+													" servizi for automezzo " + automezzo +
+													" to serviziPosted Map");
+						if (this.save_post_json_to_disk) {
+							String fileName = new SimpleDateFormat("'postReplyWarning'yyyyMMdd_HHmmss'.json'").format(new Date());
 							FileOutputStream outputStream = new FileOutputStream(this.post_json_folder + "/" + fileName);
 					        outputStream.write(response.getTommyResponse().getBytes());     
 					        outputStream.close();
