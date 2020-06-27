@@ -67,6 +67,7 @@ public class EmmaDataModelEnums {
     public static final String OUTCOME_TRASPORTO_PAZIENTE_RIFIUTO_TRASPORTO = "RIFIUTA TRASPORTO";
     public static final String OUTCOME_TRASPORTO_PAZIENTE_ALLONTANA = "SI ALLONTANA";
     public static final String OUTCOME_TRASPORTO_PAZIENTE_TRATTENUTO = "TRATTENUTO DA ALTRI";
+    public static final String OUTCOME_TRASPORTO_RINVIATO_MEDICINA_GENERALE = "RINVIATO MEDICINA GENERALE";
     public static final ArrayList<String> acceptedTransportPazienteOutcome = new ArrayList<String>() { 
 		private static final long serialVersionUID = 1L;
 		{ 
@@ -78,6 +79,7 @@ public class EmmaDataModelEnums {
             add(OUTCOME_TRASPORTO_PAZIENTE_RIFIUTO_TRASPORTO);             
             add(OUTCOME_TRASPORTO_PAZIENTE_ALLONTANA);
             add(OUTCOME_TRASPORTO_PAZIENTE_TRATTENUTO);
+            add(OUTCOME_TRASPORTO_RINVIATO_MEDICINA_GENERALE);
         } 
     }; 
     
