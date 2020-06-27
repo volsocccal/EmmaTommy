@@ -190,6 +190,7 @@ public class EmmaDataModelEnums {
             add(MISSIONE_OUTCOME_TRASF_PPI_CA); 
             add(MISSIONE_OUTCOME_TRASF_PPI_PED); 
             add(MISSIONE_OUTCOME_TRASF_PPI_PS); 
+            add(MISSIONE_OUTCOME_VUOTO);
         } 
     };
     
