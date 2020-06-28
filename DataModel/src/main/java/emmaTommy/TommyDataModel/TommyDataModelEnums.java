@@ -45,6 +45,7 @@ public class TommyDataModelEnums {
     public static final String OUTCOME_TRASPORTO_RIFIUTO_TRASPORTO = "RIFIUTA TRASPORTO";
     public static final String OUTCOME_TRASPORTO_ALLONTANA = "SI ALLONTANA";
     public static final String OUTCOME_TRASPORTO_TRATTENUTO = "TRATTENUTO DA ALTRI";
+    public static final String OUTCOME_TRASPORTO_RINVIATO_MEDICINA_GENERALE = "RINVIATO MEDICINA GENERALE";
     public static final ArrayList<String> acceptedTransportOutcome = new ArrayList<String>() { 
 		private static final long serialVersionUID = 1L;
 		{ 
@@ -56,6 +57,7 @@ public class TommyDataModelEnums {
             add(OUTCOME_TRASPORTO_RIFIUTO_TRASPORTO);             
             add(OUTCOME_TRASPORTO_ALLONTANA);
             add(OUTCOME_TRASPORTO_TRATTENUTO);
+            add(OUTCOME_TRASPORTO_RINVIATO_MEDICINA_GENERALE);
         } 
     }; 
     
