@@ -80,9 +80,6 @@ public class TommyEnrichedJSON {
 	}
 	public void setKm(int km) {
 		String method_name = "::setKm(): ";
-		if (km < 0) {
-			throw new IllegalArgumentException(method_name + "Input km was nullptr");
-		}
 		this.km = km;
 	}
 	
@@ -197,6 +194,12 @@ public class TommyEnrichedJSON {
 		this.timeStamp = LocalDateTime.now(); 
 		this.initializedFlag = false;
 		this.postStatus = PostStatus.POSTING;
+	}
+	
+	public TommyEnrichedJSON(Servizio s) throws IllegalArgumentException, JAXBException {
+		this();
+		this.setCodiceServizio(s.getCodiceServizio());
+		this.setJsonServizio(s.toJSON());
 	}
 	
 	public TommyEnrichedJSON (String codiceServizio, String jsonServizio) {
