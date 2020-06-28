@@ -3,12 +3,15 @@ package emmaTommy.DBServerAbstraction.Actors;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.xml.bind.JAXBException;
+
 import org.apache.logging.log4j.LogManager;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import emmaTommy.DBClient.ActorsMessages.Queries.AcquireDBLock;
 import emmaTommy.DBClient.ActorsMessages.Queries.GetAllServiziInCollection;
+import emmaTommy.DBClient.ActorsMessages.Queries.GetAllServiziInCollectionByProperties;
 import emmaTommy.DBClient.ActorsMessages.Queries.GetCollectionList;
 import emmaTommy.DBClient.ActorsMessages.Queries.GetServizioByID;
 import emmaTommy.DBClient.ActorsMessages.Queries.IsCollectionByNamePresent;
@@ -19,6 +22,7 @@ import emmaTommy.DBClient.ActorsMessages.Queries.IsServizioByIDPresent;
 import emmaTommy.DBClient.ActorsMessages.Queries.MoveServizioByID;
 import emmaTommy.DBClient.ActorsMessages.Queries.ReleaseDBLock;
 import emmaTommy.DBClient.ActorsMessages.Queries.RemoveServizioByID;
+import emmaTommy.DBClient.ActorsMessages.Queries.ServizioQueryField;
 import emmaTommy.DBClient.ActorsMessages.Queries.UpdateServizioByID;
 import emmaTommy.DBClient.ActorsMessages.Queries.UpdateServizioEnrichedByID;
 import emmaTommy.DBClient.ActorsMessages.Queries.WriteNewServizioByID;
@@ -58,6 +62,12 @@ import emmaTommy.DBServerAbstraction.DBExceptions.ServizioAlreadyInCollectionDBE
 import emmaTommy.DBServerAbstraction.DBExceptions.ServizioNotPresentException;
 import emmaTommy.DBServerAbstraction.DBExceptions.UnknownDBException;
 import emmaTommy.DBServerAbstraction.DBHandlers.AbstractDB;
+import emmaTommy.DataModel.DateAdapterYYMMDD;
+import emmaTommy.DataModel.DateTimeAdapterHHmm;
+import emmaTommy.TommyDataModel.Assistito;
+import emmaTommy.TommyDataModel.Membro;
+import emmaTommy.TommyDataModel.Servizio;
+import emmaTommy.TommyDataModel.TommyDataModelEnums;
 import emmaTommy.TommyDataModel.TommyEnrichedJSON;
 
 public class DBServer extends AbstractActor {
@@ -138,6 +148,7 @@ public class DBServer extends AbstractActor {
 				.match(AcquireDBLock.class, this::onAquireDBLockQuery)
 				.match(GetCollectionList.class, this::onGetCollectionListQuery)
 				.match(GetServizioByID.class, this::onGetServizioByIDQuery)
+				.match(GetAllServiziInCollectionByProperties.class, this::onGetAllServiziInCollectionByPropertiesQuery)
 				.match(GetAllServiziInCollection.class, this::onGetAllServiziInCollectionQuery)
 				.match(IsCollectionByNamePresent.class, this::onIsCollectionByNamePresentQuery)
 				.match(IsDBAlive.class, this::onIsDBAliveQuery)
@@ -242,6 +253,229 @@ public class DBServer extends AbstractActor {
 			this.getSender().tell(new DBOperationFaillure(e.getMessage()), 
 									this.getSelf());
 		}		
+	}
+	
+	protected void onGetAllServiziInCollectionByPropertiesQuery (GetAllServiziInCollectionByProperties queryObj) {
+		String method_name = "::onGetAllServiziInCollectionByPropertiesQuery(): ";
+		String callingClientName = queryObj.getCallingActorName();
+		String callingClientID = queryObj.getCallingActorID();
+		logger.trace("Reveived GetAllServiziInCollectionByProperties from " + callingClientName + " ID " + callingClientID);
+		String wantedCollectionName = queryObj.getCollectionName();
+		logger.trace(method_name + callingClientName + " wants servizi in collection " +  wantedCollectionName);
+		try {
+			if (this.db.areServiziEnriched()) { // Enriched JSON
+				HashMap<String, TommyEnrichedJSON> serviziMap = this.db.getAllServiziEnrichedInCollection(wantedCollectionName);
+				for (String servizioID: serviziMap.keySet()) {
+					TommyEnrichedJSON servizioEnriched = serviziMap.get(servizioID);
+					Servizio s = servizioEnriched.buildServizio();
+					if (!checkServizioProp(queryObj, s))
+						serviziMap.remove(servizioID);					
+				}
+				logger.trace(method_name + "Sending " + serviziMap.size() + " servizi enriched in collection " +  wantedCollectionName + " to " + callingClientName);
+				this.getSender().tell(new ReplyServiziInCollectionEnriched(serviziMap, wantedCollectionName), 
+									  this.getSelf());
+			} else { // Raw JSON
+				HashMap<String, String> serviziMap = this.db.getAllServiziInCollection(wantedCollectionName);
+				for (String servizioID: serviziMap.keySet()) {
+					String servizio = serviziMap.get(servizioID);
+					TommyEnrichedJSON servizioEnriched = new TommyEnrichedJSON(servizioID, servizio);
+					Servizio s = servizioEnriched.buildServizio();
+					if (!checkServizioProp(queryObj, s))
+						serviziMap.remove(servizioID);					
+				}
+				logger.trace(method_name + "Sending all servizi in collection " +  wantedCollectionName + " to " + callingClientName);
+				this.getSender().tell(new ReplyServiziInCollection(this.db.getAllServiziInCollection(wantedCollectionName), wantedCollectionName), 
+									  this.getSelf());
+			}
+		} catch (JAXBException e) {
+			logger.error(method_name + e.getMessage());
+			this.getSender().tell(new DBOperationFaillure(e.getMessage()), 
+									this.getSelf());
+		} catch (CollectionNotPresentException e) {
+			logger.error(method_name + e.getMessage());
+			this.getSender().tell(new CollectionNotFound(e.getCollectionName()), 
+								  this.getSelf());
+		} catch (UnknownDBException e) {
+			logger.error(method_name + e.getMessage());
+			this.getSender().tell(new DBOperationFaillure(e.getMessage()), 
+									this.getSelf());
+		}
+	}
+	protected Boolean checkServizioProp(GetAllServiziInCollectionByProperties queryObj, Servizio s) {
+		Boolean deleteServizio = false;
+		DateTimeAdapterHHmm timeFormatter = new DateTimeAdapterHHmm();
+		DateAdapterYYMMDD dateFormatter = new DateAdapterYYMMDD();
+		for (ServizioQueryField propName: queryObj.getPropertyNamesValuesMap().keySet()) {
+			String propValue = queryObj.getPropertyNamesValuesMap().get(propName);
+			if (propName == ServizioQueryField.assistitoFemale) {
+				if (s.getAssistiti() == null)
+					deleteServizio = true;
+				else if (s.getAssistiti().isEmpty())
+					deleteServizio = true;
+				Boolean localDelete = true;
+				for (Assistito ass: s.getAssistiti()) {
+					if (ass == null)
+						deleteServizio = true;
+					else if (ass.getSesso().compareTo(TommyDataModelEnums.FEMALE_GENDER) == 0)
+						localDelete = false;
+				}
+				if (localDelete)
+					deleteServizio = true;
+			} else if (propName == ServizioQueryField.assistitoMale) {
+				if (s.getAssistiti() == null)
+					deleteServizio = true;
+				else if (s.getAssistiti().isEmpty())
+					deleteServizio = true;
+				Boolean localDelete = true;
+				for (Assistito ass: s.getAssistiti()) {
+					if (ass == null)
+						deleteServizio = true;
+					else if (ass.getSesso().compareTo(TommyDataModelEnums.MALE_GENDER) == 0)
+						localDelete = false;
+				}
+				if (localDelete)
+					deleteServizio = true;
+			} else if (propName == ServizioQueryField.codice_servizio) {
+				if (s.getCodiceServizio().compareTo(propValue) != 0)
+					deleteServizio = true;
+			} else if (propName == ServizioQueryField.equipaggio_0) {
+				if (s.getSquadra() == null)
+					deleteServizio = true;
+				else if (!s.getSquadra().isEmpty())
+					deleteServizio = true;
+			} else if (propName == ServizioQueryField.equipaggio_1) {
+				if (s.getSquadra() == null)
+					deleteServizio = true;
+				else if (s.getSquadra().isEmpty())
+					deleteServizio = true;
+				else if (s.getSquadra().size() != 1)
+					deleteServizio = true;
+			} else if (propName == ServizioQueryField.equipaggio_2) {
+				if (s.getSquadra() == null)
+					deleteServizio = true;
+				else if (s.getSquadra().isEmpty())
+					deleteServizio = true;
+				if (s.getSquadra().size() != 2)
+					deleteServizio = true;
+			} else if (propName == ServizioQueryField.equipaggio_3) {
+				if (s.getSquadra() == null)
+					deleteServizio = true;
+				else if (s.getSquadra().isEmpty())
+					deleteServizio = true;
+				else if (s.getSquadra().size() != 3)
+					deleteServizio = true;
+			} else if (propName == ServizioQueryField.equipaggio_4) {
+				if (s.getSquadra() == null)
+					deleteServizio = true;
+				else if (s.getSquadra().isEmpty())
+					deleteServizio = true;
+				else if (s.getSquadra().size() != 4)
+					deleteServizio = true;
+			} else if (propName == ServizioQueryField.equipaggio_trainee) {
+				if (s.getSquadra() == null)
+					deleteServizio = true;
+				else if (s.getSquadra().isEmpty())
+					deleteServizio = true;
+				Boolean localDelete = true;
+				for (Membro m: s.getSquadra()) {
+					if (m == null)
+						deleteServizio = true;
+					if (m.getTagIdQualifica().compareTo(TommyDataModelEnums.SOCCORRITORE_ADD) == 0)
+						localDelete = false;
+				}
+				if (localDelete)
+					deleteServizio = true;
+			} else if (propName == ServizioQueryField.km) {
+				if (Integer.toString(s.getKM()).compareTo(propValue) != 0)
+					deleteServizio = true;
+			} else if (propName == ServizioQueryField.luogo_partenza) {
+				if (s.getLuogoPartenza().compareTo(propValue) != 0) 
+					deleteServizio = true;
+			} else if (propName == ServizioQueryField.luogo_arrivo) {
+				if (s.getLuogoArrivo().compareTo(propValue) != 0) 
+					deleteServizio = true;
+			} else if (propName == ServizioQueryField.membro_equipaggio) {
+				String[] anagraphic = propValue.split(", ");
+				if (anagraphic.length < 1 || anagraphic.length > 2)
+					deleteServizio = true;
+				else {
+					String surname_name = anagraphic[0];
+					String qualifica = null;
+					if (anagraphic.length == 2)
+						qualifica = anagraphic[1];
+					Boolean localDelete = false;
+					for (Membro m: s.getSquadra()) {
+						if (m == null)
+							deleteServizio = true;
+						if (surname_name.compareTo(m.getTagIdAnagrafica()) == 0) {
+							localDelete = false;
+							if (qualifica != null) {
+								if (qualifica.compareTo(m.getTagIdQualifica()) != 0)
+									localDelete = true;
+								else
+									localDelete = false;
+							}
+						} else {
+							localDelete = true;
+						}
+					}
+					if (localDelete)
+						deleteServizio = true;
+				}
+			} else if (propName == ServizioQueryField.missioneDate) {
+				if (s.getMissioneDate().compareTo(dateFormatter.unmarshal(propValue)) != 0)
+					deleteServizio = true;
+			} else if (propName == ServizioQueryField.orario_inizio_servizio) {
+				if (s.getOrarioInizioServizio().compareTo(timeFormatter.unmarshal(propValue)) != 0)
+					deleteServizio = true;
+			} else if (propName == ServizioQueryField.orario_arrivo_posto) {
+				if (s.getOrarioArrivoPosto().compareTo(timeFormatter.unmarshal(propValue)) != 0)
+					deleteServizio = true;
+			} else if (propName == ServizioQueryField.orario_partenza_posto) {
+				if (s.getOrarioPartenzaPosto().compareTo(timeFormatter.unmarshal(propValue)) != 0)
+					deleteServizio = true;
+			} else if (propName == ServizioQueryField.orario_arrivo_ospedale) {
+				if (s.getOrarioArrivoOspedale().compareTo(timeFormatter.unmarshal(propValue)) != 0)
+					deleteServizio = true;
+			} else if (propName == ServizioQueryField.orario_partenza_ospedale) {
+				if (s.getOrarioPartenzaOspedale().compareTo(timeFormatter.unmarshal(propValue)) != 0)
+					deleteServizio = true;
+			} else if (propName == ServizioQueryField.orario_fine_servizio) {				
+				if (s.getOrarioFineServizio().compareTo(timeFormatter.unmarshal(propValue)) != 0)
+					deleteServizio = true;
+			} else if (propName == ServizioQueryField.patient) {
+				String[] anagraphic = propValue.split(", ");
+				if (anagraphic.length != 2)
+					deleteServizio = true;
+				else {
+					String surname = anagraphic[0];
+					String name = anagraphic[1];
+					Boolean localDelete = false;
+					for (Assistito ass: s.getAssistiti()) {
+						if (ass == null)
+							deleteServizio = true;
+						if (surname.compareTo(ass.getCognome()) == 0) {
+							localDelete = false;
+							if (name.compareTo(ass.getNome()) != 0)
+								localDelete = true;
+							else
+								localDelete = false;
+						} else {
+							localDelete = true;
+						}
+					}
+					if (localDelete)
+						deleteServizio = true;
+				}
+			} else if (propName == ServizioQueryField.tag_idintervento) {
+				if (propValue.compareTo(s.getTagIntervento()) != 0)
+					deleteServizio = true;
+			}  else if (propName == ServizioQueryField.tag_idautomezzo) {
+				if (propValue.compareTo(s.getTagIdAutomezzo()) != 0)
+					deleteServizio = true;
+			}
+		}
+		return deleteServizio;
 	}
 	
 	protected void onGetAllServiziInCollectionQuery(GetAllServiziInCollection queryObj) {

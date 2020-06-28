@@ -41,6 +41,16 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 	protected int persistenceDBLockTimeOutSecs;
 	protected String stagingDBServiziTableName;
 	protected String persistenceDBServiziCollectionName;
+	protected int selectedSoreuID;
+	
+	protected String soreuAlpinaCollectionName;
+	protected int soreuAlpinaID;
+	protected String soreuLaghiCollectionName;
+	protected int soreuLaghiID;
+	protected String soreuMetropolitanaCollectionName;
+	protected int soreuMetropolitanaID;
+	protected String soreuPianuraCollectionName;
+	protected int soreuPianuraID;
 	
 	protected DBClientAPI dbClient = new DBClientAPI(this.getClass().getSimpleName());
 	
@@ -81,6 +91,17 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
  		this.persistenceDBLockTimeOutSecs = Integer.parseInt(prop.getProperty("persistenceDBAskTimeOutSecs"));
  		this.stagingDBServiziTableName = prop.getProperty("stagingDBServiziTableName");
  		this.persistenceDBServiziCollectionName = prop.getProperty("persistenceDBServiziCollectionName");
+ 		this.selectedSoreuID = Integer.parseInt(prop.getProperty("selectedSoreuID"));
+ 		
+ 		// Read SOREU's data
+ 		this.soreuAlpinaCollectionName = prop.getProperty("soreuAlpinaCollectionName");
+ 		this.soreuAlpinaID = Integer.parseInt(prop.getProperty("soreuAlpinaID"));
+ 		this.soreuLaghiCollectionName = prop.getProperty("soreuLaghiCollectionName");
+ 		this.soreuLaghiID = Integer.parseInt(prop.getProperty("soreuLaghiID"));
+ 		this.soreuMetropolitanaCollectionName = prop.getProperty("soreuMetropolitanaCollectionName");
+ 		this.soreuMetropolitanaID = Integer.parseInt(prop.getProperty("soreuMetropolitanaID"));
+ 		this.soreuPianuraCollectionName = prop.getProperty("soreuPianuraCollectionName");
+ 		this.soreuPianuraID = Integer.parseInt(prop.getProperty("soreuPianuraID"));
  		 		
 		// Get PersistenceDB ActorRef
  		try {
@@ -167,88 +188,151 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 															this.persistenceDBAskTimeOutSecs, this.persistenceDBLockTimeOutSecs);
 					lockAcquiredPersistenceDB = true;
 					
-					// Check if the servizio already exists in the PersistenceDB
-					Boolean servizioPresentPersistenceDB = this.dbClient.isServizioByIdPresent(
-							  this.getSelf(), 
-							  actorID, this.persistenceDBActorRef, 
-							  this.persistenceDBAskTimeOutSecs, 
-							  servzioIDStr, 
-							  this.persistenceDBServiziCollectionName);
+					// Check if the servizio is from the Associazione's Soreu or not
+					if (isServizioFromAssSOREU(servizio.getCodiceServizio())) {
 					
-					if (servizioPresentPersistenceDB) { // Servizio was already in the Persistence DB
-						logger.info(method_name + "Servizio " + servizioData.getID() + " was already present in the persistence DB");
-						// Try to read the servizio from the Persistence DB		
-						TommyEnrichedJSON servizioEnrichedDBPersistence = this.dbClient.getServizioByID(this.getSelf(), actorID, this.persistenceDBActorRef, 
-																							  this.persistenceDBAskTimeOutSecs, 
-																							  servzioIDStr, 
-																							  this.persistenceDBServiziCollectionName);
+						logger.info(method_name + "Servizio " + servizioData.getID() + " is from the association' SOREU: " + this.persistenceDBServiziCollectionName);
 						
-						if (servizioEnrichedDBPersistence != null) {
-							Servizio servizioDB = servizioEnrichedDBPersistence.buildServizio();
-							if (servizioDB.equals(servizio)) { // Equals, Discard the New Data
-								logger.info(method_name + "Servizio " + servizioData.getID() + " was already updated in the persistence DB");
-							} else // Log Error, for manual update of the new data
-							{
-								logger.error(method_name + "Servizio " + servizioData.getID() + " was not updated in the persistence DB" + "\n"
-										 	+ servizioData.getJSON());
-							}
-						} else {
-							logger.error(method_name + "Servizio " + servizioData.getID() + " was null in the persistence DB");
-						}
+						// Check if the servizio already exists in the PersistenceDB
+						Boolean servizioPresentPersistenceDB = this.dbClient.isServizioByIdPresent(
+								  this.getSelf(), 
+								  actorID, this.persistenceDBActorRef, 
+								  this.persistenceDBAskTimeOutSecs, 
+								  servzioIDStr, 
+								  this.persistenceDBServiziCollectionName);
 						
-					} else { // Servizio wasn't in the Persistence DB
-						logger.info(method_name + "Servizio " + servizioData.getID() + " wasn't present in the Persistence DB");
-						Boolean lockAcquiredStagingDB = false;
-						try {
-						
-							// Get the Lock for the Staging DB
-							this.dbClient.acquireDBLockInfiniteLoop(this.getSelf(), actorID, this.stagingDBActorRef, 
-																	this.stagingDBAskTimeOutSecs, this.stagingDBLockTimeOutSecs);	
-							lockAcquiredStagingDB = true;
+						if (servizioPresentPersistenceDB) { // Servizio was already in the Persistence DB
+							logger.info(method_name + "Servizio " + servizioData.getID() + " was already present in the persistence DB - " + this.persistenceDBServiziCollectionName + " Collection");
+							// Try to read the servizio from the Persistence DB		
+							TommyEnrichedJSON servizioEnrichedDBPersistence = this.dbClient.getServizioByID(this.getSelf(), actorID, this.persistenceDBActorRef, 
+																								  this.persistenceDBAskTimeOutSecs, 
+																								  servzioIDStr, 
+																								  this.persistenceDBServiziCollectionName);
 							
-							// Check if the servizio already exists in the Staging DB
-							Boolean servizioPresentStagingDB = this.dbClient.isServizioByIdPresent(
-									this.getSelf(), 
-									actorID, 
-									this.stagingDBActorRef, 
-									this.stagingDBAskTimeOutSecs, 
-									servzioIDStr, this.stagingDBServiziTableName);
-							
-							if (servizioPresentStagingDB) { // Servizio was already in the Staging DB
-							
-								// Try to read the servizio from the Staging DB			
-								TommyEnrichedJSON servizioEnrichedDBStaging = this.dbClient.getServizioByID(this.getSelf(), actorID, this.stagingDBActorRef, 
-																									 this.stagingDBAskTimeOutSecs, 
-																									 servzioIDStr, this.stagingDBServiziTableName);
-								if (servizioEnrichedDBStaging != null) {									
-									logger.info(method_name + "Servizio " + servizioData.getID() + " was already present in the staging DB");
-									Servizio servizioDB = servizioEnrichedDBStaging.buildServizio();
-									if (servizioDB.equals(servizio)) { // Equals, Discard the New Data
-										logger.info(method_name + "Servizio " + servizioData.getID() + " was already updated in the staging DB");
-									} else { // Update the Servizio in the Staging DB
-										logger.info(method_name + "Servizio " + servizioData.getID() + " was not updated in the staging DB");
-										this.dbClient.updateServizioEnrichedByID(this.getSelf(), actorID, this.stagingDBActorRef, 
-																			this.stagingDBAskTimeOutSecs, 
-																			servzioIDStr, servizioEnriched, this.stagingDBServiziTableName);
-										logger.info(method_name + "Servizio " + servizioData.getID() + " Updated successfully in the staging DB");
-									}
-								} else {
-									logger.error(method_name + "Servizio " + servizioData.getID() + " was null in the staging db DB");
+							if (servizioEnrichedDBPersistence != null) {
+								Servizio servizioDB = servizioEnrichedDBPersistence.buildServizio();
+								if (servizioDB.equals(servizio)) { // Equals, Discard the New Data
+									logger.info(method_name + "Servizio " + servizioData.getID() + " was already updated in the persistence DB - " + this.persistenceDBServiziCollectionName + " Collection");
+								} else // Log Error, for manual update of the new data
+								{
+									logger.error(method_name + "Servizio " + servizioData.getID() + " was not updated in the persistence DB - " + this.persistenceDBServiziCollectionName + " Collection" + "\n"
+											 	+ servizioData.getJSON());
 								}
+							} else {
+								logger.error(method_name + "Servizio " + servizioData.getID() + " was null in the persistence DB - " + this.persistenceDBServiziCollectionName + " Collection");
+							}
+							
+						} else { // Servizio wasn't in the Persistence DB
+							logger.info(method_name + "Servizio " + servizioData.getID() + " wasn't present in the Persistence DB- " + this.persistenceDBServiziCollectionName + " Collection");
+							Boolean lockAcquiredStagingDB = false;
+							try {
+							
+								// Get the Lock for the Staging DB
+								this.dbClient.acquireDBLockInfiniteLoop(this.getSelf(), actorID, this.stagingDBActorRef, 
+																		this.stagingDBAskTimeOutSecs, this.stagingDBLockTimeOutSecs);	
+								lockAcquiredStagingDB = true;
 								
-							} else { // Servizio wasn't in the Staging DB								
-								logger.info(method_name + "Servizio " + servizioData.getID() + " wasn't present in the staging DB");
-								this.dbClient.writeNewServizioEnrichedByID(this.getSelf(), actorID, this.stagingDBActorRef, 
-																		this.stagingDBAskTimeOutSecs, 
-																		servzioIDStr, servizioEnriched, 
-																		this.stagingDBServiziTableName);
-								logger.info(method_name + "Servizio " + servizioData.getID() + " Written successfully in the staging DB");				
-							}							
-						} catch (Exception e) {
-							logger.error(method_name + "Servizio " + servizioData.getID() + " failed operating on the staging DB: " + e.getMessage());	
-						} finally {
-							if (lockAcquiredStagingDB) 
-								this.dbClient.releaseDBLock(this.getSelf(), actorID, this.stagingDBActorRef, this.stagingDBAskTimeOutSecs);
+								// Check if the servizio already exists in the Staging DB
+								Boolean servizioPresentStagingDB = this.dbClient.isServizioByIdPresent(
+										this.getSelf(), 
+										actorID, 
+										this.stagingDBActorRef, 
+										this.stagingDBAskTimeOutSecs, 
+										servzioIDStr, this.stagingDBServiziTableName);
+								
+								if (servizioPresentStagingDB) { // Servizio was already in the Staging DB
+								
+									// Try to read the servizio from the Staging DB			
+									TommyEnrichedJSON servizioEnrichedDBStaging = this.dbClient.getServizioByID(this.getSelf(), actorID, this.stagingDBActorRef, 
+																										 this.stagingDBAskTimeOutSecs, 
+																										 servzioIDStr, this.stagingDBServiziTableName);
+									if (servizioEnrichedDBStaging != null) {									
+										logger.info(method_name + "Servizio " + servizioData.getID() + " was already present in the staging DB");
+										Servizio servizioDB = servizioEnrichedDBStaging.buildServizio();
+										if (servizioDB.equals(servizio)) { // Equals, Discard the New Data
+											logger.info(method_name + "Servizio " + servizioData.getID() + " was already updated in the staging DB");
+										} else { // Update the Servizio in the Staging DB
+											logger.info(method_name + "Servizio " + servizioData.getID() + " was not updated in the staging DB");
+											this.dbClient.updateServizioEnrichedByID(this.getSelf(), actorID, this.stagingDBActorRef, 
+																				this.stagingDBAskTimeOutSecs, 
+																				servzioIDStr, servizioEnriched, this.stagingDBServiziTableName);
+											logger.info(method_name + "Servizio " + servizioData.getID() + " Updated successfully in the staging DB");
+										}
+									} else {
+										logger.error(method_name + "Servizio " + servizioData.getID() + " was null in the staging db DB");
+									}
+									
+								} else { // Servizio wasn't in the Staging DB								
+									logger.info(method_name + "Servizio " + servizioData.getID() + " wasn't present in the staging DB");
+									this.dbClient.writeNewServizioEnrichedByID(this.getSelf(), actorID, this.stagingDBActorRef, 
+																			this.stagingDBAskTimeOutSecs, 
+																			servzioIDStr, servizioEnriched, 
+																			this.stagingDBServiziTableName);
+									logger.info(method_name + "Servizio " + servizioData.getID() + " Written successfully in the staging DB");				
+								}							
+							} catch (Exception e) {
+								logger.error(method_name + "Servizio " + servizioData.getID() + " failed operating on the staging DB: " + e.getMessage());	
+							} finally {
+								if (lockAcquiredStagingDB) 
+									this.dbClient.releaseDBLock(this.getSelf(), actorID, this.stagingDBActorRef, this.stagingDBAskTimeOutSecs);
+							}
+							
+						} 
+						
+					} else { // Servizio is not from the Associazione's Soreu
+							
+						// Find the Servizio's SOREU
+						logger.info(method_name + "Servizio " + servizioData.getID() + " is not from the association' SOREU: " + this.persistenceDBServiziCollectionName);
+						String collectionName = "";
+						if (isServizioFromSOREU(servizio.getCodiceServizio(), this.soreuAlpinaID)) {
+							collectionName = this.soreuAlpinaCollectionName;
+						} else if (isServizioFromSOREU(servizio.getCodiceServizio(), this.soreuLaghiID)) {
+							collectionName = this.soreuLaghiCollectionName;
+						} else if (isServizioFromSOREU(servizio.getCodiceServizio(), this.soreuMetropolitanaID)) {
+							collectionName = this.soreuMetropolitanaCollectionName;
+						} else if (isServizioFromSOREU(servizio.getCodiceServizio(), this.soreuPianuraID)) {
+							collectionName = this.soreuPianuraCollectionName;
+						}
+						logger.info(method_name + "Servizio " + servizioData.getID() + " is from SOREU: " + collectionName);
+						
+						// Check if the servizio already exists in the PersistenceDB
+						Boolean servizioPresentPersistenceDB = this.dbClient.isServizioByIdPresent(
+								  this.getSelf(), 
+								  actorID, this.persistenceDBActorRef, 
+								  this.persistenceDBAskTimeOutSecs, 
+								  servzioIDStr, 
+								  collectionName);
+						
+						if (servizioPresentPersistenceDB) { // Servizio was already in the Persistence DB
+							logger.info(method_name + "Servizio " + servizioData.getID() + " was already present in the persistence DB - " + collectionName + " Collection");
+							// Try to read the servizio from the Persistence DB		
+							TommyEnrichedJSON servizioEnrichedDBPersistence = this.dbClient.getServizioByID(this.getSelf(), actorID, this.persistenceDBActorRef, 
+																								  this.persistenceDBAskTimeOutSecs, 
+																								  servzioIDStr, 
+																								  collectionName);
+							
+							if (servizioEnrichedDBPersistence != null) {
+								Servizio servizioDB = servizioEnrichedDBPersistence.buildServizio();
+								if (servizioDB.equals(servizio)) { // Equals, Discard the New Data
+									logger.info(method_name + "Servizio " + servizioData.getID() + " was already updated in the persistence DB - " + collectionName + " Collection");
+								} else // Update of the new data
+								{
+									logger.info(method_name + "Servizio " + servizioData.getID() + " was not updated in the persistence DB - " + collectionName + " Collection");
+									this.dbClient.updateServizioByID(this.getSelf(), actorID, this.persistenceDBActorRef, 
+																		this.persistenceDBAskTimeOutSecs, 
+																		servzioIDStr, servizioEnriched.getJsonServizio(), collectionName);
+									logger.info(method_name + "Servizio " + servizioData.getID() + " Updated successfully in the persistence DB - " + collectionName + " Collection");
+								}
+							} else {
+								logger.error(method_name + "Servizio " + servizioData.getID() + " was null in the persistence DB - " + collectionName + " Collection");
+							}
+							
+						} else { // Servizio wasn't in the Persistence DB, Write It
+							logger.info(method_name + "Servizio " + servizioData.getID() + " wasn't present in the Persistence DB - " + collectionName + " Collection");
+							this.dbClient.writeNewServizioByID(this.getSelf(), actorID, this.persistenceDBActorRef, 
+																		this.persistenceDBAskTimeOutSecs, 
+																		servzioIDStr, servizioEnriched.getJsonServizio(), collectionName);
+							logger.info(method_name + "Servizio " + servizioData.getID() + " Written successfully in the persistence DB - " + collectionName + " Collection");
 						}
 						
 					}
@@ -269,6 +353,13 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 		}	
 	}	
 	
+	protected boolean isServizioFromAssSOREU(String codiceServizio) {
+		return isServizioFromSOREU(codiceServizio, this.selectedSoreuID);
+	}
+	protected boolean isServizioFromSOREU(String codiceServizio, int soreuID) {
+		return codiceServizio.substring(2, 3).compareTo(Integer.toString(soreuID)) == 0;
+	}
+
 	protected void onStop(StopDataWriting stop) {
 		
 		// Logger Method Name

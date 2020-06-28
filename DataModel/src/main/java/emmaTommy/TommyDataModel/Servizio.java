@@ -51,7 +51,7 @@ public class Servizio extends TommyDataModel {
 	public void setOrarioInizioServizio (LocalTime orario_inizio_servizio) {
 		this.orario_inizio_servizio = orario_inizio_servizio;
 	}
-	protected LocalTime getOrarioInizioServizio() {
+	public LocalTime getOrarioInizioServizio() {
 		return this.orario_inizio_servizio;
 	}
 	

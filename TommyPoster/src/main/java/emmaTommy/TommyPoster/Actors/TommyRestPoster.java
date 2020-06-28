@@ -16,13 +16,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Properties;
-import java.util.Scanner;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -90,6 +84,8 @@ public class TommyRestPoster extends AbstractActor {
  		this.mockPost = (Integer.parseInt(prop.getProperty("mockPost")) == 1) ? (true) : (false);
  		this.writeOverPersistenceDB = (Integer.parseInt(prop.getProperty("writeOverPersistenceDB")) == 1) ? (true) : (false);
         this.postOperationInterval = Integer.parseInt(prop.getProperty("postOperationInterval"));
+        if (this.mockPost)
+        	logger.info(method_name + "Will mock post operation");
 		
 		// Load Tommy Rest Service Data
         Properties propsTommyRestService = new Properties();

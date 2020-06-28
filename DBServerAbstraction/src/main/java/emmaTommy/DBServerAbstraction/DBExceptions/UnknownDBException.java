@@ -2,6 +2,11 @@ package emmaTommy.DBServerAbstraction.DBExceptions;
 
 public class UnknownDBException extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public UnknownDBException() {
 		// TODO Auto-generated constructor stub
 	}

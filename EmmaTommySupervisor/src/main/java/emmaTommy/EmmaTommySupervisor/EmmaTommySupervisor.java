@@ -17,7 +17,6 @@ import emmaTommy.DBServerAbstraction.DBHandlers.MockDB;
 import emmaTommy.EmmaOrchestrator.EmmaOrchestrator;
 import emmaTommy.EmmaTommyConverter.Actors.EmmaTommyOrchestrator;
 import emmaTommy.TommyDataHandler.Actors.TommyDataHandlerOrchestrator;
-import emmaTommy.TommyPoster.Actors.TommyRestPoster;
 import emmaTommy.TommyPoster.Actors.TommyPostHandler;
 
 public class EmmaTommySupervisor {

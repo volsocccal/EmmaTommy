@@ -11,7 +11,10 @@ import java.net.http.HttpClient;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -29,24 +32,38 @@ public class EmmaRESTActor extends AbstractActor {
 	
 	protected String PROTOCOL;
 	protected String MISSIONI_URL;
+	
 	protected String soreu_BERGAMO_NAME;
 	protected int soreu_BERGAMO_NUM;
+	protected Integer missione_BERGAMO_START_ID; 
+	
 	protected String soreu_COMO_NAME;
 	protected int soreu_COMO_NUM;
+	protected Integer missione_COMO_START_ID; 
+	
 	protected String soreu_MILANO_NAME;
 	protected int soreu_MILANO_NUM;
+	protected Integer missione_MILANO_START_ID; 
+	
 	protected String soreu_PAVIA_NAME;
 	protected int soreu_PAVIA_NUM;
+	protected Integer missione_PAVIA_START_ID; 
+	
+	protected ArrayList<String> soreus;
+	protected TreeMap<String, Integer> soreusStartIDs;
+	
 	protected String ASSOCIAZIONE_NAME;
 	protected String ASSOCIAZIONE_SOREU;
 	protected String username;
 	protected String psswd;
-	protected int missione_START_ID; 
+	
 	protected Boolean saveXMLToLog;
 	protected Boolean saveXMLToFile;
 	protected Boolean sendXMLOverAKKA;
-	protected String xml_file_path;
 	
+	protected String xml_file_path;
+	protected String xml_file_name;
+	protected String xml_file_ext;
 	protected String xml;
 	
 	public static Props props(String text, String confPath, String confPathAss) {
@@ -79,21 +96,38 @@ public class EmmaRESTActor extends AbstractActor {
 		this.MISSIONI_URL = prop.getProperty("MISSIONI_URL");
 		this.soreu_BERGAMO_NAME = prop.getProperty("soreu_BERGAMO_NAME");
 		this.soreu_BERGAMO_NUM = Integer.parseInt(prop.getProperty("soreu_BERGAMO_NUM"));
+		this.missione_BERGAMO_START_ID = Integer.parseInt(prop.getProperty("missione_BERGAMO_START_ID"));
 		this.soreu_COMO_NAME = prop.getProperty("soreu_COMO_NAME");
 		this.soreu_COMO_NUM = Integer.parseInt(prop.getProperty("soreu_COMO_NUM"));
+		this.missione_COMO_START_ID = Integer.parseInt(prop.getProperty("missione_COMO_START_ID"));
 		this.soreu_MILANO_NAME = prop.getProperty("soreu_MILANO_NAME");
 		this.soreu_MILANO_NUM = Integer.parseInt(prop.getProperty("soreu_MILANO_NUM"));
+		this.missione_MILANO_START_ID = Integer.parseInt(prop.getProperty("missione_MILANO_START_ID"));
 		this.soreu_PAVIA_NAME = prop.getProperty("soreu_PAVIA_NAME");
 		this.soreu_PAVIA_NUM = Integer.parseInt(prop.getProperty("soreu_PAVIA_NUM"));
+		this.missione_PAVIA_START_ID = Integer.parseInt(prop.getProperty("missione_PAVIA_START_ID"));
 		this.ASSOCIAZIONE_NAME = prop.getProperty("ASSOCIAZIONE_NAME");
 		this.ASSOCIAZIONE_SOREU = prop.getProperty("ASSOCIAZIONE_SOREU");
 		this.username = prop.getProperty("username");
-		this.psswd = prop.getProperty("psswd");
-		this.missione_START_ID = Integer.parseInt(prop.getProperty("missione_START_ID"));		
+		this.psswd = prop.getProperty("psswd");		
 		this.saveXMLToLog = (Integer.parseInt(prop.getProperty("saveXMLToLog")) == 1) ? (true) : (false);
 		this.saveXMLToFile = (Integer.parseInt(prop.getProperty("saveXMLToFile")) == 1) ? (true) : (false);
 		this.sendXMLOverAKKA = (Integer.parseInt(prop.getProperty("sendXMLOverAKKA")) == 1) ? (true) : (false);
 		this.xml_file_path = prop.getProperty("xml_file_path");
+		this.xml_file_name = prop.getProperty("xml_file_name");
+		this.xml_file_ext = prop.getProperty("xml_file_ext");
+		
+		// Populate Soreus ArrayList and Map
+		this.soreus = new ArrayList<String>();
+		this.soreusStartIDs = new TreeMap<String, Integer>();
+		this.soreus.add(this.soreu_BERGAMO_NAME);
+		this.soreusStartIDs.put(this.soreu_BERGAMO_NAME, this.missione_BERGAMO_START_ID);
+		this.soreus.add(this.soreu_COMO_NAME);
+		this.soreusStartIDs.put(this.soreu_COMO_NAME, this.missione_COMO_START_ID);
+		this.soreus.add(this.soreu_MILANO_NAME);
+		this.soreusStartIDs.put(this.soreu_MILANO_NAME, this.missione_MILANO_START_ID);
+		this.soreus.add(this.soreu_PAVIA_NAME);
+		this.soreusStartIDs.put(this.soreu_PAVIA_NAME, this.missione_PAVIA_START_ID);
 		
 		// Load Associazione's Data (Username, Psswd, Name)
 		try {			
@@ -134,24 +168,26 @@ public class EmmaRESTActor extends AbstractActor {
 		// Logger Method Name
 		String method_name = "::onStartREST(): ";
 		logger.info(method_name + "Got new startREST msg ");
-		this.xml = "";
-		
-		// Try to Get the new XML
-		try {
-			this.getEmmaXML(this.ASSOCIAZIONE_SOREU, this.missione_START_ID);
-			if (this.sendXMLOverAKKA) {
-				MissioniDataXML xmlMissioni = new MissioniDataXML(this.xml, startREST.producerJSONKAFKA);
-				startREST.receiverXMLAKKA.tell(xmlMissioni, this.getSelf());
+		this.xml = "";		
+		for (String soreuName: soreus) {
+			try {
+				this.getEmmaXML(soreuName, this.soreusStartIDs.get(soreuName));
+				if (this.sendXMLOverAKKA) {
+					MissioniDataXML xmlMissioni = new MissioniDataXML(this.xml, startREST.producerJSONKAFKA);
+					startREST.receiverXMLAKKA.tell(xmlMissioni, this.getSelf());
+				}
+				if (this.saveXMLToLog) {
+					logger.info(this.xml);
+				}
+				if (this.saveXMLToFile) {
+					String xmlFullPath = this.xml_file_path + "/" + this.xml_file_name + "_" + soreuName + "." + this.xml_file_ext;
+					this.writeXMLToFile(xmlFullPath);
+				}
+				this.xml = "";
+			
+			} catch (Exception e) {
+				logger.error(method_name + "failed to elaborate missioni for soreu " + soreuName + ": " + e.getMessage());
 			}
-			if (this.saveXMLToLog) {
-				logger.info(this.xml);
-			}
-			if (this.saveXMLToFile) {
-				this.writeXMLToFile(this.xml_file_path);
-			}
-			this.xml = "";
-		} catch (Exception e) {
-			logger.error(e.getMessage());
 		}
 	}
 	

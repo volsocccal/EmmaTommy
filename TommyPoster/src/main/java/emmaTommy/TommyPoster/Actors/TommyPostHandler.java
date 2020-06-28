@@ -13,6 +13,8 @@ import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import javax.xml.bind.JAXBException;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 
@@ -25,6 +27,8 @@ import akka.actor.typed.PostStop;
 import akka.pattern.Patterns;
 import emmaTommy.DBClient.Actors.DBClientAPI;
 import emmaTommy.DBClient.Actors.DBOperationFailedException;
+import emmaTommy.DBClient.ActorsMessages.Queries.ServizioQueryField;
+import emmaTommy.TommyDataModel.Servizio;
 import emmaTommy.TommyDataModel.TommyEnrichedJSON;
 import emmaTommy.TommyPoster.ActorsMessages.PostData;
 import emmaTommy.TommyPoster.ActorsMessages.PostDataResponse;
@@ -61,6 +65,12 @@ public class TommyPostHandler extends AbstractActor {
 	protected int persistenceDBLockTimeOutSecs;
 	protected String stagingDBServiziTableName;
 	protected String persistenceDBServiziCollectionName;
+	
+	protected String soreuAlpina;
+	protected String soreuLaghi;
+	protected String soreuMetropolitana;
+	protected String soreuPianura;
+	protected ArrayList<String> soreuNames;
 	
 	protected ActorRef TommyRestPosterActorRef;
 	
@@ -136,6 +146,15 @@ public class TommyPostHandler extends AbstractActor {
   		this.persistenceDBLockTimeOutSecs = Integer.parseInt(propDB.getProperty("persistenceDBAskTimeOutSecs"));
   		this.stagingDBServiziTableName = propDB.getProperty("stagingDBServiziTableName");
   		this.persistenceDBServiziCollectionName = propDB.getProperty("persistenceDBServiziCollectionName");
+  		this.soreuAlpina = propDB.getProperty("soreuAlpina");
+  		this.soreuLaghi = propDB.getProperty("soreuLaghi");
+  		this.soreuMetropolitana = propDB.getProperty("soreuMetropolitana");
+  		this.soreuPianura = propDB.getProperty("soreuPianura");
+  		this.soreuNames = new ArrayList<String>();
+  		this.soreuNames.add(this.soreuAlpina);
+  		this.soreuNames.add(this.soreuLaghi);
+  		this.soreuNames.add(this.soreuMetropolitana);
+  		this.soreuNames.add(this.soreuPianura);
   		
   		// Get PersistenceDB ActorRef
  		try {
@@ -319,6 +338,11 @@ public class TommyPostHandler extends AbstractActor {
 				}
 			}
 			
+			// Update Posting Servizi Against Other SOREUs Tables (Alpina, Pianura, Laghi)
+			for (String automezzo: serviziToPostByMezzo.keySet() ) {
+				updateAgainstSOREUs(serviziToPostByMezzo.get(automezzo), this.soreuNames, this.persistenceDBServiziCollectionName);
+			}
+			
 			// Post Servizi Grouped by Mezzo
 			for (String automezzo: serviziToPostByMezzo.keySet() ) {
 				logger.trace(method_name + "Posting Servizi for mezzo " + automezzo);
@@ -473,10 +497,13 @@ public class TommyPostHandler extends AbstractActor {
     		return false;
     	}
     	
-    	// Check if KM Servizio are More than 0
-    	if (servizioEnriched.getKm() <= 0) {
-    		logger.error(method_name + "Servizio " + servizioID + " has non positive KM");
+    	// Check if KM Servizio are Less than 0
+    	if (servizioEnriched.getKm() < 0) {
+    		logger.warn(method_name + "Servizio " + servizioID + " has negative KM (Probably not inserted in EmmaWeb)");
     		return false;
+    	}
+    	if (servizioEnriched.getKm() == 0) {
+    		logger.warn(method_name + "Servizio " + servizioID + " has zero KM (Allowed for now)");
     	}
     	
     	// Check blockedMezziMap
@@ -495,6 +522,40 @@ public class TommyPostHandler extends AbstractActor {
 		return true;
 	}
 
+    protected void updateAgainstSOREUs(TreeMap<String, TommyEnrichedJSON> serviziEnrichedMap, ArrayList<String> soreuNames, String currentSOREU) throws DBOperationFailedException, JAXBException {
+    	String method_name = "::updateAgainstSOREUs(): ";
+    	for (String servizioID: serviziEnrichedMap.keySet()) {
+    		TreeMap<ServizioQueryField, String> propNamesValuesMap = new TreeMap<ServizioQueryField, String>();
+    		TommyEnrichedJSON servizioEnriched = serviziEnrichedMap.get(servizioID);
+    		propNamesValuesMap.put(ServizioQueryField.tag_idautomezzo, serviziEnrichedMap.get(servizioID).getCodiceMezzo());
+    		propNamesValuesMap.put(ServizioQueryField.missioneDate, serviziEnrichedMap.get(servizioID).getMissioneStartDateStr());
+    		propNamesValuesMap.put(ServizioQueryField.orario_inizio_servizio, serviziEnrichedMap.get(servizioID).getMissioneStartTimeStr());
+    		for (String soreu: soreuNames) {
+				ArrayList<TommyEnrichedJSON> serviziExternal = this.dbClient.getAllServiziInCollectionByProperties(this.getSelf(), 
+																						    						 actorID, this.persistenceDBActorRef, 
+																													 this.persistenceDBAskTimeOutSecs, 
+																													 propNamesValuesMap,
+																													 this.persistenceDBServiziCollectionName);
+				if (!serviziExternal.isEmpty()) {
+					if (serviziExternal.size() == 1) {
+						Servizio servizioExternal = serviziExternal.get(0).buildServizio();
+						Servizio s = serviziEnrichedMap.get(servizioID).buildServizio();
+						s.setAssistiti(servizioExternal.getAssistiti());
+						String noteExternal = "ID Servizio " +  soreu + ": " + servizioExternal.getCodiceServizio() + "\n"
+											+ servizioExternal.getNote();
+						s.setNote(noteExternal);
+						serviziEnrichedMap.put(servizioID, new TommyEnrichedJSON(s));
+						logger.error(method_name + "Updated servizio " +  servizioID + " with data from servizio " + servizioExternal.getCodiceServizio() + " of Collection " + soreu);	
+					} else {
+						logger.warn(method_name + "Got " + serviziExternal.size() + " servizi from " 
+												+ soreu + " with time " + serviziEnrichedMap.get(servizioID).getMissioneStartDateStr() + " "
+												+ serviziEnrichedMap.get(servizioID).getMissioneStartTimeStr());
+					}
+				}    			
+    		}
+    	}
+    }
+    
 	protected void onPostStop() {
 		
 		// Logger Method Name

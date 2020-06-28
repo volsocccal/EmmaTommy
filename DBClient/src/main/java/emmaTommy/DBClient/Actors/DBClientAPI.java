@@ -2,6 +2,7 @@ package emmaTommy.DBClient.Actors;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -11,6 +12,7 @@ import akka.actor.ActorRef;
 import akka.pattern.Patterns;
 import emmaTommy.DBClient.ActorsMessages.Queries.AcquireDBLock;
 import emmaTommy.DBClient.ActorsMessages.Queries.GetAllServiziInCollection;
+import emmaTommy.DBClient.ActorsMessages.Queries.GetAllServiziInCollectionByProperties;
 import emmaTommy.DBClient.ActorsMessages.Queries.GetCollectionList;
 import emmaTommy.DBClient.ActorsMessages.Queries.GetServizioByID;
 import emmaTommy.DBClient.ActorsMessages.Queries.IsDBAlive;
@@ -19,6 +21,7 @@ import emmaTommy.DBClient.ActorsMessages.Queries.IsServizioByIDPresent;
 import emmaTommy.DBClient.ActorsMessages.Queries.MoveServizioByID;
 import emmaTommy.DBClient.ActorsMessages.Queries.ReleaseDBLock;
 import emmaTommy.DBClient.ActorsMessages.Queries.RemoveServizioByID;
+import emmaTommy.DBClient.ActorsMessages.Queries.ServizioQueryField;
 import emmaTommy.DBClient.ActorsMessages.Queries.UpdateServizioByID;
 import emmaTommy.DBClient.ActorsMessages.Queries.UpdateServizioEnrichedByID;
 import emmaTommy.DBClient.ActorsMessages.Queries.WriteNewServizioByID;
@@ -325,6 +328,128 @@ public class DBClientAPI {
 			throw new DBOperationFailedException(error_msg);
 		}
 		return servizioEnriched;
+	}
+	
+	/**
+	 * Get a Servizi List from the DB with the given property
+	 * @param client ActorRef of the client, caller of the Query
+	 * @param dbManager ActorRef of the DB Manager Actor
+	 * @param operationTimeOutSecs Timeout for the Ask Operation
+	 * @param propName PropertyName of the wanted servizi
+	 * @param propValue PropertyValue of the wanted servizi
+	 * @param collectionName Name of the collection where the Servizio should be found
+	 * @return The wanted servizio. Null if the servizio isn't found in the collection.
+	 * @throws DBOperationFailedException
+	 */
+	public  ArrayList<TommyEnrichedJSON> getAllServiziInCollectionByProperty(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs, ServizioQueryField propName, String propValue, String collectionName) throws DBOperationFailedException {
+		String method_name = "::getAllServiziInCollectionByProperty(): ";
+		// Check Input Parameters
+		if (operationTimeOutSecs < 0) {
+			throw new DBOperationFailedException("Received Operation TimeOut was negative");
+		}
+		if (operationTimeOutSecs == 0) {
+			throw new DBOperationFailedException("Received Operation TimeOut was zero");
+		}
+		ArrayList<TommyEnrichedJSON> serviziListEnriched = new ArrayList<TommyEnrichedJSON>();
+		Future<Object> futureGetServizi = Patterns.ask(dbManager, 
+														new GetAllServiziInCollectionByProperties(client.path().name(), clientID, propName, propValue, collectionName), 
+														10000);
+
+		try {
+
+			Reply replyGetServizi = (Reply) Await.result(futureGetServizi, Duration.create(operationTimeOutSecs, TimeUnit.SECONDS));
+			
+			if (replyGetServizi instanceof ReplyServiziInCollection) {
+				HashMap<String, String> serviziMap = ((ReplyServiziInCollection) replyGetServizi).getServiziMap();
+				for (String servizioID: serviziMap.keySet()) {
+					if (servizioID == null) {
+						throw new NullPointerException("Found a null key in serviziMap");
+					}
+					String servizio = serviziMap.get(servizioID);
+					if (servizio == null) {
+						throw new NullPointerException("Found a null servizio associated to ID " +  servizioID + " in serviziMap");
+					}
+					if (servizio.isBlank()) {
+						throw new NullPointerException("Found a blanck servizio associated to ID " +  servizioID + " in serviziMap");
+					}
+					TommyEnrichedJSON servizioEnriched = new TommyEnrichedJSON(servizioID, servizio);
+					serviziListEnriched.add(servizioEnriched);
+				}				
+			} else if (replyGetServizi instanceof ReplyServiziInCollectionEnriched) {
+				serviziListEnriched.addAll(((ReplyServiziInCollectionEnriched) replyGetServizi).getServiziMap().values());
+			} else if (replyGetServizi instanceof DBOperationFaillure) {
+				throw new DBOperationFailedException(((DBOperationFaillure) replyGetServizi).getCause());
+			} else {
+				throw new DBOperationFailedException("Received unhandled reply of type: " + replyGetServizi.getReplyTypeName());
+			}
+			
+		} catch (Exception e) {
+			String error_msg = "Failed to get servizi from collection " + collectionName + ": " + e.getMessage();
+			logger.error(method_name + error_msg);			
+			throw new DBOperationFailedException(error_msg);
+		}
+		return serviziListEnriched;
+	}
+	
+	/**
+	 * Get a Servizi List from the DB with the given property
+	 * @param client ActorRef of the client, caller of the Query
+	 * @param dbManager ActorRef of the DB Manager Actor
+	 * @param operationTimeOutSecs Timeout for the Ask Operation
+	 * @param propNames PropertyNames list of the wanted servizi
+	 * @param propValues PropertyValues list of the wanted servizi
+	 * @param collectionName Name of the collection where the Servizio should be found
+	 * @return The wanted servizio. Null if the servizio isn't found in the collection.
+	 * @throws DBOperationFailedException
+	 */
+	public  ArrayList<TommyEnrichedJSON> getAllServiziInCollectionByProperties(ActorRef client, String clientID, ActorRef dbManager, int operationTimeOutSecs, TreeMap<ServizioQueryField, String> propNamesValuesMap, String collectionName) throws DBOperationFailedException {
+		String method_name = "::getAllServiziInCollectionByProperties(): ";
+		// Check Input Parameters
+		if (operationTimeOutSecs < 0) {
+			throw new DBOperationFailedException("Received Operation TimeOut was negative");
+		}
+		if (operationTimeOutSecs == 0) {
+			throw new DBOperationFailedException("Received Operation TimeOut was zero");
+		}
+		ArrayList<TommyEnrichedJSON> serviziListEnriched = new ArrayList<TommyEnrichedJSON>();
+		Future<Object> futureGetServizi = Patterns.ask(dbManager, 
+														new GetAllServiziInCollectionByProperties(client.path().name(), clientID, propNamesValuesMap, collectionName), 
+														10000);
+
+		try {
+
+			Reply replyGetServizi = (Reply) Await.result(futureGetServizi, Duration.create(operationTimeOutSecs, TimeUnit.SECONDS));
+			
+			if (replyGetServizi instanceof ReplyServiziInCollection) {
+				HashMap<String, String> serviziMap = ((ReplyServiziInCollection) replyGetServizi).getServiziMap();
+				for (String servizioID: serviziMap.keySet()) {
+					if (servizioID == null) {
+						throw new NullPointerException("Found a null key in serviziMap");
+					}
+					String servizio = serviziMap.get(servizioID);
+					if (servizio == null) {
+						throw new NullPointerException("Found a null servizio associated to ID " +  servizioID + " in serviziMap");
+					}
+					if (servizio.isBlank()) {
+						throw new NullPointerException("Found a blanck servizio associated to ID " +  servizioID + " in serviziMap");
+					}
+					TommyEnrichedJSON servizioEnriched = new TommyEnrichedJSON(servizioID, servizio);
+					serviziListEnriched.add(servizioEnriched);
+				}				
+			} else if (replyGetServizi instanceof ReplyServiziInCollectionEnriched) {
+				serviziListEnriched.addAll(((ReplyServiziInCollectionEnriched) replyGetServizi).getServiziMap().values());
+			} else if (replyGetServizi instanceof DBOperationFaillure) {
+				throw new DBOperationFailedException(((DBOperationFaillure) replyGetServizi).getCause());
+			} else {
+				throw new DBOperationFailedException("Received unhandled reply of type: " + replyGetServizi.getReplyTypeName());
+			}
+			
+		} catch (Exception e) {
+			String error_msg = "Failed to get servizi from collection " + collectionName + ": " + e.getMessage();
+			logger.error(method_name + error_msg);			
+			throw new DBOperationFailedException(error_msg);
+		}
+		return serviziListEnriched;
 	}
 	
 

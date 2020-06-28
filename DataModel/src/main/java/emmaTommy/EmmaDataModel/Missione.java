@@ -1,6 +1,8 @@
 package emmaTommy.EmmaDataModel;
 
 import java.time.LocalDateTime;
+
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -349,12 +351,21 @@ public class Missione extends EmmaDataModel {
 	
 	/** Numero Totale di Km Percorsi */
 	@XmlElement(name = "mi-vl-totkm", required = true)	
-	protected int totKMPercorsi;
-	public void setTotKMPercorsi (int totKMPercorsi) {
-		this.totKMPercorsi = totKMPercorsi;
+	protected String totKMPercorsi;
+	public void setTotKMPercorsi (String totKMPercorsi) {
+		if (totKMPercorsi == null) {
+			this.totKMPercorsi = "-1";
+		} else if (totKMPercorsi.isBlank()) {
+			this.totKMPercorsi = "-1";
+		} else {
+			this.totKMPercorsi = totKMPercorsi;
+		}
 	}
-	public int getTotKMPercorsi() {
+	public String getTotKMPercorsi() {
 		return this.totKMPercorsi; 
+	}
+	public int getTotKMPercorsiInt() {
+		return Integer.parseInt(this.totKMPercorsi); 
 	}
 	
 	/** Comune dove avviene l'intervento */
@@ -522,7 +533,7 @@ public class Missione extends EmmaDataModel {
 		result = prime * result + ((stazionamentoFineMissione == null) ? 0 : stazionamentoFineMissione.hashCode());
 		result = prime * result
 				+ ((stazionamentoFineMissionePosMezzo == null) ? 0 : stazionamentoFineMissionePosMezzo.hashCode());
-		result = prime * result + totKMPercorsi;
+		result = prime * result + ((codiceEnte == null) ? 0 : totKMPercorsi.hashCode());
 		result = prime * result + ((tratte == null) ? 0 : tratte.hashCode());
 		return result;
 	}
@@ -669,7 +680,10 @@ public class Missione extends EmmaDataModel {
 				return false;
 		} else if (!stazionamentoFineMissionePosMezzo.equals(other.getStazionamentoFineMissionePosMezzo()))
 			return false;
-		if (totKMPercorsi != other.getTotKMPercorsi())
+		if (totKMPercorsi == null) {
+			if (other.getTotKMPercorsi() != null)
+				return false;
+		} else if (!totKMPercorsi.equals(other.getTotKMPercorsi()))
 			return false;
 		if (tratte == null) {
 			if (other.getTratte() != null)
@@ -679,6 +693,27 @@ public class Missione extends EmmaDataModel {
 		return true;
 	}
 	
+	@Override
+	public String toJSON() throws JAXBException {
+		if (totKMPercorsi == null) {
+			this.totKMPercorsi = "-1";
+		} else if (totKMPercorsi.isBlank()) {
+			this.totKMPercorsi = "-1";
+		} else {
+			this.getTotKMPercorsiInt(); // Check that its really a number
+		}
+		return super.toJSON();
+	}
 	
-	
+	@Override
+	public String toXML() throws JAXBException {
+		if (totKMPercorsi == null) {
+			this.totKMPercorsi = "-1";
+		} else if (totKMPercorsi.isBlank()) {
+			this.totKMPercorsi = "-1";
+		} else {
+			this.getTotKMPercorsiInt(); // Check that its really a number
+		}
+		return super.toXML();
+	}
 }

@@ -95,7 +95,7 @@ public class ServizioFactory {
 		s.setTagIdAutomezzo(m.getCodiceMezzo());
 		
 		// km" : "type:Int:required"
-		s.setKM(m.getTotKMPercorsi());
+		s.setKM(m.getTotKMPercorsiInt());
 		
 		// luogo_partenza" : "type:String"
 		String luogoPartenza = "";
