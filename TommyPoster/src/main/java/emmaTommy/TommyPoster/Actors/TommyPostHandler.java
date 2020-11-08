@@ -27,9 +27,9 @@ import akka.actor.typed.PostStop;
 import akka.pattern.Patterns;
 import emmaTommy.DBClient.Actors.DBClientAPI;
 import emmaTommy.DBClient.Actors.DBOperationFailedException;
-import emmaTommy.DBClient.ActorsMessages.Queries.ServizioQueryField;
 import emmaTommy.TommyDataModel.Servizio;
 import emmaTommy.TommyDataModel.TommyEnrichedJSON;
+import emmaTommy.TommyDataModel.Factories.ServizioQueryField;
 import emmaTommy.TommyPoster.ActorsMessages.PostData;
 import emmaTommy.TommyPoster.ActorsMessages.PostDataResponse;
 import emmaTommy.TommyPoster.ActorsMessages.PostOperationStart;
@@ -525,6 +525,10 @@ public class TommyPostHandler extends AbstractActor {
     protected void updateAgainstSOREUs(TreeMap<String, TommyEnrichedJSON> serviziEnrichedMap, ArrayList<String> soreuNames, String currentSOREU) throws DBOperationFailedException, JAXBException {
     	String method_name = "::updateAgainstSOREUs(): ";
     	for (String servizioID: serviziEnrichedMap.keySet()) {
+    		if (servizioID.compareTo("203138276") == 0)
+    		{    			
+    			logger.info(method_name + "Servizio 203138276");
+    		}
     		TreeMap<ServizioQueryField, String> propNamesValuesMap = new TreeMap<ServizioQueryField, String>();
     		TommyEnrichedJSON servizioEnriched = serviziEnrichedMap.get(servizioID);
     		propNamesValuesMap.put(ServizioQueryField.tag_idautomezzo, serviziEnrichedMap.get(servizioID).getCodiceMezzo());
@@ -535,7 +539,7 @@ public class TommyPostHandler extends AbstractActor {
 																						    						 actorID, this.persistenceDBActorRef, 
 																													 this.persistenceDBAskTimeOutSecs, 
 																													 propNamesValuesMap,
-																													 this.persistenceDBServiziCollectionName);
+																													 soreu);
 				if (!serviziExternal.isEmpty()) {
 					if (serviziExternal.size() == 1) {
 						Servizio servizioExternal = serviziExternal.get(0).buildServizio();
@@ -545,13 +549,13 @@ public class TommyPostHandler extends AbstractActor {
 											+ servizioExternal.getNote();
 						s.setNote(noteExternal);
 						serviziEnrichedMap.put(servizioID, new TommyEnrichedJSON(s));
-						logger.error(method_name + "Updated servizio " +  servizioID + " with data from servizio " + servizioExternal.getCodiceServizio() + " of Collection " + soreu);	
+						logger.info(method_name + "Updated servizio " +  servizioID + " with data from servizio " + servizioExternal.getCodiceServizio() + " of Collection " + soreu);	
 					} else {
 						logger.warn(method_name + "Got " + serviziExternal.size() + " servizi from " 
 												+ soreu + " with time " + serviziEnrichedMap.get(servizioID).getMissioneStartDateStr() + " "
 												+ serviziEnrichedMap.get(servizioID).getMissioneStartTimeStr());
 					}
-				}    			
+				}
     		}
     	}
     }

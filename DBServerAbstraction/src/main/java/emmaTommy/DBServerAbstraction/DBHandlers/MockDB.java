@@ -2,12 +2,18 @@ package emmaTommy.DBServerAbstraction.DBHandlers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
+
+import javax.xml.bind.JAXBException;
 
 import emmaTommy.DBServerAbstraction.DBExceptions.CollectionNotPresentException;
 import emmaTommy.DBServerAbstraction.DBExceptions.ServizioAlreadyInCollectionDBException;
 import emmaTommy.DBServerAbstraction.DBExceptions.ServizioNotPresentException;
 import emmaTommy.DBServerAbstraction.DBExceptions.UnknownDBException;
+import emmaTommy.TommyDataModel.Servizio;
 import emmaTommy.TommyDataModel.TommyEnrichedJSON;
+import emmaTommy.TommyDataModel.Factories.ServizioFactory;
+import emmaTommy.TommyDataModel.Factories.ServizioQueryField;
 
 
 public class MockDB extends AbstractDB {
@@ -140,7 +146,6 @@ public class MockDB extends AbstractDB {
 	public Boolean isDBAlive() {
 		return true;
 	}
-
 
 	@Override 
 	public Boolean isServizioByIDPresent(String servizioID, String collectionName) throws CollectionNotPresentException {

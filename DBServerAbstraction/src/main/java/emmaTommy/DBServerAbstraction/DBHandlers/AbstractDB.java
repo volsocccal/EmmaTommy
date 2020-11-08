@@ -2,6 +2,9 @@ package emmaTommy.DBServerAbstraction.DBHandlers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
+
+import javax.xml.bind.JAXBException;
 
 import org.apache.logging.log4j.LogManager;
 
@@ -10,6 +13,8 @@ import emmaTommy.DBServerAbstraction.DBExceptions.ServizioAlreadyInCollectionDBE
 import emmaTommy.DBServerAbstraction.DBExceptions.ServizioNotPresentException;
 import emmaTommy.DBServerAbstraction.DBExceptions.UnknownDBException;
 import emmaTommy.TommyDataModel.TommyEnrichedJSON;
+import emmaTommy.TommyDataModel.Factories.ServizioFactory;
+import emmaTommy.TommyDataModel.Factories.ServizioQueryField;
 
 public abstract class AbstractDB {
 	
@@ -76,7 +81,45 @@ public abstract class AbstractDB {
 	
 	public abstract HashMap<String, String> getAllServiziInCollection(String collectionName) throws CollectionNotPresentException, UnknownDBException;
 	
+	public HashMap<String, String> GetAllServiziInCollectionByProp(String collectionName, TreeMap<ServizioQueryField, String> propNVmap) throws CollectionNotPresentException, UnknownDBException
+	{
+		HashMap<String, String> serviziMap = getAllServiziInCollection(collectionName);
+		HashMap<String, String> serviziAcceptedMap = new HashMap<String, String>();
+		ServizioFactory sFactory = new ServizioFactory();
+		for (String servizioID: serviziMap.keySet()) {			
+			try {
+				if (servizioID.compareTo("201185334") == 0)
+	    		{    			
+	    			logger.info("Servizio 201185334");
+	    		}
+				if (sFactory.checkPropertiesUnmarshallJSON(propNVmap, serviziMap.get(servizioID))) {
+					serviziAcceptedMap.put(servizioID, serviziMap.get(servizioID));
+				}
+			} catch (JAXBException e) {
+				throw new UnknownDBException(e.getMessage());
+			}
+		}
+		return serviziAcceptedMap;
+	}
+	
 	public abstract HashMap<String, TommyEnrichedJSON> getAllServiziEnrichedInCollection (String collectionName) throws CollectionNotPresentException, UnknownDBException;
+	
+	public HashMap<String, TommyEnrichedJSON> GetAllServiziEnrichedInCollectionByProp(String collectionName, TreeMap<ServizioQueryField, String> propNVmap) throws CollectionNotPresentException, UnknownDBException
+	{
+		HashMap<String, TommyEnrichedJSON> serviziEnrichedMap = getAllServiziEnrichedInCollection(collectionName);
+		HashMap<String, TommyEnrichedJSON> serviziEnrichedAcceptedMap = new HashMap<String, TommyEnrichedJSON>();
+		ServizioFactory sFactory = new ServizioFactory();
+		for (String servizioID: serviziEnrichedMap.keySet()) {			
+			try {
+				if (sFactory.checkPropertiesUnmarshallJSON(propNVmap, serviziEnrichedMap.get(servizioID).getJsonServizio())) {
+					serviziEnrichedAcceptedMap.put(servizioID, serviziEnrichedMap.get(servizioID));
+				}
+			} catch (JAXBException e) {
+				throw new UnknownDBException(e.getMessage());
+			}
+		}
+		return serviziEnrichedAcceptedMap;
+	}
 	
 	public abstract Boolean isCollectionByNamePresent(String collectionName) throws UnknownDBException, UnknownDBException;
 	

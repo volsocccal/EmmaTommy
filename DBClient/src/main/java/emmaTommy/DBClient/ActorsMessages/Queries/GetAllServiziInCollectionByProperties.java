@@ -2,6 +2,8 @@ package emmaTommy.DBClient.ActorsMessages.Queries;
 
 import java.util.TreeMap;
 
+import emmaTommy.TommyDataModel.Factories.ServizioQueryField;
+
 public class GetAllServiziInCollectionByProperties extends Query {
 	protected String collectionName;
 	protected TreeMap<ServizioQueryField, String> propNamesValuesMap;

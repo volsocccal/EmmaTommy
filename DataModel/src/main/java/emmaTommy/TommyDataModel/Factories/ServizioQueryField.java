@@ -1,4 +1,4 @@
-package emmaTommy.DBClient.ActorsMessages.Queries;
+package emmaTommy.TommyDataModel.Factories;
 
 public enum ServizioQueryField {
 	assistitoFemale,

@@ -21,7 +21,6 @@ import emmaTommy.DBClient.ActorsMessages.Queries.IsServizioByIDPresent;
 import emmaTommy.DBClient.ActorsMessages.Queries.MoveServizioByID;
 import emmaTommy.DBClient.ActorsMessages.Queries.ReleaseDBLock;
 import emmaTommy.DBClient.ActorsMessages.Queries.RemoveServizioByID;
-import emmaTommy.DBClient.ActorsMessages.Queries.ServizioQueryField;
 import emmaTommy.DBClient.ActorsMessages.Queries.UpdateServizioByID;
 import emmaTommy.DBClient.ActorsMessages.Queries.UpdateServizioEnrichedByID;
 import emmaTommy.DBClient.ActorsMessages.Queries.WriteNewServizioByID;
@@ -53,6 +52,7 @@ import emmaTommy.DBClient.ActorsMessages.Replies.UpdateServizioByIDSuccess;
 import emmaTommy.DBClient.ActorsMessages.Replies.WriteNewServizioByIDEnrichedSuccess;
 import emmaTommy.DBClient.ActorsMessages.Replies.WriteNewServizioByIDSuccess;
 import emmaTommy.TommyDataModel.TommyEnrichedJSON;
+import emmaTommy.TommyDataModel.Factories.ServizioQueryField;
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
@@ -422,6 +422,10 @@ public class DBClientAPI {
 			
 			if (replyGetServizi instanceof ReplyServiziInCollection) {
 				HashMap<String, String> serviziMap = ((ReplyServiziInCollection) replyGetServizi).getServiziMap();
+				if (serviziMap.isEmpty())
+				{
+					logger.error("Received Empty Map");
+				}
 				for (String servizioID: serviziMap.keySet()) {
 					if (servizioID == null) {
 						throw new NullPointerException("Found a null key in serviziMap");

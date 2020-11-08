@@ -284,13 +284,14 @@ public class TommyDataHandlerDataWriter extends AbstractActor {
 						// Find the Servizio's SOREU
 						logger.info(method_name + "Servizio " + servizioData.getID() + " is not from the association' SOREU: " + this.persistenceDBServiziCollectionName);
 						String collectionName = "";
-						if (isServizioFromSOREU(servizio.getCodiceServizio(), this.soreuAlpinaID)) {
+						String codiceServizio = servizio.getCodiceServizio();
+						if (isServizioFromSOREU(codiceServizio, this.soreuAlpinaID)) {
 							collectionName = this.soreuAlpinaCollectionName;
-						} else if (isServizioFromSOREU(servizio.getCodiceServizio(), this.soreuLaghiID)) {
+						} else if (isServizioFromSOREU(codiceServizio, this.soreuLaghiID)) {
 							collectionName = this.soreuLaghiCollectionName;
-						} else if (isServizioFromSOREU(servizio.getCodiceServizio(), this.soreuMetropolitanaID)) {
+						} else if (isServizioFromSOREU(codiceServizio, this.soreuMetropolitanaID)) {
 							collectionName = this.soreuMetropolitanaCollectionName;
-						} else if (isServizioFromSOREU(servizio.getCodiceServizio(), this.soreuPianuraID)) {
+						} else if (isServizioFromSOREU(codiceServizio, this.soreuPianuraID)) {
 							collectionName = this.soreuPianuraCollectionName;
 						}
 						logger.info(method_name + "Servizio " + servizioData.getID() + " is from SOREU: " + collectionName);

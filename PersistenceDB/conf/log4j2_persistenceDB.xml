@@ -5,7 +5,7 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
-       <RollingFile name="StagingDBHandler" fileName="logs_test/StagingDBHandler.log" filePattern="logs_test/StagingDBHandler-%i.log">
+       <RollingFile name="PersistenceDBHandler" fileName="logs_test/PersistenceDBHandler.log" filePattern="logs_test/PersistenceDBHandler-%i.log">
             <PatternLayout>
                 <Pattern>%d [%t] %-5p %c%m%n</Pattern>
             </PatternLayout>
@@ -14,7 +14,7 @@
                 <SizeBasedTriggeringPolicy size="100 MB"/>
             </Policies>
         </RollingFile>
-        <RollingFile name="StagingDBHandler_Mock" fileName="logs_test/StagingDBHandler_Mock.log" filePattern="logs_test/StagingDBHandler_Mock-%i.log">
+        <RollingFile name="PersistenceDBHandler_Mock" fileName="logs_test/PersistenceDBHandler_Mock.log" filePattern="logs_test/PersistenceDBHandler_Mock-%i.log">
             <PatternLayout>
                 <Pattern>%d [%t] %-5p %c%m%n</Pattern>
             </PatternLayout>
@@ -25,11 +25,11 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Logger name="StagingDBHandler" level="trace">
-            <AppenderRef ref="StagingDBHandler"/>
+        <Logger name="PersistenceDBHandler" level="trace">
+            <AppenderRef ref="PersistenceDBHandler"/>
         </Logger>
-        <Logger name="StagingDBHandler_Mock" level="trace">
-            <AppenderRef ref="StagingDBHandler_Mock"/>
+        <Logger name="PersistenceDBHandler_Mock" level="trace">
+            <AppenderRef ref="PersistenceDBHandler_Mock"/>
         </Logger>
         <Root level="warn">
             <AppenderRef ref="Console"/>

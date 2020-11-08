@@ -1,8 +1,12 @@
 package emmaTommy.TommyDataModel.Factories;
 
 import java.io.StringReader;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.TreeMap;
 
+import javax.management.RuntimeErrorException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -10,9 +14,13 @@ import javax.xml.bind.Unmarshaller;
 import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 import org.eclipse.persistence.oxm.MediaType;
 
+import emmaTommy.DataModel.DateAdapterYYMMDD;
+import emmaTommy.DataModel.DateTimeAdapterHHmm;
 import emmaTommy.EmmaDataModel.Missione;
 import emmaTommy.EmmaDataModel.Tratta;
 import emmaTommy.EmmaDataModel.Tratte;
+import emmaTommy.TommyDataModel.Assistito;
+import emmaTommy.TommyDataModel.Membro;
 import emmaTommy.TommyDataModel.Servizio;
 import emmaTommy.TommyDataModel.TommyDataModelEnums;
 
@@ -268,6 +276,167 @@ public class ServizioFactory {
 		return s;
 		
 	}
+	
+
+	public Boolean checkProperties(TreeMap<ServizioQueryField, String> propNVmap, Servizio s) {
+		
+		Boolean checkPassed = false;
+		if (propNVmap.isEmpty())
+			checkPassed = true;
+		for (ServizioQueryField key: propNVmap.keySet()) {
+			if (key == ServizioQueryField.assistitoFemale) {
+				for (Assistito ass: s.getAssistiti()) {
+					if (TommyDataModelEnums.FEMALE_GENDER.compareTo(ass.getSesso()) == 0) {
+						checkPassed = true;
+					}
+				}
+			} else if (key == ServizioQueryField.assistitoMale) {
+				for (Assistito ass: s.getAssistiti()) {
+					if (TommyDataModelEnums.MALE_GENDER.compareTo(ass.getSesso()) == 0) {
+						checkPassed = true;
+					}
+				}
+			} else if (key == ServizioQueryField.codice_servizio) {
+				String codiceServizio = propNVmap.get(key);
+				if (codiceServizio == null)
+					throw new NullPointerException("Wanted property " + key + " has a null value");
+				checkPassed = codiceServizio.compareTo(s.getCodiceServizio()) == 0;
+			} else if (key == ServizioQueryField.equipaggio_0) {
+				checkPassed = s.getSquadra().size() == 0;
+			} else if (key == ServizioQueryField.equipaggio_1) {
+				checkPassed = s.getSquadra().size() == 1;
+			} else if (key == ServizioQueryField.equipaggio_2) {
+				checkPassed = s.getSquadra().size() == 2;
+			} else if (key == ServizioQueryField.equipaggio_3) {
+				checkPassed = s.getSquadra().size() == 3;
+			} else if (key == ServizioQueryField.equipaggio_4) {
+				checkPassed = s.getSquadra().size() == 4;
+			} else if (key == ServizioQueryField.equipaggio_trainee) {
+				for (Membro m: s.getSquadra()) {
+					String qualifica = m.getTagIdQualifica();
+					if (qualifica != null)
+						if (TommyDataModelEnums.SOCCORRITORE_ADD.compareTo(qualifica) == 0)
+							checkPassed = true;
+				}
+			} else if (key == ServizioQueryField.km) {
+				String kmStr = propNVmap.get(key);
+				if (kmStr == null)
+					throw new NullPointerException("Wanted property " + key + " has a null value");
+				int km = Integer.parseInt(kmStr);
+				if (km == s.getKM())
+					checkPassed = true;
+			} else if (key == ServizioQueryField.luogo_partenza) {
+				String luogoPartenza = propNVmap.get(key);
+				if (luogoPartenza == null)
+					throw new NullPointerException("Wanted property " + key + " has a null value");
+				checkPassed = luogoPartenza.compareTo(s.getLuogoPartenza()) == 0;
+			} else if (key == ServizioQueryField.luogo_arrivo) {
+				String luogoArrivo = propNVmap.get(key);
+				if (luogoArrivo == null)
+					throw new NullPointerException("Wanted property " + key + " has a null value");
+				checkPassed = luogoArrivo.compareTo(s.getLuogoArrivo()) == 0;
+			} else if (key == ServizioQueryField.membro_equipaggio) {
+				String membroEquipaggioStr = propNVmap.get(key);
+				if (membroEquipaggioStr == null)
+					throw new NullPointerException("Wanted property " + key + " has a null value");
+				for (Membro m: s.getSquadra()) {
+					String nomeToCompare = m.getTagIdAnagrafica();
+					if (membroEquipaggioStr.contains(","))
+					{
+						String qualifica = m.getTagIdQualifica();
+						nomeToCompare += ", " + qualifica;
+					}
+					checkPassed = membroEquipaggioStr.compareTo(nomeToCompare) == 0;
+				}
+			} else if (key == ServizioQueryField.missioneDate) {
+				String missioneDateStr = propNVmap.get(key);
+				if (missioneDateStr == null)
+					throw new NullPointerException("Wanted property " + key + " has a null value");
+				DateAdapterYYMMDD dateAdapter = new DateAdapterYYMMDD();
+				LocalDate missioneDate = dateAdapter.unmarshal(missioneDateStr);
+				checkPassed = missioneDate.compareTo(s.getMissioneDate()) == 0;
+			} else if (key == ServizioQueryField.orario_inizio_servizio) {
+				String orarioInizioServizioStr = propNVmap.get(key);
+				if (orarioInizioServizioStr == null)
+					throw new NullPointerException("Wanted property " + key + " has a null value");
+				DateTimeAdapterHHmm timeAdapter = new DateTimeAdapterHHmm();
+				LocalTime orarioInizioServizio = timeAdapter.unmarshal(orarioInizioServizioStr);
+				checkPassed = orarioInizioServizio.compareTo(s.getOrarioInizioServizio()) == 0;
+			} else if (key == ServizioQueryField.orario_arrivo_posto) {
+				String orarioArrivoPostoStr = propNVmap.get(key);
+				if (orarioArrivoPostoStr == null)
+					throw new NullPointerException("Wanted property " + key + " has a null value");
+				DateTimeAdapterHHmm timeAdapter = new DateTimeAdapterHHmm();
+				LocalTime orarioArrivoPosto = timeAdapter.unmarshal(orarioArrivoPostoStr);
+				checkPassed = orarioArrivoPosto.compareTo(s.getOrarioArrivoPosto()) == 0;
+			} else if (key == ServizioQueryField.orario_partenza_posto) {
+				String orarioPartenzaPostoStr = propNVmap.get(key);
+				if (orarioPartenzaPostoStr == null)
+					throw new NullPointerException("Wanted property " + key + " has a null value");
+				DateTimeAdapterHHmm timeAdapter = new DateTimeAdapterHHmm();
+				LocalTime orarioPartenzaPosto = timeAdapter.unmarshal(orarioPartenzaPostoStr);
+				checkPassed = orarioPartenzaPosto.compareTo(s.getOrarioPartenzaPosto()) == 0;
+			} else if (key == ServizioQueryField.orario_arrivo_ospedale) {
+				String orarioArrivoHStr = propNVmap.get(key);
+				if (orarioArrivoHStr == null)
+					throw new NullPointerException("Wanted property " + key + " has a null value");
+				DateTimeAdapterHHmm timeAdapter = new DateTimeAdapterHHmm();
+				LocalTime orarioArrivoH = timeAdapter.unmarshal(orarioArrivoHStr);
+				checkPassed = orarioArrivoH.compareTo(s.getOrarioArrivoOspedale()) == 0;
+			} else if (key == ServizioQueryField.orario_partenza_ospedale) {
+				String orarioPartenzaHStr = propNVmap.get(key);
+				if (orarioPartenzaHStr == null)
+					throw new NullPointerException("Wanted property " + key + " has a null value");
+				DateTimeAdapterHHmm timeAdapter = new DateTimeAdapterHHmm();
+				LocalTime orarioPartenzaH = timeAdapter.unmarshal(orarioPartenzaHStr);
+				checkPassed = orarioPartenzaH.compareTo(s.getOrarioPartenzaOspedale()) == 0;
+			} else if (key == ServizioQueryField.orario_fine_servizio) {
+				String orarioFineServizioStr = propNVmap.get(key);
+				if (orarioFineServizioStr == null)
+					throw new NullPointerException("Wanted property " + key + " has a null value");
+				DateTimeAdapterHHmm timeAdapter = new DateTimeAdapterHHmm();
+				LocalTime orarioFineServizio = timeAdapter.unmarshal(orarioFineServizioStr);
+				checkPassed = orarioFineServizio.compareTo(s.getOrarioFineServizio()) == 0;
+			} else if (key == ServizioQueryField.patient) {
+				String patient = propNVmap.get(key);
+				if (patient == null)
+					throw new NullPointerException("Wanted property " + key + " has a null value");
+				for (Assistito ass: s.getAssistiti()) {
+					String cognome = ass.getCognome();
+					String nome = ass.getNome();
+					String patientRead = cognome + ", " + nome;
+					if (patientRead.compareTo(patient) == 0)
+						checkPassed = true;
+				}
+			} else if (key == ServizioQueryField.tag_idintervento) {
+				String tagIdIntervento = propNVmap.get(key);
+				if (tagIdIntervento == null)
+					throw new NullPointerException("Wanted property " + key + " has a null value");
+				checkPassed = tagIdIntervento.compareTo(s.getTagIntervento()) == 0;
+			} else if (key == ServizioQueryField.tag_idautomezzo) {
+				String tagIdMezzo = propNVmap.get(key);
+				if (tagIdMezzo == null)
+					throw new NullPointerException("Wanted property " + key + " has a null value");
+				checkPassed = tagIdMezzo.compareTo(s.getTagIdAutomezzo()) == 0;
+			} else
+			{
+				throw new RuntimeException("Received Unknown Servizio Property Name");
+			}			
+			
+			if (!checkPassed)
+				return false;
+			
+		}
+		return checkPassed;
+		
+	}
+	public Boolean checkPropertiesUnmarshallJSON(TreeMap<ServizioQueryField, String> propNVmap, String json) throws JAXBException {
+		return checkProperties(propNVmap, buildServizioUnmarshallJSON(json));		
+	}
+	public Boolean checkPropertiesUnmarshallXML(TreeMap<ServizioQueryField, String> propNVmap, String xml) throws JAXBException {
+		return checkProperties(propNVmap, buildServizioUnmarshallXML(xml));		
+	}
+	
 	
 	protected String tipoEventoConverter (String tipoEventoMissioni) {
 		if (tipoEventoMissioni == null) {

@@ -2,6 +2,7 @@ package emmaTommy.DBServerAbstraction.Actors;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 import javax.xml.bind.JAXBException;
 
@@ -22,7 +23,6 @@ import emmaTommy.DBClient.ActorsMessages.Queries.IsServizioByIDPresent;
 import emmaTommy.DBClient.ActorsMessages.Queries.MoveServizioByID;
 import emmaTommy.DBClient.ActorsMessages.Queries.ReleaseDBLock;
 import emmaTommy.DBClient.ActorsMessages.Queries.RemoveServizioByID;
-import emmaTommy.DBClient.ActorsMessages.Queries.ServizioQueryField;
 import emmaTommy.DBClient.ActorsMessages.Queries.UpdateServizioByID;
 import emmaTommy.DBClient.ActorsMessages.Queries.UpdateServizioEnrichedByID;
 import emmaTommy.DBClient.ActorsMessages.Queries.WriteNewServizioByID;
@@ -69,6 +69,7 @@ import emmaTommy.TommyDataModel.Membro;
 import emmaTommy.TommyDataModel.Servizio;
 import emmaTommy.TommyDataModel.TommyDataModelEnums;
 import emmaTommy.TommyDataModel.TommyEnrichedJSON;
+import emmaTommy.TommyDataModel.Factories.ServizioQueryField;
 
 public class DBServer extends AbstractActor {
 
@@ -260,37 +261,21 @@ public class DBServer extends AbstractActor {
 		String callingClientName = queryObj.getCallingActorName();
 		String callingClientID = queryObj.getCallingActorID();
 		logger.trace("Reveived GetAllServiziInCollectionByProperties from " + callingClientName + " ID " + callingClientID);
+		TreeMap<ServizioQueryField, String> propNVmap = queryObj.getPropertyNamesValuesMap();
 		String wantedCollectionName = queryObj.getCollectionName();
 		logger.trace(method_name + callingClientName + " wants servizi in collection " +  wantedCollectionName);
 		try {
 			if (this.db.areServiziEnriched()) { // Enriched JSON
-				HashMap<String, TommyEnrichedJSON> serviziMap = this.db.getAllServiziEnrichedInCollection(wantedCollectionName);
-				for (String servizioID: serviziMap.keySet()) {
-					TommyEnrichedJSON servizioEnriched = serviziMap.get(servizioID);
-					Servizio s = servizioEnriched.buildServizio();
-					if (!checkServizioProp(queryObj, s))
-						serviziMap.remove(servizioID);					
-				}
-				logger.trace(method_name + "Sending " + serviziMap.size() + " servizi enriched in collection " +  wantedCollectionName + " to " + callingClientName);
-				this.getSender().tell(new ReplyServiziInCollectionEnriched(serviziMap, wantedCollectionName), 
+				HashMap<String, TommyEnrichedJSON> serviziEnrichedMap = this.db.GetAllServiziEnrichedInCollectionByProp(wantedCollectionName, propNVmap);
+				logger.trace(method_name + "Sending " + serviziEnrichedMap.size() + " servizi enriched in collection " +  wantedCollectionName + " to " + callingClientName);
+				this.getSender().tell(new ReplyServiziInCollectionEnriched(serviziEnrichedMap, wantedCollectionName), 
 									  this.getSelf());
 			} else { // Raw JSON
-				HashMap<String, String> serviziMap = this.db.getAllServiziInCollection(wantedCollectionName);
-				for (String servizioID: serviziMap.keySet()) {
-					String servizio = serviziMap.get(servizioID);
-					TommyEnrichedJSON servizioEnriched = new TommyEnrichedJSON(servizioID, servizio);
-					Servizio s = servizioEnriched.buildServizio();
-					if (!checkServizioProp(queryObj, s))
-						serviziMap.remove(servizioID);					
-				}
+				HashMap<String, String> serviziMap = this.db.GetAllServiziInCollectionByProp(wantedCollectionName, propNVmap);
 				logger.trace(method_name + "Sending all servizi in collection " +  wantedCollectionName + " to " + callingClientName);
-				this.getSender().tell(new ReplyServiziInCollection(this.db.getAllServiziInCollection(wantedCollectionName), wantedCollectionName), 
+				this.getSender().tell(new ReplyServiziInCollection(serviziMap, wantedCollectionName), 
 									  this.getSelf());
 			}
-		} catch (JAXBException e) {
-			logger.error(method_name + e.getMessage());
-			this.getSender().tell(new DBOperationFaillure(e.getMessage()), 
-									this.getSelf());
 		} catch (CollectionNotPresentException e) {
 			logger.error(method_name + e.getMessage());
 			this.getSender().tell(new CollectionNotFound(e.getCollectionName()), 

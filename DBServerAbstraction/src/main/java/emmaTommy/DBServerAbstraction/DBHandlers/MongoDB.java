@@ -108,7 +108,7 @@ public class MongoDB extends AbstractDB {
 		}
 		return serviziMap;
 	}
-
+	
 	@Override
 	public HashMap<String, TommyEnrichedJSON> getAllServiziEnrichedInCollection(String collectionName)
 			throws CollectionNotPresentException, UnknownDBException {
