@@ -73,7 +73,8 @@ public abstract class DataFormatClass {
         jaxbMarshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, true);
         StringWriter sw = new StringWriter();
         jaxbMarshaller.marshal(this, sw);
-        return sw.toString();
+        String json = sw.toString();
+        return json.replace("'", "''");
 	}
 	/** Print Class Marshalled as JSON */
 	public void toJSON_print() throws JAXBException {

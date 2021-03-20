@@ -43,7 +43,7 @@ public class TommyPostHandler extends AbstractActor {
 	
 	protected org.apache.logging.log4j.Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
 	protected String actorID = RandomStringUtils.randomAlphanumeric(10);
-	
+		
 	protected String tommy_posthandler_conf;	
 	protected String tommy_rest_service_refs;
 	protected String tommy_db_conf;
@@ -346,60 +346,32 @@ public class TommyPostHandler extends AbstractActor {
 			// Post Servizi Grouped by Mezzo
 			for (String automezzo: serviziToPostByMezzo.keySet() ) {
 				logger.trace(method_name + "Posting Servizi for mezzo " + automezzo);
-				PostData postData = new PostData(automezzo, serviziToPostByMezzo.get(automezzo));
-				if (this.save_post_json_to_disk) {
-					String fileName = new SimpleDateFormat("'postData_'yyyyMMdd_HHmmss'.json'").format(new Date());
-					FileOutputStream outputStream = new FileOutputStream(this.post_json_folder + "/" + fileName);
-			        outputStream.write(postData.getJsonServizi().getBytes());     
-			        outputStream.close();
-				}					
-				Future<Object> postResponse = Patterns.ask(this.TommyRestPosterActorRef, postData, 10000);
-				
-				try {
-					PostDataResponse response = (PostDataResponse) Await.result(postResponse, Duration.create(tommyPostTimeout, TimeUnit.SECONDS));
-					if (response.isResponseStatusSuccess()) {
-						logger.trace(method_name + "Post Success Servizi for Automezzo " + automezzo);
-						logger.trace(method_name + response.getTommyResponse());
-						serviziPosted.putAll(serviziToPostByMezzo.get(automezzo));
-						logger.trace(method_name + "Added " + serviziToPostByMezzo.get(automezzo).size() + 
-													" servizi for automezzo " + automezzo +
-													" to serviziPosted Map");
-						if (this.save_post_json_to_disk) {
-							String fileName = new SimpleDateFormat("'postReplySuccess'yyyyMMdd_HHmmss'.json'").format(new Date());
-							FileOutputStream outputStream = new FileOutputStream(this.post_json_folder + "/" + fileName);
-					        outputStream.write(response.getTommyResponse().getBytes());     
-					        outputStream.close();
-						}	
-					} else if (response.isResponseStatusWarning()) {
-						logger.warn(method_name + "Post Success with Warning Servizi for Automezzo " + automezzo);
-						logger.warn(method_name + response.getTommyResponse());
-						serviziPosted.putAll(serviziToPostByMezzo.get(automezzo));
-						logger.trace(method_name + "Added " + serviziToPostByMezzo.get(automezzo).size() + 
-													" servizi for automezzo " + automezzo +
-													" to serviziPosted Map");
-						if (this.save_post_json_to_disk) {
-							String fileName = new SimpleDateFormat("'postReplyWarning'yyyyMMdd_HHmmss'.json'").format(new Date());
-							FileOutputStream outputStream = new FileOutputStream(this.post_json_folder + "/" + fileName);
-					        outputStream.write(response.getTommyResponse().getBytes());     
-					        outputStream.close();
-						}	
-					} else {
-						logger.error(method_name + "Post Error Servizi for mezzo " + automezzo);
-						logger.error(method_name + response.getTommyResponse());
-						serviziUnpostable.putAll(serviziToPostByMezzo.get(automezzo));
-						logger.warn(method_name + "Added " + serviziToPostByMezzo.get(automezzo).size() + 
-								" servizi for automezzo " + automezzo +
-								" to serviziUnpostable Map");
-						if (this.save_post_json_to_disk) {
-							String fileName = new SimpleDateFormat("'postReplyFaillure'yyyyMMdd_HHmmss'.json'").format(new Date());
-							FileOutputStream outputStream = new FileOutputStream(this.post_json_folder + "/" + fileName);
-					        outputStream.write(response.getTommyResponse().getBytes());     
-					        outputStream.close();
-						}
+				TreeMap<String, TommyEnrichedJSON> mezzoMap = serviziToPostByMezzo.get(automezzo);
+				var mezzoMapKeys = mezzoMap.keySet();
+				boolean stopPosting = false;
+				for (String codiceServizio: mezzoMapKeys) {					
+					boolean postSuccessfull = true;
+					var servizioEnriched = mezzoMap.get(codiceServizio);
+					if (!stopPosting) {						
+						PostData postData = new PostData(automezzo, codiceServizio, servizioEnriched.getJsonServizio());
+						postSuccessfull = this.post(postData, automezzo);
 					}
-				} catch (TimeoutException | InterruptedException | IllegalArgumentException e) {
-					logger.error(method_name + " Failed to post servizi for Automezzo " + automezzo
-											 + ": " + e.getMessage());
+					if (postSuccessfull && !stopPosting) {
+						serviziPosted.put(codiceServizio, servizioEnriched);
+						logger.trace(method_name + "Added servizio " + codiceServizio 
+								+ " for automezzo " + automezzo 
+								+ " to serviziPosted Map");
+					} else {
+						serviziUnpostable.put(codiceServizio, servizioEnriched);
+						if (stopPosting)
+							logger.warn(method_name + "Added servizio " + codiceServizio 
+									+ "for automezzo " + automezzo 
+									+ " to serviziUnpostable Map because stopPosting was Active");
+						if (!postSuccessfull)
+							logger.error(method_name + "Added servizio " + codiceServizio 
+									+ "for automezzo " + automezzo 
+									+ " to serviziUnpostable Map because posting failed");
+					}
 				}
 			}
 			
@@ -451,6 +423,64 @@ public class TommyPostHandler extends AbstractActor {
 			}
 		}
 		
+	}
+	
+	protected boolean post (PostData postData, String automezzo) {
+		
+		// Method Name
+		String method_name = "::post(): ";
+				
+		boolean postSuccess = true;
+		
+		try {
+		
+			if (this.save_post_json_to_disk) {
+				String fileName = new SimpleDateFormat("'postData_'yyyyMMdd_HHmmss'.json'").format(new Date());
+				FileOutputStream outputStream = new FileOutputStream(this.post_json_folder + "/" + fileName);
+		        outputStream.write(postData.getJsonServizi().getBytes());     
+		        outputStream.close();
+			}					
+			Future<Object> postResponse = Patterns.ask(this.TommyRestPosterActorRef, postData, 10000);
+		
+			PostDataResponse response = (PostDataResponse) Await.result(postResponse, Duration.create(tommyPostTimeout, TimeUnit.SECONDS));
+			if (response.isResponseStatusSuccess()) {
+				logger.trace(method_name + "Post Success Servizi for Automezzo " + automezzo);
+				logger.trace(method_name + response.getTommyResponse());				
+				if (this.save_post_json_to_disk) {
+					String fileName = new SimpleDateFormat("'postReplySuccess_'yyyyMMdd_HHmmss'.json'").format(new Date());
+					FileOutputStream outputStream = new FileOutputStream(this.post_json_folder + "/" + fileName);
+			        outputStream.write(response.getTommyResponse().getBytes());     
+			        outputStream.close();
+				}	
+				postSuccess = true;
+			} else if (response.isResponseStatusWarning()) {
+				logger.warn(method_name + "Post Success with Warning Servizi for Automezzo " + automezzo);
+				logger.warn(method_name + response.getTommyResponse());
+				if (this.save_post_json_to_disk) {
+					String fileName = new SimpleDateFormat("'postReplyWarning_'yyyyMMdd_HHmmss'.json'").format(new Date());
+					FileOutputStream outputStream = new FileOutputStream(this.post_json_folder + "/" + fileName);
+			        outputStream.write(response.getTommyResponse().getBytes());     
+			        outputStream.close();
+				}	
+				postSuccess = true;
+			} else {
+				logger.error(method_name + "Post Error Servizi for mezzo " + automezzo);
+				logger.error(method_name + response.getTommyResponse());
+				if (this.save_post_json_to_disk) {
+					String fileName = new SimpleDateFormat("'postReplyFaillure_'yyyyMMdd_HHmmss'.json'").format(new Date());
+					FileOutputStream outputStream = new FileOutputStream(this.post_json_folder + "/" + fileName);
+			        outputStream.write(response.getTommyResponse().getBytes());     
+			        outputStream.close();
+				}
+				postSuccess = false;
+			}
+		} catch (TimeoutException | InterruptedException | IllegalArgumentException | IOException e) {
+			logger.error(method_name + " Failed to post servizi for Automezzo " + automezzo
+									 + ": " + e.getMessage());
+			postSuccess = false;
+		}
+		
+		return postSuccess;
 		
 	}
 	

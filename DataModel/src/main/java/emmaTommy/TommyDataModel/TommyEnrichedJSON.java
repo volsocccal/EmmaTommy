@@ -12,6 +12,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.TemporalAccessor;
 
 import org.apache.logging.log4j.LogManager;
 
@@ -117,6 +119,10 @@ public class TommyEnrichedJSON {
 	public void setMissioneStartDate(LocalDate localDate) {
 		this.missioneStartDate = localDate;
 	}
+	public void setMissioneStartDate(String localDateStr) throws DateTimeParseException  {
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(dataFormatDate);
+		this.missioneStartDate = (LocalDate) dtf.parse(localDateStr);
+	}
 	
 	/** Missione StartTime */
 	@Column(name="start_time")
@@ -134,6 +140,10 @@ public class TommyEnrichedJSON {
 		}
 		this.missioneStartTime = localStartTime;
 	}
+	public void setMissioneStartTime(String localStartTimeStr) throws DateTimeParseException  {
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(dataFormatTime);
+		this.missioneStartTime = (LocalTime) dtf.parse(localStartTimeStr);
+	}
 	
 	/** Object TimeStamp */
 	@Column(name="timeStamp")
@@ -145,12 +155,17 @@ public class TommyEnrichedJSON {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(dataFormatDateTime); 
 		return dtf.format(this.timeStamp);
 	}
+	public void setTimeStamp(String timeStampStr) throws DateTimeParseException  {
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(dataFormatDateTime);
+		this.timeStamp = LocalDateTime.parse(timeStampStr, dtf);
+	}
 	public void setTimeStamp(LocalDateTime timeStamp) {
 		this.timeStamp = timeStamp;
 	}
 	
 	/** Object State */
 	public enum PostStatus {
+		POSTED,
 	    POSTING,
 	    ERROR
 	}
@@ -168,6 +183,9 @@ public class TommyEnrichedJSON {
 	}
 	public void setPostStatusStr(String str) {
 		this.postStatus = PostStatus.valueOf(str);
+	}
+	public Boolean isInPostedState() {
+		return this.postStatus == PostStatus.POSTED;
 	}
 	public Boolean isInPostingState() {
 		return this.postStatus == PostStatus.POSTING;

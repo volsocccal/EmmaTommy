@@ -2,18 +2,13 @@ package emmaTommy.DBServerAbstraction.DBHandlers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.TreeMap;
 
-import javax.xml.bind.JAXBException;
 
 import emmaTommy.DBServerAbstraction.DBExceptions.CollectionNotPresentException;
 import emmaTommy.DBServerAbstraction.DBExceptions.ServizioAlreadyInCollectionDBException;
 import emmaTommy.DBServerAbstraction.DBExceptions.ServizioNotPresentException;
 import emmaTommy.DBServerAbstraction.DBExceptions.UnknownDBException;
-import emmaTommy.TommyDataModel.Servizio;
 import emmaTommy.TommyDataModel.TommyEnrichedJSON;
-import emmaTommy.TommyDataModel.Factories.ServizioFactory;
-import emmaTommy.TommyDataModel.Factories.ServizioQueryField;
 
 
 public class MockDB extends AbstractDB {
@@ -74,7 +69,7 @@ public class MockDB extends AbstractDB {
 	}
 	
 	@Override
-	public String getServizioByID(String servizioID, String collectionName) throws CollectionNotPresentException, ServizioNotPresentException {		
+	public String getServizioByID(String servizioID, String collectionName) throws CollectionNotPresentException, ServizioNotPresentException, UnknownDBException {		
 		if (this.isServizioByIDPresent(servizioID, collectionName)) {
 			if (this.areServiziEnriched()) {
 				return this.db_enriched.get(collectionName).get(servizioID).getJsonServizio();	
@@ -87,7 +82,7 @@ public class MockDB extends AbstractDB {
 	}
 	
 	@Override
-	public TommyEnrichedJSON getServizioEnrichedByID(String servizioID, String collectionName) throws CollectionNotPresentException, ServizioNotPresentException {		
+	public TommyEnrichedJSON getServizioEnrichedByID(String servizioID, String collectionName) throws CollectionNotPresentException, ServizioNotPresentException, UnknownDBException {		
 		if (this.isServizioByIDPresent(servizioID, collectionName)) {
 			if (this.areServiziEnriched()) {
 				return this.db_enriched.get(collectionName).get(servizioID);	
@@ -102,7 +97,7 @@ public class MockDB extends AbstractDB {
 	}
 	
 	@Override 
-	public HashMap<String, String> getAllServiziInCollection(String collectionName) throws CollectionNotPresentException {
+	public HashMap<String, String> getAllServiziInCollection(String collectionName) throws CollectionNotPresentException, UnknownDBException {
 		if (this.isCollectionByNamePresent(collectionName)) {
 			if (this.supportEnrichedJSON) {
 				HashMap<String, TommyEnrichedJSON> serviziEnrichedMap = this.db_enriched.get(collectionName);
@@ -120,7 +115,7 @@ public class MockDB extends AbstractDB {
 	}
 	
 	@Override 
-	public HashMap<String, TommyEnrichedJSON> getAllServiziEnrichedInCollection(String collectionName) throws CollectionNotPresentException {
+	public HashMap<String, TommyEnrichedJSON> getAllServiziEnrichedInCollection(String collectionName) throws CollectionNotPresentException, UnknownDBException {
 		if (this.isCollectionByNamePresent(collectionName)) {
 			if (this.supportEnrichedJSON) {
 				return this.db_enriched.get(collectionName);	
@@ -138,30 +133,25 @@ public class MockDB extends AbstractDB {
 	}
 	
 	@Override 
-	public Boolean isCollectionByNamePresent(String collectionName) {
-		return this.getCollectionList().contains(collectionName);
-	}
-	
-	@Override 
 	public Boolean isDBAlive() {
 		return true;
 	}
 
 	@Override 
-	public Boolean isServizioByIDPresent(String servizioID, String collectionName) throws CollectionNotPresentException {
-		if (this.isCollectionByNamePresent(collectionName)) {
-			if (this.supportEnrichedJSON) { // Enriched JSON
-				return this.db_enriched.get(collectionName).containsKey(servizioID);	
-			} else { // Raw JSON
-				return this.db_raw.get(collectionName).containsKey(servizioID);	
+	public Boolean isServizioByIDPresent(String servizioID, String collectionName) throws CollectionNotPresentException, UnknownDBException {
+			if (this.isCollectionByNamePresent(collectionName)) {
+				if (this.supportEnrichedJSON) { // Enriched JSON
+					return this.db_enriched.get(collectionName).containsKey(servizioID);	
+				} else { // Raw JSON
+					return this.db_raw.get(collectionName).containsKey(servizioID);	
+				}
+			} else {
+				throw new CollectionNotPresentException("Collection " + collectionName + " Not Present in DB", collectionName);
 			}
-		} else {
-			throw new CollectionNotPresentException("Collection " + collectionName + " Not Present in DB", collectionName);
-		}
 	}
 	
 	@Override
-	public void moveServizioByID(String servizioID, String oldCollectionName, String newCollectionName) throws CollectionNotPresentException, ServizioAlreadyInCollectionDBException, ServizioNotPresentException {
+	public void moveServizioByID(String servizioID, String oldCollectionName, String newCollectionName) throws CollectionNotPresentException, ServizioAlreadyInCollectionDBException, ServizioNotPresentException, UnknownDBException {
 		if (this.supportEnrichedJSON) { // Enriched JSON
 			TommyEnrichedJSON servizioEnriched = this.getServizioEnrichedByID(servizioID, oldCollectionName);
 			this.writeNewServizioEnrichedByID(servizioID, newCollectionName, servizioEnriched);
@@ -174,7 +164,7 @@ public class MockDB extends AbstractDB {
 	}
 
 	@Override
-	public String removeServizioByID(String servizioID, String collectionName) throws CollectionNotPresentException, ServizioNotPresentException {
+	public String removeServizioByID(String servizioID, String collectionName) throws CollectionNotPresentException, ServizioNotPresentException, UnknownDBException {
 		if (this.supportEnrichedJSON) { // Enriched JSON
 			TommyEnrichedJSON servizioEnriched = this.getServizioEnrichedByID(servizioID, collectionName);
 			this.db_enriched.get(collectionName).remove(servizioID);
@@ -187,7 +177,7 @@ public class MockDB extends AbstractDB {
 	}
 	
 	@Override
-	public TommyEnrichedJSON removeServizioEnrichedByID(String servizioID, String collectionName) throws CollectionNotPresentException, ServizioNotPresentException {
+	public TommyEnrichedJSON removeServizioEnrichedByID(String servizioID, String collectionName) throws CollectionNotPresentException, ServizioNotPresentException, UnknownDBException {
 		if (this.supportEnrichedJSON) { // Enriched JSON
 			TommyEnrichedJSON servizioEnriched = this.getServizioEnrichedByID(servizioID, collectionName);
 			this.db_enriched.get(collectionName).remove(servizioID);
@@ -200,7 +190,7 @@ public class MockDB extends AbstractDB {
 	}
 
 	@Override
-	public void updateServizioByID(String servizioID, String collectionName, String servizioJSON) throws CollectionNotPresentException, ServizioNotPresentException {
+	public void updateServizioByID(String servizioID, String collectionName, String servizioJSON) throws CollectionNotPresentException, ServizioNotPresentException, UnknownDBException {
 		if (this.isServizioByIDPresent(servizioID, collectionName)) { // Servizio present in collection
 			if (this.supportEnrichedJSON) { // Enriched JSON
 				this.db_enriched.get(collectionName).put(servizioID, new TommyEnrichedJSON(servizioID, servizioJSON));				
@@ -213,7 +203,7 @@ public class MockDB extends AbstractDB {
 	}
 	
 	@Override
-	public void updateServizioEnrichedByID(String servizioID, String collectionName, TommyEnrichedJSON servizioEnriched) throws CollectionNotPresentException, ServizioNotPresentException {
+	public void updateServizioEnrichedByID(String servizioID, String collectionName, TommyEnrichedJSON servizioEnriched) throws CollectionNotPresentException, ServizioNotPresentException, UnknownDBException {
 		if (this.isServizioByIDPresent(servizioID, collectionName)) { // Servizio present in collection
 			if (this.supportEnrichedJSON) { // Enriched JSON
 				this.db_enriched.get(collectionName).put(servizioID, servizioEnriched);				
@@ -226,7 +216,7 @@ public class MockDB extends AbstractDB {
 	}
 	
 	@Override
-	public void writeNewServizioByID(String servizioID, String collectionName, String servizioJSON) throws CollectionNotPresentException, ServizioAlreadyInCollectionDBException {
+	public void writeNewServizioByID(String servizioID, String collectionName, String servizioJSON) throws CollectionNotPresentException, ServizioAlreadyInCollectionDBException, UnknownDBException {
 		if (!this.isServizioByIDPresent(servizioID, collectionName)) { // Servizio not present in collection
 			if (this.supportEnrichedJSON) { // Enriched JSON
 				this.db_enriched.get(collectionName).put(servizioID, new TommyEnrichedJSON(servizioID, servizioJSON));				
@@ -239,7 +229,7 @@ public class MockDB extends AbstractDB {
 	}
 	
 	@Override
-	public void writeNewServizioEnrichedByID(String servizioID, String collectionName, TommyEnrichedJSON servizioEnriched) throws CollectionNotPresentException, ServizioAlreadyInCollectionDBException {
+	public void writeNewServizioEnrichedByID(String servizioID, String collectionName, TommyEnrichedJSON servizioEnriched) throws CollectionNotPresentException, ServizioAlreadyInCollectionDBException, UnknownDBException {
 		if (!this.isServizioByIDPresent(servizioID, collectionName)) { // Servizio present in collection
 			if (this.supportEnrichedJSON) { // Enriched JSON
 				this.db_enriched.get(collectionName).put(servizioID, servizioEnriched);				

@@ -12,7 +12,6 @@ import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.TreeMap;
 

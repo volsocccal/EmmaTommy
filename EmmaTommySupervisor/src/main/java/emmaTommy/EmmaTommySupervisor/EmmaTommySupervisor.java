@@ -14,6 +14,7 @@ import akka.actor.Props;
 import emmaTommy.DBServerAbstraction.Actors.DBServer;
 import emmaTommy.DBServerAbstraction.DBExceptions.UnknownDBException;
 import emmaTommy.DBServerAbstraction.DBHandlers.MockDB;
+import emmaTommy.DBServerAbstraction.DBHandlers.SqlLiteDB;
 import emmaTommy.EmmaOrchestrator.EmmaOrchestrator;
 import emmaTommy.EmmaTommyConverter.Actors.EmmaTommyOrchestrator;
 import emmaTommy.TommyDataHandler.Actors.TommyDataHandlerOrchestrator;
@@ -61,19 +62,19 @@ public class EmmaTommySupervisor {
 	 		try {
 	 			stagingDBConfFileStream = new FileInputStream(stagingDBConfPath);
 	 		} catch (FileNotFoundException e) {
-	 			logger.error(method_name + "Failed to read confFile: " + stagingDBConfPath);
+	 			logger.fatal(method_name + "Failed to read confFile: " + stagingDBConfPath);
+	 			return;
 	 		}
 	 		try {
 	 			stagingDBProp.load(stagingDBConfFileStream); 		   
 	 		} catch (IOException e) {
-	 			logger.error(method_name + "Failed to load confFile: " + stagingDBConfPath);
+	 			logger.fatal(method_name + "Failed to load confFile: " + stagingDBConfPath);
+	 			return;
 	 		}
+	 		ActorRef stagingDBHandler = null;
 	 		Boolean stagingDBUseMock = (Integer.parseInt(stagingDBProp.getProperty("useMock")) == 0) ? (true) : (false);
-			String stagingDBName = "StagingDBHandler";
-			String stagingDBInstanceName = "Staging MySql";
-			String stagingDBTech = "MySql";
-			String stagingDBType = "Sql";
-			Boolean stagingDBSupportEnrichedJSON = true;
+			String stagingDBName = stagingDBProp.getProperty("realLogger");
+			String stagingDBInstanceName = stagingDBProp.getProperty("DBInstanceName");
 			ArrayList<String> stagingCollectionListNames = new ArrayList<String>() { 
 				private static final long serialVersionUID = 1L;
 				{ 
@@ -81,14 +82,45 @@ public class EmmaTommySupervisor {
 		        } 
 		    }; 
 			logger.info(method_name + "Creating " + stagingDBName + " Actor ...");
-			ActorRef stagingDBHandler = system.actorOf(Props.create(DBServer.class, 
-																	stagingDBName, 
-																	new MockDB (stagingDBInstanceName, 
-																				stagingDBTech, 
-																				stagingDBType, 
-																				stagingDBSupportEnrichedJSON, 
-																				stagingCollectionListNames)), 
-																	stagingDBName);
+			if (stagingDBUseMock) {
+				String stagingDBTech = stagingDBProp.getProperty("DBTech");
+				String stagingDBType = stagingDBProp.getProperty("DBType");
+				Boolean stagingDBSupportEnrichedJSON = (Integer.parseInt(stagingDBProp.getProperty("DBSupportEnrichedJSON")) == 1) ? (true) : (false);
+				stagingDBHandler = system.actorOf(Props.create(DBServer.class, 
+																stagingDBName, 
+																new MockDB (stagingDBInstanceName, 
+																			stagingDBTech, 
+																			stagingDBType, 
+																			stagingDBSupportEnrichedJSON, 
+																			stagingCollectionListNames)), 
+																stagingDBName);
+			} else {
+				String stagingDBInstanceConfPath = stagingDBProp.getProperty("instance_db_conf");
+		 		Properties stagingDBInstanceProp = new Properties();
+		 		FileInputStream stagingDBInstanceConfFileStream = null;
+				try {
+					stagingDBInstanceConfFileStream = new FileInputStream(stagingDBInstanceConfPath);
+		 		} catch (FileNotFoundException e) {
+		 			logger.fatal(method_name + "Failed to read confFile: " + stagingDBInstanceConfPath);
+		 			return;
+		 		}
+		 		try {
+		 			stagingDBInstanceProp.load(stagingDBInstanceConfFileStream); 		   
+		 		} catch (IOException e) {
+		 			logger.fatal(method_name + "Failed to load confFile: " + stagingDBInstanceConfPath);
+		 			return;
+		 		}
+				String DBPath = stagingDBInstanceProp.getProperty("dbPath");
+				stagingDBHandler = system.actorOf(Props.create(DBServer.class,
+																stagingDBName, 
+																new SqlLiteDB(stagingDBInstanceName, DBPath, stagingCollectionListNames.get(0))), 
+																stagingDBName);
+			}
+			if (stagingDBHandler == null)
+			{
+				logger.fatal("Failed to create Staging DB Actor");
+				return;
+			}
 			logger.info(method_name + " " + stagingDBName + " Actor is Active");
 			
 			
@@ -99,19 +131,20 @@ public class EmmaTommySupervisor {
 	 		try {
 	 			persistenceDBConfFileStream = new FileInputStream(persistenceDBConfPath);
 	 		} catch (FileNotFoundException e) {
-	 			logger.error(method_name + "Failed to read confFile: " + persistenceDBConfPath);
+	 			logger.fatal(method_name + "Failed to read confFile: " + persistenceDBConfPath);
+	 			return;
 	 		}
 	 		try {
 	 			persistenceDBProp.load(persistenceDBConfFileStream); 		   
 	 		} catch (IOException e) {
-	 			logger.error(method_name + "Failed to load confFile: " + persistenceDBConfPath);
+	 			logger.fatal(method_name + "Failed to load confFile: " + persistenceDBConfPath);
+	 			return;
 	 		}
-	 		Boolean persistenceDBUseMock = (Integer.parseInt(persistenceDBProp.getProperty("useMock")) == 0) ? (true) : (false);
-			String persistenceDBName = "PersistenceDBHandler";
-			String persistenceDBInstanceName = "Persistence Mongo";
-			String persistenceDBTech = "MongoDB";
-			String persistenceDBType = "NoSql";
-			Boolean persistenceDBSupportEnrichedJSON = false;
+	 		
+	 		ActorRef persistenceDBHandler = null;
+	 		Boolean persistenceDBUseMock = (Integer.parseInt(persistenceDBProp.getProperty("useMock")) == 1) ? (true) : (false);
+			String persistenceDBName = persistenceDBProp.getProperty("realLogger");
+			String persistenceDBInstanceName = persistenceDBProp.getProperty("DBInstanceName");
 			ArrayList<String> persistenceDBCollectionListNames = new ArrayList<String>() { 
 				private static final long serialVersionUID = 1L;
 				{ 
@@ -122,14 +155,24 @@ public class EmmaTommySupervisor {
 		        } 
 		    }; 
 			logger.info(method_name + "Creating " + persistenceDBName + " Actor ...");
-			ActorRef persistenceDBHandler = system.actorOf(Props.create(DBServer.class, 
-															persistenceDBName, 
-															new MockDB (persistenceDBInstanceName, 
-																	persistenceDBTech, 
-																	persistenceDBType, 
-																	persistenceDBSupportEnrichedJSON, 
-																	persistenceDBCollectionListNames)), 
-					persistenceDBName);
+			if (persistenceDBUseMock) {
+				String persistenceDBTech = stagingDBProp.getProperty("DBTech");
+				String persistenceDBType = stagingDBProp.getProperty("DBType");
+				Boolean persistenceDBSupportEnrichedJSON = (Integer.parseInt(stagingDBProp.getProperty("DBSupportEnrichedJSON")) == 0) ? (true) : (false);
+				persistenceDBHandler = system.actorOf(Props.create(DBServer.class, 
+																persistenceDBName, 
+																new MockDB (persistenceDBInstanceName, 
+																		persistenceDBTech, 
+																		persistenceDBType, 
+																		persistenceDBSupportEnrichedJSON, 
+																		persistenceDBCollectionListNames)), 
+																persistenceDBName);
+			}
+			if (persistenceDBHandler == null)
+			{
+				logger.fatal("Failed to create Persistence DB Actor");
+				return;
+			}
 			logger.info(method_name + " " + persistenceDBName + " Actor is Active");
 			
 			// Creating TommyPostHandler Actor

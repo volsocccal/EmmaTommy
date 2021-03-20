@@ -2,6 +2,7 @@ package emmaTommy.TommyDataModel.Factories;
 
 import java.io.StringReader;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.TreeMap;
@@ -94,7 +95,11 @@ public class ServizioFactory {
 		}
 		
 		// orario_fine_servizio" : "type:HH:II:required"
-		s.setOrarioFineServizio(m.getFineMissione().toLocalTime());
+		LocalDateTime fineMissione = m.getFineMissione();
+		if (fineMissione != null)
+			s.setOrarioFineServizio(fineMissione.toLocalTime());
+		else
+			s.setOrarioFineServizio(null);
 		    	
 		// tag_idintervento" : "type:String:required"
 		s.setTagIdIntervento(this.tipoEventoConverter(m.getConvenzioneEnte()));
@@ -180,6 +185,11 @@ public class ServizioFactory {
 					}
 					else if (esitoMissione.compareTo(emmaTommy.EmmaDataModel.EmmaDataModelEnums.MISSIONE_OUTCOME_NON_TRASPORTA) == 0) {
 						s.setLuogoArrivo("_Rifiuto Ricovero_");
+					}
+					else if (esitoMissione.compareTo(emmaTommy.EmmaDataModel.EmmaDataModelEnums.MISSIONE_OUTCOME_ERRORE_OPERATIVO) == 0) {
+						s.setLuogoArrivo("_Altro_");
+						if (m.getTotKMPercorsiInt() < 0)
+							s.setKM(0);
 					}
 					else {
 						s.setLuogoArrivo("_Altro_");

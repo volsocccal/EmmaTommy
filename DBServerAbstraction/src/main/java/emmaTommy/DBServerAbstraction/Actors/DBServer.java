@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
 
-import javax.xml.bind.JAXBException;
-
 import org.apache.logging.log4j.LogManager;
 
 import akka.actor.AbstractActor;
@@ -590,6 +588,8 @@ public class DBServer extends AbstractActor {
 		logger.trace(method_name + callingClientName + " wants to know if servizio " + servizioID + " in collection " +  wantedCollectionName + " is present");
 		try {
 			HashMap<String, TommyEnrichedJSON> serviziInCollection = this.db.getAllServiziEnrichedInCollection(wantedCollectionName);
+			if (serviziInCollection == null)
+				throw new UnknownDBException("Could't get servizi from Collection " + wantedCollectionName + ", the resulting list is NULL");
 			String serviziLog = "Servizi in Collection " + wantedCollectionName + ": " + serviziInCollection.size();
 			if (serviziInCollection.isEmpty()) {
 				serviziLog += " - Empty";
@@ -604,7 +604,7 @@ public class DBServer extends AbstractActor {
 				this.getSender().tell(new ServizioByIDFound(servizioID, wantedCollectionName), 
 									  this.getSelf());
 			} else {  // Servizio Not Found
-				logger.warn(method_name + "Sending servizioByIdJNotFound (servizio " + servizioID + " from collection " +  wantedCollectionName + ") to " + callingClientName);
+				logger.warn(method_name + "Sending servizioByIdNotFound (servizio " + servizioID + " from collection " +  wantedCollectionName + ") to " + callingClientName);
 				this.getSender().tell(new ServizioByIDNotFound(servizioID, wantedCollectionName), 
 						  				this.getSelf());
 			}

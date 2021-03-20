@@ -91,6 +91,8 @@ public class PostData {
 		this.jsonServizi = "";
 		this.jsonServizi = unifyJSONS((ArrayList<String>) jsonServiziList);
 		
+		this.jsonServizi = this.jsonServizi.replace("''", "\'");
+		
 		// CodiciServizi
 		this.codiciServizi = new ArrayList<String>();
 		this.codiciServizi.addAll(serviziToPostMap.keySet());

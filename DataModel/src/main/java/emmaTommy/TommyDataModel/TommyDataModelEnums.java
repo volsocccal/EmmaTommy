@@ -43,9 +43,11 @@ public class TommyDataModelEnums {
     public static final String OUTCOME_TRASPORTO_NON_RINVENUTO = "NON RINVENUTO";
     public static final String OUTCOME_TRASPORTO_REGOLARE = "REGOLARE";
     public static final String OUTCOME_TRASPORTO_RIFIUTO_TRASPORTO = "RIFIUTA TRASPORTO";
-    public static final String OUTCOME_TRASPORTO_ALLONTANA = "SI ALLONTANA";
+    public static final String OUTCOME_TRASPORTO_ALLONTANA = "REVOCA - SI ALLONTANA";
     public static final String OUTCOME_TRASPORTO_TRATTENUTO = "TRATTENUTO DA ALTRI";
     public static final String OUTCOME_TRASPORTO_RINVIATO_MEDICINA_GENERALE = "RINVIATO MEDICINA GENERALE";
+    public static final String OUTCOME_TRASPORTO_REVOCATO_INTERVENTO = "REVOCATO INTERVENTO";
+    public static final String OUTCOME_TRASPORTO_TRATTATO_SUL_POSTO = "TRATTATO SUL POSTO";
     public static final ArrayList<String> acceptedTransportOutcome = new ArrayList<String>() { 
 		private static final long serialVersionUID = 1L;
 		{ 
@@ -58,6 +60,8 @@ public class TommyDataModelEnums {
             add(OUTCOME_TRASPORTO_ALLONTANA);
             add(OUTCOME_TRASPORTO_TRATTENUTO);
             add(OUTCOME_TRASPORTO_RINVIATO_MEDICINA_GENERALE);
+            add(OUTCOME_TRASPORTO_REVOCATO_INTERVENTO);
+            add(OUTCOME_TRASPORTO_TRATTATO_SUL_POSTO);
         } 
     }; 
     
@@ -65,8 +69,7 @@ public class TommyDataModelEnums {
     public static final String eventoEmergenzaConvenzioneH24 = "EMER-H24";
     public static final String eventoEmergenzaGettone = "EMER-GET";
     public static final String eventoEmergenzaGara = "EMER-GARA";
-    public static final HashMap<String, String> tipoEventoConversion = new HashMap<String, String>(){
-        
+    public static final HashMap<String, String> tipoEventoConversion = new HashMap<String, String>(){        
 		private static final long serialVersionUID = 1L;
 		{
 						    

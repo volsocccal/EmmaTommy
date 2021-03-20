@@ -49,7 +49,13 @@ public class AssistitiFactory {
 				emmaTommy.TommyDataModel.Assistito newAssistito;
 				
 				// Anagrafica
-				if (p.getNome() != null && p.getCognome() != null) {		
+				if (p.getNome() == null || p.getCognome() == null) { // If nome or cognome are null, add the Assistito Anonimo Instead
+					newAssistito = this.buildAssistitoAnonimo();
+				}
+				else if (p.getNome().isBlank() || p.getCognome().isBlank()) { // If nome or cognome are blanck, add the Assistito Anonimo Instead
+					newAssistito = this.buildAssistitoAnonimo();
+				}
+				else {		
 					String codiceFiscale = p.getCognome() + "_" + p.getNome();
 					if (p.getDataNascita() != null) {
 						if (p.getDataNascitaStr() != null) {
@@ -64,9 +70,6 @@ public class AssistitiFactory {
 					newAssistito.setSesso(p.getSesso());
 					newAssistito.setComuneResidenza(p.getComuneResidenza());
 					newAssistito.setDataNascita(p.getDataNascita());
-					newAssistito.setNote(p.getEsitoTrasporto());				
-				} else { // If nome or cognome are null, add the Assistito Anonimo Instead
-					newAssistito = this.buildAssistitoAnonimo();
 				}
 				
 				// Dati Paziente

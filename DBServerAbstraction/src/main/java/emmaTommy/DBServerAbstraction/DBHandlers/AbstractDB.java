@@ -121,7 +121,15 @@ public abstract class AbstractDB {
 		return serviziEnrichedAcceptedMap;
 	}
 	
-	public abstract Boolean isCollectionByNamePresent(String collectionName) throws UnknownDBException, UnknownDBException;
+	public Boolean isCollectionByNamePresent(String collectionName) throws UnknownDBException
+	{
+		ArrayList<String> collectionList = this.getCollectionList();
+		if (collectionList == null)
+			return false;
+		if (collectionList.isEmpty())
+			return false;
+		return collectionList.contains(collectionName);
+	}
 	
 	public abstract Boolean isDBAlive() throws UnknownDBException;
 	

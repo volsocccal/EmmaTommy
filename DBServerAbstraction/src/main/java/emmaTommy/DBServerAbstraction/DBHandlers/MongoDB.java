@@ -132,11 +132,6 @@ public class MongoDB extends AbstractDB {
 	}
 
 	@Override
-	public Boolean isCollectionByNamePresent(String collectionName) throws UnknownDBException, UnknownDBException {
-		return this.getCollectionList().contains(collectionName);
-	}
-
-	@Override
 	public Boolean isDBAlive() throws UnknownDBException {
 		return true;
 	}
