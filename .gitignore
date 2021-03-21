@@ -55,6 +55,7 @@ EmmaTommySupervisor/data_json_missioni_download/*
 # Ignore the folder for TOMMY REST Post jsons
 TommyPoster/post_json_folder/*
 EmmaTommySupervisor/post_json_folder/*
+EmmaTommySupervisor/db/*
 
 # Ignore the docs/xml 
 docs/xmlParsing_REST_MISSIONI
@@ -71,7 +72,7 @@ docs/RestTommy/specifiche.txt
 EmmaHandler/conf/emma_psswd.conf
 TommyPoster/conf/tommy_rest_service_refs.conf
 EmmaTommySupervisor/conf/emma_psswd.conf
-EmmaTommySupervisor/conf//tommy_rest_service_refs.conf
+EmmaTommySupervisor/conf/tommy_rest_service_refs.conf
 
 # Ignore the following scripts
 scripts/test/mysql/psswd.txt
