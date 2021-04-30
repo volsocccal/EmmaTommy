@@ -229,13 +229,30 @@ public class ServizioFactory {
 				}
 			}			
 		}
+		
+		// Fix negative km for interrupted missions
+		String autoZeroKm = "";
+		if (tr != null) {
+			ArrayList<Tratta> trList = (ArrayList<Tratta>) tr.getTratte();
+			if (trList.isEmpty()) {
+				if (esitoMissione.contains("INTERROTTA")) {
+					if (m.getTotKMPercorsiInt() < 0) {
+						s.setKM(0);
+						autoZeroKm = "Km set to ZERO since tratte array was empty";
+					}
+				}
+			}
+		}
 				
 		// Set Note		
 		String noteServizio = "Invio Codice: " + codiceEvento + "\n"
 							+ "Motivo Chiamata: " + motivoChiamata + "\n"
 							+ "Trasporto Codice: " + codiceTrasporto + "\n"
 							+ "Esito Missione: " + esitoMissione;
+		if (!autoZeroKm.isBlank())
+			noteServizio += "\n" + autoZeroKm;
 		s.setNote(noteServizio);
+		
 		
 		// Validate Servizio
 		s.validateObject();
