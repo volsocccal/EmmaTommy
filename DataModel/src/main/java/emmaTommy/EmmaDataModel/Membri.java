@@ -86,11 +86,8 @@ public class Membri extends EmmaDataModel
 					this.errorList.add(errorMsg);
 					logger.warn(errorMsg);
 				} else {
-					Boolean elValidState = m.validateObject();
-					if (!elValidState) {
-						this.validState = false;
-						this.errorList.addAll(m.getErrorList());
-					}
+					Boolean elValidState = m.validateObject();					
+					this.errorList.addAll(m.getErrorList());
 				}
 			}
 		}

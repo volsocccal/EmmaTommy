@@ -59,18 +59,21 @@ public class Membro extends EmmaDataModel {
 		// Name Type
 		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.nome == null) {
+			this.nome = "NULL";
 			this.validState = false;
 			errorMsg += "nome was NULL";
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
 		}
 		else if (this.nome.isEmpty()) {
+			this.nome = "EMPTY";
 			this.validState = false;
 			errorMsg += "nome was Empty";
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
 		}
 		else if (this.nome.isBlank()) {
+			this.nome = "BLANCK";
 			this.validState = false;
 			errorMsg += "nome was Blanck";
 			this.errorList.add(errorMsg);
@@ -80,18 +83,21 @@ public class Membro extends EmmaDataModel {
 		// Cognome Type
 		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.cognome == null) {
+			this.cognome = "NULL";
 			this.validState = false;
 			errorMsg += "cognome was NULL";
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
 		}
 		else if (this.cognome.isEmpty()) {
+			this.cognome = "EMPTY";
 			this.validState = false;
 			errorMsg += "cognome was Empty";
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
 		}
 		else if (this.cognome.isBlank()) {
+			this.cognome = "BLANCK";
 			this.validState = false;
 			errorMsg += "cognome was Blanck";
 			this.errorList.add(errorMsg);
@@ -101,18 +107,21 @@ public class Membro extends EmmaDataModel {
 		// Qualifica
 		errorMsg = this.getClass().getSimpleName() + ": ";
 		if (this.qualifica == null) {
+			this.qualifica = "NULL";
 			this.validState = false;
 			errorMsg += "qualifica was NULL";
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
 		}
 		else if (this.qualifica.isEmpty()) {
+			this.qualifica = "EMPTY";
 			this.validState = false;
 			errorMsg += "qualifica was Empty";
 			this.errorList.add(errorMsg);
 			logger.warn(errorMsg);
 		}
 		else if (this.qualifica.isBlank()) {
+			this.qualifica = "BLANCK";
 			this.validState = false;
 			errorMsg += "qualifica was Blanck";
 			this.errorList.add(errorMsg);
