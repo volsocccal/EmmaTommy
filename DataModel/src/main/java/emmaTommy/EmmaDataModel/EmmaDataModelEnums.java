@@ -47,12 +47,18 @@ public class EmmaDataModelEnums {
     }; 
     
     // Tipo Evento
-    public static final String tipoEventoEmergenzaH12ECG_3 = "H12_ECG_3";
-    public static final String tipoEventoEmergenzaH24ECG_3 = "H24_ECG_3";
-    public static final String tipoEventoEmergenzaH12_3 = "H12_3";
-    public static final String tipoEventoEmergenzaH24_3 = "H24_3";
-    public static final String tipoEventoGettone_2 = "GET_2";
-    public static final String tipoEventoGettone_3 = "GET_3";
+    public static final String tipoEventoEmergenzaH12ECG_3_OLD = "H12_ECG_3";
+    public static final String tipoEventoEmergenzaH24ECG_3_OLD = "H24_ECG_3";
+    public static final String tipoEventoEmergenzaH12_3_OLD = "H12_3";
+    public static final String tipoEventoEmergenzaH24_3_OLD = "H24_3";
+    public static final String tipoEventoEmergenzaH12ECG = "H12_3";
+    public static final String tipoEventoEmergenzaH24ECG_3 = "H24_3";
+    public static final String tipoEventoEmergenzaH12_3_NOECG = "H12_3_NE";
+    public static final String tipoEventoEmergenzaH24_3_NOECG= "H24_3_NE";
+    public static final String tipoEventoGettone_2_ECG = "GET_2";
+    public static final String tipoEventoGettone_2_NOECG = "GET_2_NE";
+    public static final String tipoEventoGettone_3_ECG = "GET_3";
+    public static final String tipoEventoGettone_3_NOECG = "GET_3_NE";
 
     // Genders
     public static final String MALE_GENDER = "M";
