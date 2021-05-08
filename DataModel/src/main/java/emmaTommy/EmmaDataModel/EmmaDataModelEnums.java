@@ -52,8 +52,10 @@ public class EmmaDataModelEnums {
     public static final String tipoEventoEmergenzaH12_3_OLD = "H12_3";
     public static final String tipoEventoEmergenzaH24_3_OLD = "H24_3";
     public static final String tipoEventoEmergenzaH12ECG = "H12_3";
+    public static final String tipoEventoEmergenzaH24ECG_2plus = "H24_2+";
     public static final String tipoEventoEmergenzaH24ECG_3 = "H24_3";
     public static final String tipoEventoEmergenzaH12_3_NOECG = "H12_3_NE";
+    public static final String tipoEventoEmergenzaH24NOECG_2plus = "H24_2+_NE";
     public static final String tipoEventoEmergenzaH24_3_NOECG= "H24_3_NE";
     public static final String tipoEventoGettone_2_ECG = "GET_2";
     public static final String tipoEventoGettone_2_NOECG = "GET_2_NE";
