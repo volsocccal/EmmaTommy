@@ -248,7 +248,8 @@ public class ServizioFactory {
 		String noteServizio = "Invio Codice: " + codiceEvento + "\n"
 							+ "Motivo Chiamata: " + motivoChiamata + "\n"
 							+ "Trasporto Codice: " + codiceTrasporto + "\n"
-							+ "Esito Missione: " + esitoMissione;
+							+ "Esito Missione: " + esitoMissione + "\n"
+							+ "Convenzione Emma: " + m.getConvenzioneEnte();
 		if (!autoZeroKm.isBlank())
 			noteServizio += "\n" + autoZeroKm;
 		s.setNote(noteServizio);
