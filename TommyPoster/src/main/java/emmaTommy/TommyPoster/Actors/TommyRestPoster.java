@@ -191,7 +191,7 @@ public class TommyRestPoster extends AbstractActor {
             			response = this.post(uri, json);
             		}
 	     			logger.info(method_name + "Rest Service Answer: " + response);  
-	     			if (response.contains("ERR")) {
+	     			if (response.contains(":\"ERR\"")) {
 	     				respData = new PostDataResponse(postData, PostDataResponse.PostResponseStatus.ERROR, response);
 	     			} else {
 	     				if (response.contains("warning")) {

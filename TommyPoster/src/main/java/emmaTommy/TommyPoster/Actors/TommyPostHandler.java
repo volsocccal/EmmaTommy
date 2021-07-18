@@ -368,9 +368,12 @@ public class TommyPostHandler extends AbstractActor {
 									+ "for automezzo " + automezzo 
 									+ " to serviziUnpostable Map because stopPosting was Active");
 						if (!postSuccessfull)
+						{
 							logger.error(method_name + "Added servizio " + codiceServizio 
 									+ "for automezzo " + automezzo 
 									+ " to serviziUnpostable Map because posting failed");
+							stopPosting = true;
+						}
 					}
 				}
 			}
