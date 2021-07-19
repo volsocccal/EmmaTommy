@@ -90,7 +90,7 @@ public class TommyDataModelEnums {
             put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoGettone_3_ECG, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaGettone);
             put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoGettone_3_NOECG, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaGettone);
             
-            //put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.SOCCORRITORE, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaGara);
+            put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoExhibitions, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaGara);
         }
     }; 
     

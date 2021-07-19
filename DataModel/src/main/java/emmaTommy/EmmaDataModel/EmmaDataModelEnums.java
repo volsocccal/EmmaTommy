@@ -61,6 +61,7 @@ public class EmmaDataModelEnums {
     public static final String tipoEventoGettone_2_NOECG = "GET_2_NE";
     public static final String tipoEventoGettone_3_ECG = "GET_3";
     public static final String tipoEventoGettone_3_NOECG = "GET_3_NE";
+    public static final String tipoEventoExhibitions = "EXHIBITIONs";
 
     // Genders
     public static final String MALE_GENDER = "M";

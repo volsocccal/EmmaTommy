@@ -252,6 +252,13 @@ public class ServizioFactory {
 							+ "Convenzione Emma: " + m.getConvenzioneEnte();
 		if (!autoZeroKm.isBlank())
 			noteServizio += "\n" + autoZeroKm;
+		else
+			noteServizio += "\n" + "KM Percorsi: " + s.getKM();
+		if (isEventoExhibition(m.getConvenzioneEnte()))
+		{
+			s.setKM(0);
+			noteServizio = "TRASPORTO DURANTE GARA\n" + noteServizio;
+		}
 		s.setNote(noteServizio);
 		
 		
@@ -465,6 +472,14 @@ public class ServizioFactory {
 		return checkProperties(propNVmap, buildServizioUnmarshallXML(xml));		
 	}
 	
+	
+	protected Boolean isEventoExhibition(String tipoEventoMissioni)
+	{
+		if (tipoEventoMissioni == null) {
+			return false;
+		}
+		return tipoEventoMissioni.compareTo(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoExhibitions) == 0;
+	}
 	
 	protected String tipoEventoConverter (String tipoEventoMissioni) {
 		if (tipoEventoMissioni == null) {
