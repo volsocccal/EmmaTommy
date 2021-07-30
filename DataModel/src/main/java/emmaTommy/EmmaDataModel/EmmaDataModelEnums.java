@@ -62,6 +62,38 @@ public class EmmaDataModelEnums {
     public static final String tipoEventoGettone_3_ECG = "GET_3";
     public static final String tipoEventoGettone_3_NOECG = "GET_3_NE";
     public static final String tipoEventoExhibitions = "EXHIBITIONs";
+    
+    // Ambulances
+    public static final String codiceMezzoEmmaPlus101 = "VOLCAL+101";
+    public static final String codiceMezzoEmmaDash101 = "VOLCAL_101";
+    public static final String codiceMezzoEmmaPlus201 = "VOLCAL+201";
+    public static final String codiceMezzoEmmaDash201 = "VOLCAL_201";
+    public static final String codiceMezzoEmmaPlus301 = "VOLCAL+301";
+    public static final String codiceMezzoEmmaDash301 = "VOLCAL_301";
+    public static final String codiceMezzoEmmaPlus103 = "VOLCAL+103";
+    public static final String codiceMezzoEmmaDash103 = "VOLCAL_103";
+    public static final String codiceMezzoEmmaPlus203 = "VOLCAL+203";
+    public static final String codiceMezzoEmmaDash203 = "VOLCAL_203";
+    public static final String codiceMezzoEmmaPlus303 = "VOLCAL+303";
+    public static final String codiceMezzoEmmaDash303 = "VOLCAL_303";    
+    public static final String codiceMezzoEmmaPlus104 = "VOLCAL+104";
+    public static final String codiceMezzoEmmaDash104 = "VOLCAL_104";
+    public static final String codiceMezzoEmmaPlus204 = "VOLCAL+204";
+    public static final String codiceMezzoEmmaDash204 = "VOLCAL_204";
+    public static final String codiceMezzoEmmaPlus304 = "VOLCAL+304";
+    public static final String codiceMezzoEmmaDash304 = "VOLCAL_304";    
+    public static final String codiceMezzoEmmaPlus105 = "VOLCAL+105";
+    public static final String codiceMezzoEmmaDash105 = "VOLCAL_105";
+    public static final String codiceMezzoEmmaPlus205 = "VOLCAL+205";
+    public static final String codiceMezzoEmmaDash205 = "VOLCAL_205";
+    public static final String codiceMezzoEmmaPlus305 = "VOLCAL+305";
+    public static final String codiceMezzoEmmaDash305 = "VOLCAL_305";    
+    public static final String codiceMezzoEmmaPlus106 = "VOLCAL+106";
+    public static final String codiceMezzoEmmaDash106 = "VOLCAL_106";
+    public static final String codiceMezzoEmmaPlus206 = "VOLCAL+206";
+    public static final String codiceMezzoEmmaDash206 = "VOLCAL_206";
+    public static final String codiceMezzoEmmaPlus306 = "VOLCAL+306";
+    public static final String codiceMezzoEmmaDash306 = "VOLCAL_306";
 
     // Genders
     public static final String MALE_GENDER = "M";

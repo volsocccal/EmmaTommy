@@ -92,6 +92,53 @@ public class TommyDataModelEnums {
             
             put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoExhibitions, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaGara);
         }
-    }; 
+		
+    };
+		
+    public static final String codiceMezzoTommy101 = "VOLCAL+101";    
+    public static final String codiceMezzoTommy103 = "VOLCAL+103";       
+    public static final String codiceMezzoTommy104 = "VOLCAL+104";       
+    public static final String codiceMezzoTommy105 = "VOLCAL+105";       
+    public static final String codiceMezzoTommy106 = "VOLCAL+106";    
+	public static final HashMap<String, String> codiceMezzoConversion = new HashMap<String, String>() {        
+		private static final long serialVersionUID = 1L;
+		{						    
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus101, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy101);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash101, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy101);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus201, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy101);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash201, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy101);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus301, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy101);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash301, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy101);
+			
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus103, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy103);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash103, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy103);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus203, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy103);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash203, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy103);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus303, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy103);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash303, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy103);
+			
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus104, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy104);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash104, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy104);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus204, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy104);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash204, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy104);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus304, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy104);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash304, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy104);
+			
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus105, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy105);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash105, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy105);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus205, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy105);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash205, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy105);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus305, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy105);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash305, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy105);
+			
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus106, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy106);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash106, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy106);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus206, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy106);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash206, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy106);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus306, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy106);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash306, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy106);
+		}
+	};
+   
     
 }

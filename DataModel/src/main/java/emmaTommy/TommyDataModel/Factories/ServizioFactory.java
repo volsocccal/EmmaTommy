@@ -105,7 +105,9 @@ public class ServizioFactory {
 		s.setTagIdIntervento(this.tipoEventoConverter(m.getConvenzioneEnte()));
 		
 		// tag_idautomezzo" : "type:String:required"
-		s.setTagIdAutomezzo(m.getCodiceMezzo());
+		String emmaCodiceMezzo = m.getCodiceMezzo();
+		String tagIdAutoMezzo = computeTommyTagAutomezzo(emmaCodiceMezzo);
+		s.setTagIdAutomezzo(tagIdAutoMezzo);
 		
 		// km" : "type:Int:required"
 		s.setKM(m.getTotKMPercorsiInt());
@@ -249,7 +251,8 @@ public class ServizioFactory {
 							+ "Motivo Chiamata: " + motivoChiamata + "\n"
 							+ "Trasporto Codice: " + codiceTrasporto + "\n"
 							+ "Esito Missione: " + esitoMissione + "\n"
-							+ "Convenzione Emma: " + m.getConvenzioneEnte();
+							+ "Convenzione Emma: " + m.getConvenzioneEnte() + "\n"
+							+ "Codice Mezzo Emma: " + tagIdAutoMezzo;
 		if (!autoZeroKm.isBlank())
 			noteServizio += "\n" + autoZeroKm;
 		else
@@ -492,6 +495,22 @@ public class ServizioFactory {
 			return TommyDataModelEnums.tipoEventoConversion.get(tipoEventoMissioni);
 		} else {
 			return "NOT_FOUND: " + tipoEventoMissioni;
+		}
+	}
+	
+
+	String computeTommyTagAutomezzo(String emmaCodiceMezzo)
+	{
+		if (emmaCodiceMezzo == null) {
+			return "NULL emmaCodiceMezzo";
+		}
+		if (emmaCodiceMezzo == "" || emmaCodiceMezzo.isEmpty() || emmaCodiceMezzo.isBlank()) {
+			return "EMPTY emmaCodiceMezzo";
+		}
+		if (TommyDataModelEnums.codiceMezzoConversion.containsKey(emmaCodiceMezzo)) {
+			return TommyDataModelEnums.codiceMezzoConversion.get(emmaCodiceMezzo);
+		} else {
+			return "NOT_FOUND: " + emmaCodiceMezzo;
 		}
 	}
 
