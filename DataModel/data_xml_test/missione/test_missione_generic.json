@@ -33,7 +33,7 @@
             "type" : "Membro",
             "me-ds-cognome" : "MCDUCK",
             "me-ds-nome" : "SCROOGE",
-            "me-ds-tp-equip" : "SOCCORRITORE IN ADD"
+            "me-ds-tp-equip" : "SOCC IN ADD"
          }, {
             "type" : "Membro",
             "me-ds-cognome" : "GANDER",
@@ -74,7 +74,7 @@
       "mi-id-codice-t" : "V",
       "mi-id-miss-int" : 0,
       "mi-id-missione" : 203100001,
-      "mi-vl-totkm" : 23,
+      "mi-vl-totkm" : "23",
       "sc-ds-comune" : "PAPEROPOLI",
       "sc-ds-motivo" : "MEDICO ACUTO",
       "sc-ds-det-mot" : "DIGERENTE",
