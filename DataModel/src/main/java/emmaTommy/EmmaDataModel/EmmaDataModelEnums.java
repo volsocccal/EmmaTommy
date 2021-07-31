@@ -94,6 +94,7 @@ public class EmmaDataModelEnums {
     public static final String codiceMezzoEmmaDash206 = "VOLCAL_206";
     public static final String codiceMezzoEmmaPlus306 = "VOLCAL+306";
     public static final String codiceMezzoEmmaDash306 = "VOLCAL_306";
+    public static final String codiceMezzoEmma10605A1 = "VOLCAL_106.05A1";
 
     // Genders
     public static final String MALE_GENDER = "M";

@@ -102,7 +102,8 @@ public class TommyDataModelEnums {
     public static final String codiceMezzoTommy106 = "VOLCAL+106";    
 	public static final HashMap<String, String> codiceMezzoConversion = new HashMap<String, String>() {        
 		private static final long serialVersionUID = 1L;
-		{						    
+		{			
+			    
 			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus101, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy101);
 			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash101, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy101);
 			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus201, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy101);
@@ -137,6 +138,8 @@ public class TommyDataModelEnums {
 			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash206, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy106);
 			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus306, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy106);
 			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash306, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy106);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmma10605A1, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy106);
+		
 		}
 	};
    
