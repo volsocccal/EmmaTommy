@@ -65,30 +65,50 @@ public class TommyDataModelEnums {
         } 
     }; 
     
+    public static final String eventoEmergenzaConvenzioneH6 = "EMER-H6";
+    public static final String eventoEmergenzaConvenzioneH8 = "EMER-H8";
     public static final String eventoEmergenzaConvenzioneH12 = "EMER-H12";
     public static final String eventoEmergenzaConvenzioneH24 = "EMER-H24";
     public static final String eventoEmergenzaGettone = "EMER-GET";
     public static final String eventoEmergenzaGara = "EMER-GARA";
-    public static final HashMap<String, String> tipoEventoConversion = new HashMap<String, String>() {        
+    public static final HashMap<String, String> tipoEventoConversion = new HashMap<String, String>() {   
+     
 		private static final long serialVersionUID = 1L;
-		{						    
-            put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenzaH12ECG_3_OLD, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH12);
-            put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenzaH12_3_OLD, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH12);
-            put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenzaH12ECG, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH12);
-            put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenzaH12_3_NOECG, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH12);
+		{						
+    
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenzaH6_ECG_2plus, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH6);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenzaH6_NOECG_2plus, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH6);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenzaH6_ECG_3, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH6);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenzaH6_NOECG_3, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH6);
+
+			
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H8_ECG_2plus, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH8);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H8_NOECG_2plus, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH8);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H8_ECG_3, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH8);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H8_NOECG_3, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH8);
+
+			
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H12_ECG_2plus, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH12);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H12_NOECG_2plus, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH12);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H12_ECG_3, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH12);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H12_NOECG_3, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH12);   
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H12_ECG_3_OLD, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH12);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H12_NOECG_3_OLD, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH12);
+
+			
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H24_ECG_2plus, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H24_NOECG_2plus, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H24_ECG_3, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H24_NOECG_3, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H24_ECG_3_OLD, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H24_NOECG_3_OLD, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);  
             
-            
-            put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenzaH24ECG_3_OLD, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
-            put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenzaH24_3_OLD, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
-            put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenzaH24ECG_3, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
-            put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenzaH24_3_NOECG, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
-            put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenzaH24ECG_2plus, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
-            put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenzaH24NOECG_2plus, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
             
             put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoGettone_2_ECG, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaGettone);
             put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoGettone_2_NOECG, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaGettone);
             put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoGettone_3_ECG, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaGettone);
             put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoGettone_3_NOECG, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaGettone);
+            
             
             put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoExhibitions, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaGara);
         }

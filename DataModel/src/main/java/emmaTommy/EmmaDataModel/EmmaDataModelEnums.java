@@ -47,16 +47,26 @@ public class EmmaDataModelEnums {
     }; 
     
     // Tipo Evento
-    public static final String tipoEventoEmergenzaH12ECG_3_OLD = "H12_ECG_3";
-    public static final String tipoEventoEmergenzaH24ECG_3_OLD = "H24_ECG_3";
-    public static final String tipoEventoEmergenzaH12_3_OLD = "H12_3";
-    public static final String tipoEventoEmergenzaH24_3_OLD = "H24_3";
-    public static final String tipoEventoEmergenzaH12ECG = "H12_3";
-    public static final String tipoEventoEmergenzaH24ECG_2plus = "H24_2+";
-    public static final String tipoEventoEmergenzaH24ECG_3 = "H24_3";
-    public static final String tipoEventoEmergenzaH12_3_NOECG = "H12_3_NE";
-    public static final String tipoEventoEmergenzaH24NOECG_2plus = "H24_2+_NE";
-    public static final String tipoEventoEmergenzaH24_3_NOECG= "H24_3_NE";
+    public static final String tipoEventoEmergenzaH6_ECG_2plus = "H6_2+";
+    public static final String tipoEventoEmergenzaH6_NOECG_2plus = "H6_2+_NE";
+    public static final String tipoEventoEmergenzaH6_ECG_3 = "H6_3";
+    public static final String tipoEventoEmergenzaH6_NOECG_3 = "H6_3_NE";   
+    public static final String tipoEventoEmergenza_H8_ECG_2plus = "H8_2+";
+    public static final String tipoEventoEmergenza_H8_NOECG_2plus = "H8_2+_NE";
+    public static final String tipoEventoEmergenza_H8_ECG_3 = "H8_3";
+    public static final String tipoEventoEmergenza_H8_NOECG_3 = "H8_3_NE";
+    public static final String tipoEventoEmergenza_H12_ECG_2plus = "H12_2+";
+    public static final String tipoEventoEmergenza_H12_NOECG_2plus = "H12_2+_NE";
+    public static final String tipoEventoEmergenza_H12_ECG_3 = "H12_3";
+    public static final String tipoEventoEmergenza_H12_NOECG_3 = "H12_3_NE";    
+    public static final String tipoEventoEmergenza_H12_ECG_3_OLD = "H12_ECG_3";
+    public static final String tipoEventoEmergenza_H12_NOECG_3_OLD = "H12_3";    
+    public static final String tipoEventoEmergenza_H24_ECG_2plus = "H24_2+";
+    public static final String tipoEventoEmergenza_H24_NOECG_2plus = "H24_2+_NE";    
+    public static final String tipoEventoEmergenza_H24_ECG_3 = "H24_3";  
+    public static final String tipoEventoEmergenza_H24_NOECG_3 = "H24_3_NE";  
+    public static final String tipoEventoEmergenza_H24_ECG_3_OLD = "H24_ECG_3";
+    public static final String tipoEventoEmergenza_H24_NOECG_3_OLD = "H24_3";    
     public static final String tipoEventoGettone_2_ECG = "GET_2";
     public static final String tipoEventoGettone_2_NOECG = "GET_2_NE";
     public static final String tipoEventoGettone_3_ECG = "GET_3";
