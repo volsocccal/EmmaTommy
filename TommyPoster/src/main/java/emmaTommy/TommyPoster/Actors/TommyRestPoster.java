@@ -182,7 +182,8 @@ public class TommyRestPoster extends AbstractActor {
             URI uri = new URI(restUrl);  
             
             // Post
-            try {    			
+            try {
+            	logger.info(method_name + "Posting Servizi: " + String.join(" - ", postData.getCodiciServizi()));
             	if (this.POSTflag) {
             		String response = "";
             		if (this.mockPost) {

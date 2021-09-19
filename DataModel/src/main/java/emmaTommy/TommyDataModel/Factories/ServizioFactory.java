@@ -102,7 +102,9 @@ public class ServizioFactory {
 			s.setOrarioFineServizio(null);
 		    	
 		// tag_idintervento" : "type:String:required"
-		s.setTagIdIntervento(this.tipoEventoConverter(m.getConvenzioneEnte()));
+		var tommyEvent = this.tipoEventoEmmaTommyConverter(m.getConvenzioneEnte());
+		tommyEvent = tipoEventoTommyTommyConverter(tommyEvent);
+		s.setTagIdIntervento(tommyEvent);
 		
 		// tag_idautomezzo" : "type:String:required"
 		String emmaCodiceMezzo = m.getCodiceMezzo();
@@ -484,15 +486,29 @@ public class ServizioFactory {
 		return tipoEventoMissioni.compareTo(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoExhibitions) == 0;
 	}
 	
-	protected String tipoEventoConverter (String tipoEventoMissioni) {
+	protected String tipoEventoEmmaTommyConverter (String tipoEventoMissioni) {
 		if (tipoEventoMissioni == null) {
 			return "NULL tipoEventoMissioni";
 		}
 		if (tipoEventoMissioni == "" || tipoEventoMissioni.isEmpty() || tipoEventoMissioni.isBlank()) {
 			return "EMPTY tipoEventoMissioni";
 		}
-		if (TommyDataModelEnums.tipoEventoConversion.containsKey(tipoEventoMissioni)) {
-			return TommyDataModelEnums.tipoEventoConversion.get(tipoEventoMissioni);
+		if (TommyDataModelEnums.tipoEventoEmmaTommyConversion.containsKey(tipoEventoMissioni)) {
+			return TommyDataModelEnums.tipoEventoEmmaTommyConversion.get(tipoEventoMissioni);
+		} else {
+			return "NOT_FOUND: " + tipoEventoMissioni;
+		}
+	}
+	
+	protected String tipoEventoTommyTommyConverter (String tipoEventoMissioni) {
+		if (tipoEventoMissioni == null) {
+			return "NULL tipoEventoMissioni";
+		}
+		if (tipoEventoMissioni == "" || tipoEventoMissioni.isEmpty() || tipoEventoMissioni.isBlank()) {
+			return "EMPTY tipoEventoMissioni";
+		}
+		if (TommyDataModelEnums.tipoEventoTommyConversion.containsKey(tipoEventoMissioni)) {
+			return TommyDataModelEnums.tipoEventoTommyConversion.get(tipoEventoMissioni);
 		} else {
 			return "NOT_FOUND: " + tipoEventoMissioni;
 		}

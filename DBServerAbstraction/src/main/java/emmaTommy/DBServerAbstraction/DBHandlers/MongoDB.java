@@ -25,22 +25,26 @@ import emmaTommy.TommyDataModel.Factories.ServizioFactory;
 
 public class MongoDB extends AbstractDB {
 
+	protected MongoClientOptions mongoOptions;
+	protected MongoCredential mongoCredentials;
+	protected ServerAddress mongoAddress;
 	protected MongoClient mongoClient;
 	protected MongoDatabase database;
 	protected ServizioFactory sFact;
 	
-	public MongoDB(String DBInstanceName, String DBUrl, int DBPort, String userName, String psswd) throws UnknownDBException {
+	public MongoDB(String DBInstanceName, String DBIp, int DBPort, String userName, String psswd) throws UnknownDBException {
 		super(DBInstanceName, "MongoDB", "NoSql", false, false);
 		
 		try {
-			MongoClientOptions options =  MongoClientOptions.builder().sslEnabled(true).build();
-			MongoCredential credentials = MongoCredential.createCredential(userName, DBInstanceName, psswd.toCharArray());
-			MongoClient mongoClient = new MongoClient(new ServerAddress(DBUrl, DBPort), credentials, options);
-	        this.database = mongoClient.getDatabase(DBInstanceName);
+			this.mongoOptions =  MongoClientOptions.builder().sslEnabled(true).build();
+			this.mongoCredentials = MongoCredential.createCredential(userName, this.DBInstanceName, psswd.toCharArray());
+			this.mongoAddress = new ServerAddress(DBIp, DBPort);
+			this.mongoClient = new MongoClient(this.mongoAddress, this.mongoCredentials, this.mongoOptions);
+	        this.database = this.mongoClient.getDatabase(this.DBInstanceName);
 		} catch (IllegalArgumentException e) {
 			throw new UnknownDBException("Failed to load DB: " + e.getMessage());
 		}
-        //mongoClient.close();
+        //this.mongoClient.close();
         
         this.sFact = new ServizioFactory();
 		

@@ -71,7 +71,7 @@ public class TommyDataModelEnums {
     public static final String eventoEmergenzaConvenzioneH24 = "EMER-H24";
     public static final String eventoEmergenzaGettone = "EMER-GET";
     public static final String eventoEmergenzaGara = "EMER-GARA";
-    public static final HashMap<String, String> tipoEventoConversion = new HashMap<String, String>() {   
+    public static final HashMap<String, String> tipoEventoEmmaTommyConversion = new HashMap<String, String>() {   
      
 		private static final long serialVersionUID = 1L;
 		{						
@@ -115,6 +115,25 @@ public class TommyDataModelEnums {
 		
     };
 		
+    public static final HashMap<String, String> tipoEventoTommyConversion = new HashMap<String, String>() {   
+        
+		private static final long serialVersionUID = 1L;
+		{						
+    
+			put(emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH6, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
+			put(emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH8, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
+			put(emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH12, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
+			put(emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
+			
+			put(emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaGettone, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaGettone);
+            
+			put(emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaGara, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaGara);
+			
+        }
+		
+    };
+		
+    
     public static final String codiceMezzoTommy101 = "VOLCAL+101";    
     public static final String codiceMezzoTommy103 = "VOLCAL+103";       
     public static final String codiceMezzoTommy104 = "VOLCAL+104";       

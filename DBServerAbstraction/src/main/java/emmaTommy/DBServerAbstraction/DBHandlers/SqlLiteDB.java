@@ -165,7 +165,7 @@ public void executeUpdate (String sqlQuery, String callerMethod) throws UnknownD
 	}
 
 	@Override
-public TommyEnrichedJSON getServizioEnrichedByID(String servizioID, String collectionName)
+	public TommyEnrichedJSON getServizioEnrichedByID(String servizioID, String collectionName)
 			throws CollectionNotPresentException, ServizioNotPresentException, UnknownDBException {	
 		String method_name = "::SqlLiteDB():getServizioEnrichedByID() ";
 		if (this.isServizioByIDPresent(servizioID, collectionName)) {

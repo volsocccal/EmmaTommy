@@ -14,6 +14,7 @@ import akka.actor.Props;
 import emmaTommy.DBServerAbstraction.Actors.DBServer;
 import emmaTommy.DBServerAbstraction.DBExceptions.UnknownDBException;
 import emmaTommy.DBServerAbstraction.DBHandlers.MockDB;
+import emmaTommy.DBServerAbstraction.DBHandlers.MongoDB;
 import emmaTommy.DBServerAbstraction.DBHandlers.SqlLiteDB;
 import emmaTommy.EmmaOrchestrator.EmmaOrchestrator;
 import emmaTommy.EmmaTommyConverter.Actors.EmmaTommyOrchestrator;
@@ -156,9 +157,9 @@ public class EmmaTommySupervisor {
 		    }; 
 			logger.info(method_name + "Creating " + persistenceDBName + " Actor ...");
 			if (persistenceDBUseMock) {
-				String persistenceDBTech = stagingDBProp.getProperty("DBTech");
-				String persistenceDBType = stagingDBProp.getProperty("DBType");
-				Boolean persistenceDBSupportEnrichedJSON = (Integer.parseInt(stagingDBProp.getProperty("DBSupportEnrichedJSON")) == 0) ? (true) : (false);
+				String persistenceDBTech = persistenceDBProp.getProperty("DBTech");
+				String persistenceDBType = persistenceDBProp.getProperty("DBType");
+				Boolean persistenceDBSupportEnrichedJSON = (Integer.parseInt(persistenceDBProp.getProperty("DBSupportEnrichedJSON")) == 0) ? (true) : (false);
 				persistenceDBHandler = system.actorOf(Props.create(DBServer.class, 
 																persistenceDBName, 
 																new MockDB (persistenceDBInstanceName, 
@@ -166,6 +167,31 @@ public class EmmaTommySupervisor {
 																		persistenceDBType, 
 																		persistenceDBSupportEnrichedJSON, 
 																		persistenceDBCollectionListNames)), 
+																persistenceDBName);
+			}
+			else {
+				String persistenceDBInstanceConfPath = persistenceDBProp.getProperty("instance_db_conf");
+		 		Properties persistenceDBInstanceProp = new Properties();
+		 		FileInputStream persistenceDBInstanceConfFileStream = null;
+				try {
+					persistenceDBInstanceConfFileStream = new FileInputStream(persistenceDBInstanceConfPath);
+		 		} catch (FileNotFoundException e) {
+		 			logger.fatal(method_name + "Failed to read confFile: " + persistenceDBInstanceConfPath);
+		 			return;
+		 		}
+		 		try {
+		 			persistenceDBInstanceProp.load(persistenceDBInstanceConfFileStream); 		   
+		 		} catch (IOException e) {
+		 			logger.fatal(method_name + "Failed to load confFile: " + persistenceDBInstanceConfPath);
+		 			return;
+		 		}
+				String dbIp = persistenceDBInstanceProp.getProperty("dbIp");
+				int dbPort = Integer.valueOf(persistenceDBInstanceProp.getProperty("dbPort"));
+				String username = persistenceDBInstanceProp.getProperty("username");
+				String psswd = persistenceDBInstanceProp.getProperty("psswd");
+				persistenceDBHandler = system.actorOf(Props.create(DBServer.class,
+																persistenceDBName,
+																new MongoDB(persistenceDBName, dbIp, dbPort, username, psswd)), 
 																persistenceDBName);
 			}
 			if (persistenceDBHandler == null)
