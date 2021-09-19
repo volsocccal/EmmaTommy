@@ -5,7 +5,7 @@ The system is written using Java 11 as an ensemble of micro-services.
 Internally micro-services are composed by concurrent Actors via AKKA. 
 At the global communication level between microservices, Akka is used to ask for data, for application logic or for orchestration, while Kafka is used a persistent data channel for producing micro-services’ output that other micro-services react on.
 
-The chosen staging DB  is MySQL, where the data element is a decoration of a Servizio’s JSON to quickly analyze them for posting.
+The chosen staging DB  is sqlLite, where the data element is a decoration of a Servizio’s JSON to quickly analyze them for posting.
 
 The persistence DB instead is MongoDB, where the JSONs are stored raw without any decoration.
 
