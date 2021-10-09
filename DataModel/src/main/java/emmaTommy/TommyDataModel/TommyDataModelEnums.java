@@ -66,6 +66,9 @@ public class TommyDataModelEnums {
     }; 
     
     public static final String eventoEmergenzaConvenzioneH6 = "EMER-H6";
+   
+    // Convenzioni
+    public static final String noConvenzione = "NOCONVENTION";
     public static final String eventoEmergenzaConvenzioneH8 = "EMER-H8";
     public static final String eventoEmergenzaConvenzioneH12 = "EMER-H12";
     public static final String eventoEmergenzaConvenzioneH24 = "EMER-H24";
@@ -74,7 +77,9 @@ public class TommyDataModelEnums {
     public static final HashMap<String, String> tipoEventoEmmaTommyConversion = new HashMap<String, String>() {   
      
 		private static final long serialVersionUID = 1L;
-		{						
+		{			
+			
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoNoConvention, emmaTommy.TommyDataModel.TommyDataModelEnums.noConvenzione);
     
 			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenzaH6_ECG_2plus, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH6);
 			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenzaH6_NOECG_2plus, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH6);
@@ -114,12 +119,13 @@ public class TommyDataModelEnums {
         }
 		
     };
-		
     public static final HashMap<String, String> tipoEventoTommyConversion = new HashMap<String, String>() {   
         
 		private static final long serialVersionUID = 1L;
 		{						
     
+			put(emmaTommy.TommyDataModel.TommyDataModelEnums.noConvenzione, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
+			
 			put(emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH6, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
 			put(emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH8, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
 			put(emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH12, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
@@ -135,6 +141,8 @@ public class TommyDataModelEnums {
 		
     
     public static final String codiceMezzoTommy101 = "VOLCAL+101";    
+    
+    // Mezzi
     public static final String codiceMezzoTommy103 = "VOLCAL+103";       
     public static final String codiceMezzoTommy104 = "VOLCAL+104";       
     public static final String codiceMezzoTommy105 = "VOLCAL+105";       

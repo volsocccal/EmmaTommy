@@ -47,6 +47,7 @@ public class EmmaDataModelEnums {
     }; 
     
     // Tipo Evento
+    public static final String tipoEventoNoConvention = "NESSUNA";
     public static final String tipoEventoEmergenzaH6_ECG_2plus = "H6_2+";
     public static final String tipoEventoEmergenzaH6_NOECG_2plus = "H6_2+_NE";
     public static final String tipoEventoEmergenzaH6_ECG_3 = "H6_3";
