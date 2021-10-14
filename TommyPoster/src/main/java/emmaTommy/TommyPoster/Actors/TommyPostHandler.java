@@ -443,7 +443,7 @@ public class TommyPostHandler extends AbstractActor {
 		        outputStream.write(postData.getJsonServizi().getBytes());     
 		        outputStream.close();
 			}					
-			Future<Object> postResponse = Patterns.ask(this.TommyRestPosterActorRef, postData, 10000);
+			Future<Object> postResponse = Patterns.ask(this.TommyRestPosterActorRef, postData, 100000);
 		
 			PostDataResponse response = (PostDataResponse) Await.result(postResponse, Duration.create(tommyPostTimeout, TimeUnit.SECONDS));
 			if (response.isResponseStatusSuccess()) {
