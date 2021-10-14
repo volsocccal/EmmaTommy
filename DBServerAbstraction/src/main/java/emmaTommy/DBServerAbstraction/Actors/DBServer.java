@@ -591,13 +591,6 @@ public class DBServer extends AbstractActor {
 			if (serviziInCollection == null)
 				throw new UnknownDBException("Could't get servizi from Collection " + wantedCollectionName + ", the resulting list is NULL");
 			String serviziLog = "Servizi in Collection " + wantedCollectionName + ": " + serviziInCollection.size();
-			if (serviziInCollection.isEmpty()) {
-				serviziLog += " - Empty";
-			} else {
-				for (String servizioId: serviziInCollection.keySet()) {
-					serviziLog += "\n" + servizioId + " - Status " + serviziInCollection.get(servizioId).getPostStatusStr();
-				}				
-			}
 			logger.trace(method_name + serviziLog);
 			if (this.db.isServizioByIDPresent(servizioID, wantedCollectionName)) { // Servizio Found
 				logger.trace(method_name + "Sending servizioByIdFound (servizio " + servizioID + " from collection " +  wantedCollectionName + ") to " + callingClientName);
@@ -711,13 +704,6 @@ public class DBServer extends AbstractActor {
 				}
 				HashMap<String, TommyEnrichedJSON> serviziInCollection = this.db.getAllServiziEnrichedInCollection(collectionName);
 				String serviziLog = "Servizi in Collection " + collectionName + ": " + serviziInCollection.size();
-				if (serviziInCollection.isEmpty()) {
-					serviziLog += " - Empty";
-				} else {
-					for (String servizioId: serviziInCollection.keySet()) {
-						serviziLog += "\n" + servizioId + " - Status " + serviziInCollection.get(servizioId).getPostStatusStr();
-					}				
-				}
 				logger.trace(method_name + serviziLog);
 			} catch (CollectionNotPresentException e) {
 				logger.error(method_name + e.getMessage());
@@ -767,13 +753,6 @@ public class DBServer extends AbstractActor {
 				}
 				HashMap<String, TommyEnrichedJSON> serviziInCollection = this.db.getAllServiziEnrichedInCollection(collectionName);
 				String serviziLog = "Servizi in Collection " + collectionName + ": " + serviziInCollection.size();
-				if (serviziInCollection.isEmpty()) {
-					serviziLog += " - Empty";
-				} else {
-					for (String servizioId: serviziInCollection.keySet()) {
-						serviziLog += "\n" + servizioId + " - Status " + serviziInCollection.get(servizioId).getPostStatusStr();
-					}				
-				}
 				logger.trace(method_name + serviziLog);
 			} catch (CollectionNotPresentException e) {
 				logger.error(method_name + e.getMessage());
@@ -823,13 +802,6 @@ public class DBServer extends AbstractActor {
 				}
 				HashMap<String, TommyEnrichedJSON> serviziInCollection = this.db.getAllServiziEnrichedInCollection(collectionName);
 				String serviziLog = "Servizi in Collection " + collectionName + ": " + serviziInCollection.size();
-				if (serviziInCollection.isEmpty()) {
-					serviziLog += " - Empty";
-				} else {
-					for (String servizioId: serviziInCollection.keySet()) {
-						serviziLog += "\n" + servizioId + " - Status " + serviziInCollection.get(servizioId).getPostStatusStr();
-					}				
-				}
 				logger.trace(method_name + serviziLog);
 			} catch (CollectionNotPresentException e) {
 				logger.error(method_name + e.getMessage());
@@ -871,13 +843,6 @@ public class DBServer extends AbstractActor {
 				}
 				HashMap<String, TommyEnrichedJSON> serviziInCollection = this.db.getAllServiziEnrichedInCollection(collectionName);
 				String serviziLog = "Servizi in Collection " + collectionName + ": " + serviziInCollection.size();
-				if (serviziInCollection.isEmpty()) {
-					serviziLog += " - Empty";
-				} else {
-					for (String servizioId: serviziInCollection.keySet()) {
-						serviziLog += "\n" + servizioId + " - Status " + serviziInCollection.get(servizioId).getPostStatusStr();
-					}				
-				}
 				logger.trace(method_name + serviziLog);
 			} catch (CollectionNotPresentException e) {
 				logger.error(method_name + e.getMessage());
@@ -919,13 +884,6 @@ public class DBServer extends AbstractActor {
 				}
 				HashMap<String, TommyEnrichedJSON> serviziInCollection = this.db.getAllServiziEnrichedInCollection(collectionName);
 				String serviziLog = "Servizi in Collection " + collectionName + ": " + serviziInCollection.size();
-				if (serviziInCollection.isEmpty()) {
-					serviziLog += " - Empty";
-				} else {
-					for (String servizioId: serviziInCollection.keySet()) {
-						serviziLog += "\n" + servizioId + " - Status " + serviziInCollection.get(servizioId).getPostStatusStr();
-					}				
-				}
 				logger.trace(method_name + serviziLog);
 			} catch (CollectionNotPresentException e) {
 				logger.error(method_name + e.getMessage());
