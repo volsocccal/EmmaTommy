@@ -80,7 +80,13 @@ public class EmmaDataModelEnums {
     public static final String codiceMezzoEmmaPlus201 = "VOLCAL+201";
     public static final String codiceMezzoEmmaDash201 = "VOLCAL_201";
     public static final String codiceMezzoEmmaPlus301 = "VOLCAL+301";
-    public static final String codiceMezzoEmmaDash301 = "VOLCAL_301";
+    public static final String codiceMezzoEmmaDash301 = "VOLCAL_301";    
+    public static final String codiceMezzoEmmaPlus102 = "VOLCAL+102";
+    public static final String codiceMezzoEmmaDash102 = "VOLCAL_102";
+    public static final String codiceMezzoEmmaPlus202 = "VOLCAL+202";
+    public static final String codiceMezzoEmmaDash202 = "VOLCAL_202";
+    public static final String codiceMezzoEmmaPlus302 = "VOLCAL+302";
+    public static final String codiceMezzoEmmaDash302 = "VOLCAL_302";    
     public static final String codiceMezzoEmmaPlus103 = "VOLCAL+103";
     public static final String codiceMezzoEmmaDash103 = "VOLCAL_103";
     public static final String codiceMezzoEmmaPlus203 = "VOLCAL+203";

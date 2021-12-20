@@ -138,11 +138,11 @@ public class TommyDataModelEnums {
         }
 		
     };
-		
-    
-    public static final String codiceMezzoTommy101 = "VOLCAL+101";    
+		   
     
     // Mezzi
+    public static final String codiceMezzoTommy101 = "VOLCAL+101"; 
+    public static final String codiceMezzoTommy102 = "VOLCAL+102"; 
     public static final String codiceMezzoTommy103 = "VOLCAL+103";       
     public static final String codiceMezzoTommy104 = "VOLCAL+104";       
     public static final String codiceMezzoTommy105 = "VOLCAL+105";       
@@ -157,6 +157,13 @@ public class TommyDataModelEnums {
 			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash201, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy101);
 			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus301, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy101);
 			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash301, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy101);
+			
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus102, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy102);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash102, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy102);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus202, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy102);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash202, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy102);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus302, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy102);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash302, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy102);
 			
 			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaPlus103, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy103);
 			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.codiceMezzoEmmaDash103, emmaTommy.TommyDataModel.TommyDataModelEnums.codiceMezzoTommy103);
