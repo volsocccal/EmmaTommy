@@ -101,6 +101,8 @@ public class TommyDataModelEnums {
 			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H12_NOECG_3_OLD, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH12);
 
 			
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H24_ECG_2, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
+			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H24_NOECG_2, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
 			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H24_ECG_2plus, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
 			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H24_NOECG_2plus, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
 			put(emmaTommy.EmmaDataModel.EmmaDataModelEnums.tipoEventoEmergenza_H24_ECG_3, emmaTommy.TommyDataModel.TommyDataModelEnums.eventoEmergenzaConvenzioneH24);
