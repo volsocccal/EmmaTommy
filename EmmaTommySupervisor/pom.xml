@@ -78,6 +78,13 @@
       <artifactId>log4j-core</artifactId>
       <version>2.14.1</version>
     </dependency>
+    <!-- SqlLite JDBC -->
+    <dependency>
+      <groupId>org.xerial</groupId>
+      <artifactId>sqlite-jdbc</artifactId>
+      <version>3.34.0</version>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -87,31 +94,42 @@
             <directory>conf</directory>
             <targetPath>${project.build.directory}/conf</targetPath>
             <includes>
+            	<include>db_persistence.conf</include>
+            	<include>db_staging.conf</include>
                 <include>emma_JSON_kafka_producer.conf</include>
                 <include>emma_orchestrator.conf</include>
                 <include>emma_parser_actor.conf</include>
                 <include>emma_psswd.conf</include>
-                <include>emma_rest.conf</include>
-                <include>log4j2_emmahandler.xml</include>
+                <include>emma_rest.conf</include>                
                 <include>emmatommy_consumer.conf</include>
                 <include>emmatommy_converter.conf</include>
                 <include>emmatommy_orchestrator.conf</include>
-                <include>emmatommy_producer.conf</include>
+                <include>emmatommy_producer.conf</include>                
+                <include>log4j2_emmahandler.xml</include>
                 <include>log4j2_emmatommyconverter.xml</include>
-                <include>tommydatahandler_orchestrator.conf</include>
-                <include>tommydatahandler_datawriter.conf</include>
-                <include>tommydatahandler_consumer.conf</include>
-                <include>log4j2_tommydatahandler.xml</include>
-                <include>tommy_posthandler.conf</include>
-                <include>tommy_rest_service_refs.conf</include>
-                <include>tommy_db.conf</include>
-                <include>log4j2_tommyposter.xml</include>
                 <include>log4j2_supervisor.xml</include>
+                <include>log4j2_tommydatahandler.xml</include>
+                <include>log4j2_tommyposter.xml</include>                
+                <include>sqlite.conf</include>
+                <include>supervisor.conf</include>                
+                <include>tommydatahandler_consumer.conf</include>
+                <include>tommydatahandler_datawriter.conf</include>
+                <include>tommydatahandler_orchestrator.conf</include>
+                <include>tommy_db.conf</include>                
+                <include>tommy_posthandler.conf</include>
+                <include>tommy_rest_service_refs.conf</include>                
             </includes>
         </resource>
         <resource>
             <directory>logs</directory>
             <targetPath>${project.build.directory}/logs</targetPath>
+        </resource>
+        <resource>
+            <directory>scripts</directory>
+            <targetPath>${project.build.directory}/scripts</targetPath>
+            <includes>
+                <include>launchEmmaTommy.sh</include>
+            </includes>
         </resource>
     </resources>
     <plugins>
