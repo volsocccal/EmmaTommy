@@ -26,7 +26,20 @@ public class EmmaTommySupervisor {
 	 public static void main(String[] args) throws UnknownDBException {
 			
 			String method_name = "::main(): ";
-			String supervisorConfPath = "conf/supervisor.conf";
+			
+			
+			// Configuration Folder
+			String confFolder = "conf/";
+			if (args.length == 1)
+			{
+				confFolder = args[0] + "/";
+			}
+			System.out.println(method_name + "Config Folder: " + confFolder);
+			
+			// Supervisor Configuration
+			final String supervisorConfName = "supervisor.conf";
+			String supervisorConfPath = confFolder + supervisorConfName;
+			
 					
 			// Define and Load Configuration File
 	 		Properties prop = new Properties();
