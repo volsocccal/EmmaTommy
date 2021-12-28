@@ -86,7 +86,7 @@ public class EmmaTommySupervisor {
 	 			return;
 	 		}
 	 		ActorRef stagingDBHandler = null;
-	 		Boolean stagingDBUseMock = (Integer.parseInt(stagingDBProp.getProperty("useMock")) == 0) ? (true) : (false);
+	 		Boolean stagingDBUseMock = (Integer.parseInt(stagingDBProp.getProperty("useMock")) == 1) ? (true) : (false);
 			String stagingDBName = stagingDBProp.getProperty("realLogger");
 			String stagingDBInstanceName = stagingDBProp.getProperty("DBInstanceName");
 			ArrayList<String> stagingCollectionListNames = new ArrayList<String>() { 
